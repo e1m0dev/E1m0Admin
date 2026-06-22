@@ -1,0 +1,44 @@
+package tvgirl.elmodev.e1m0Admin.commands.admin;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
+
+public class RewatchCommand implements CommandExecutor {
+
+    private final FileConfiguration cfg;
+    private final AdminGameService service;
+
+    public RewatchCommand(FileConfiguration cfg, AdminGameService service) {
+        this.cfg = cfg;
+        this.service = service;
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+        if(!(commandSender instanceof Player adm)) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            return false;
+        }
+
+        if(command.getName().toLowerCase().equalsIgnoreCase("rewatch")) {
+            String user = strings[1];
+            Player player = Bukkit.getPlayer(user);
+
+            if(adm.hasPermission(cfg.getString("Permissions.rewatch"))) {
+                service.handleRewatch(adm.getUniqueId(), player.getUniqueId());
+            }
+        } else if(command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
+            if(adm.hasPermission(cfg.getString("Permissions.rewatch"))) {
+                service.handleReoff(adm.getUniqueId());
+            }
+        }
+
+        return true;
+    }
+}
