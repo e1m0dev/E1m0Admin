@@ -1,39 +1,41 @@
-package tvgirl.elmodev.e1m0Admin.gui.controller.pin;
+package tvgirl.elmodev.e1m0Admin.gui.controller.secretcode;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import tvgirl.elmodev.e1m0Admin.gui.holder.report.ReportHolder;
-import tvgirl.elmodev.e1m0Admin.service.gui.ReportSystemService;
+import tvgirl.elmodev.e1m0Admin.gui.guis.secretcode.SecretCodeGui;
+import tvgirl.elmodev.e1m0Admin.gui.holder.secretcode.SecretCodeHolder;
+import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
 
 import java.util.UUID;
 
-public class PinController implements Listener {
+public class SecretCodeController implements Listener {
 
-    private final NamespacedKey reportIdKey;
+    private final SecretCodeGui codeGUI;
     private final NamespacedKey actionKey;
+    private final SecretCodeService codeService;
 
-    private final ReportSystemService reportService;
-
-    public PinController(NamespacedKey reportIdKey, NamespacedKey actionKey, ReportSystemService reportService) {
+    public SecretCodeController(SecretCodeGui codeGUI, NamespacedKey actionKey, SecretCodeService codeService) {
+        this.codeGUI = codeGUI;
         this.actionKey = actionKey;
-        this.reportIdKey = reportIdKey;
-        this.reportService = reportService;
+        this.codeService = codeService;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onClickToReport(InventoryClickEvent e) {
-        if (!(e.getView().getTopInventory().getHolder() instanceof ReportHolder holder)) {
-            return;
-        }
+    public void onClickToPin(InventoryClickEvent e) {
+        if (!(e.getView().getTopInventory().getHolder() instanceof SecretCodeHolder holder)) return;
+        Inventory inv = e.getClickedInventory();
+
+        if (!(e.getWhoClicked() instanceof Player p)) return;
 
         e.setCancelled(true);
-        if (e.getClickedInventory() == null) {
+        if (inv == null) {
             return;
         }
 
@@ -41,25 +43,61 @@ public class PinController implements Listener {
             return;
         }
 
+        // Controller
+        // Вопрос: Как понять на какой предмет я нажимаю и достать от туда номер? Особенно важно, понять в каком именно GUI я это делаю
+
         ItemStack item = e.getCurrentItem();
-        if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
+        String action = item.getPersistentDataContainer().get(actionKey, PersistentDataType.STRING);
+
+        UUID playerID = e.getWhoClicked().getUniqueId();
+        byte num = handlerButton(action);
+
+        if(num == 0) {
+            p.closeInventory();
             return;
         }
 
-        ItemMeta meta = item.getItemMeta();
-        String action = meta.getPersistentDataContainer().get(actionKey, PersistentDataType.STRING);
+        switch (holder.getName()) {
+            case "step_one":
+                codeService.oneStepHandler(playerID, num);
+                codeGUI.openTwoStepGUI(playerID, num);
+            case "step_two":
+                codeService.twoStepHandler(playerID, num);
+                codeGUI.openThreeStepGUI(playerID, num);
+            case "step_three":
+                codeService.threeStepHandler(playerID, num);
+                codeGUI.openFoursStepGUI(playerID, num);
+            case "step_fours":
+                codeService.foursStepHandler(playerID, num);
+        }
+    }
 
-        if (!"open_report".equals(action)) {
-            return;
+    private byte handlerButton(String action) {
+        byte i = 0;
+
+        switch (action) {
+            case "BUTTON_ONE":
+                return i = 1;
+            case "BUTTON_TWO":
+                return i = 2;
+            case "BUTTON_THREE":
+                return i = 3;
+            case "BUTTON_FOUR":
+                return i = 4;
+            case "BUTTON_FIVE":
+                return i = 5;
+            case "BUTTON_SIX":
+                return i = 6;
+            case "BUTTON_SEVEN":
+                return i = 7;
+            case "BUTTON_EIGHT":
+                return i = 8;
+            case "BUTTON_NINE":
+                return i = 9;
+            case "CLOSE":
+                return i = 0;
         }
 
-        String rawUuid = meta.getPersistentDataContainer().get(reportIdKey, PersistentDataType.STRING);
-        if (rawUuid == null) {
-            return;
-        }
-
-        UUID reportUuid = UUID.fromString(rawUuid);
-
-        reportService.clickToReport(reportUuid);
+        return i;
     }
 }

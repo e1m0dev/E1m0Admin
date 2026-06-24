@@ -10,19 +10,19 @@ import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
-public class AdminUpCommand implements CommandExecutor {
+public class AdminBonusCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminsStaffService staffService;
 
-    public AdminUpCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService) {
+    public AdminBonusCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService) {
         this.cfg = cfg;
         this.sender = sender;
         this.staffService = staffService;
     }
 
-    // /aup E1m0
+    // /abonus E1m0 Хорошая работа!
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if(!(commandSender instanceof Player staff)) {
@@ -30,15 +30,23 @@ public class AdminUpCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("aup")) {
+        if(command.getName().toLowerCase().equalsIgnoreCase("adminbonus")) {
+            if(strings.length < 3) {
+                sender.sendPath(staff, "Messages.Errors.lengthError");
+                return false;
+            }
+
             Player admin = Bukkit.getPlayer(strings[0]);
+            int sum = Integer.parseInt(strings[1]);
+            String message = String.join(" ", strings[2]);
+
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
                 return false;
             }
 
             if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
-                staffService.upStatus(staff.getUniqueId(), admin.getUniqueId());
+                staffService.adminBonusGive(staff.getUniqueId(), admin.getUniqueId(), sum, message);
             }
         }
 

@@ -7,54 +7,22 @@ import tvgirl.elmodev.e1m0Admin.state.admin.Admin;
 
 import java.util.UUID;
 
-public interface AdminsDAO {
+public interface BonusDAO {
 
     /* STAFF | 🧑‍🔬 */
     @SqlUpdate("""
-        INSERT INTO e1admin_admins
-        (uuid, nick, weight, salary, prefix, IP)
+        INSERT INTO e1admin_reports
+        (uuid, staffID, adminID, staffNick, adminNick, sum, message)
         VALUES
-        (:uuid, :nick, :weight, :salary, :prefix, :IP)
+        (:uuid, :staffID, :adminID, :staffNick, :adminNick, :sum, :message)
     """)
     void insert(
             @Bind("uuid") UUID uuid,
-            @Bind("nick") String nick,
-            @Bind("weight") int weight,
-            @Bind("salary") int salary,
-            @Bind("prefix") String prefix,
-            @Bind("IP") String IP
+            @Bind("staffID") UUID staffID,
+            @Bind("adminID") UUID adminID,
+            @Bind("staffNick") String staffNick,
+            @Bind("adminNick") String adminNick,
+            @Bind("sum") int sum,
+            @Bind("message") String message
     );
-
-    @SqlUpdate("""
-        UPDATE e1admin_admins SET
-        weight = :weight, salary = :salary, prefix:prefix
-        WHERE
-        :uuid
-    """)
-    void upStatus(
-            @Bind("uuid") UUID uuid,
-            @Bind("weight") int weight,
-            @Bind("salary") int salary,
-            @Bind("prefix") String prefix
-    );
-
-    @SqlUpdate("""
-        UPDATE e1admin_admins SET
-        weight = :weight, salary = :salary, prefix:prefix
-        WHERE
-        :uuid
-    """)
-    void downStatus(
-            @Bind("uuid") UUID uuid,
-            @Bind("weight") int weight,
-            @Bind("salary") int salary,
-            @Bind("prefix") String prefix
-    );
-
-    @SqlQuery("""
-        SELECT *
-        FROM e1admin_admins
-        WHERE uuid = :uuid
-    """)
-    Admin findByUuid(@Bind("uuid") UUID uuid);
 }

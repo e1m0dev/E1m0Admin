@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.state;
+package tvgirl.elmodev.e1m0Admin.state.admin;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.gui.guis;
+package tvgirl.elmodev.e1m0Admin.gui.guis.report;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

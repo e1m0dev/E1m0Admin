@@ -1,12 +1,12 @@
-package tvgirl.elmodev.e1m0Admin.state;
+package tvgirl.elmodev.e1m0Admin.state.admin;
 
 import java.util.UUID;
 
 public record Admin(
-        long id,
         UUID uuid,
         String nick,
         int weight,
         int salary,
-        String prefix
+        String prefix,
+        String IP
 ) {}

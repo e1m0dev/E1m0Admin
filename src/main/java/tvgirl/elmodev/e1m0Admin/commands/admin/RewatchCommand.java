@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.commands;
+package tvgirl.elmodev.e1m0Admin.commands.admin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -8,13 +8,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
+import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
 public class RewatchCommand implements CommandExecutor {
 
+    private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminGameService service;
 
-    public RewatchCommand(FileConfiguration cfg, AdminGameService service) {
+    public RewatchCommand(E1m0Sender sender, FileConfiguration cfg, AdminGameService service) {
+        this.sender = sender;
         this.cfg = cfg;
         this.service = service;
     }
@@ -23,6 +26,11 @@ public class RewatchCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if(!(commandSender instanceof Player adm)) {
             commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            return false;
+        }
+
+        if(strings.length < 2) {
+            sender.sendPath(adm, "Messages.Errors.lengthError");
             return false;
         }
 

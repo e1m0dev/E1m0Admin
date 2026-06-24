@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.commands;
+package tvgirl.elmodev.e1m0Admin.commands.admin;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

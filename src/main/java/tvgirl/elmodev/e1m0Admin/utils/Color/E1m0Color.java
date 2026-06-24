@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.color;
+package tvgirl.elmodev.e1m0Admin.utils.Color;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

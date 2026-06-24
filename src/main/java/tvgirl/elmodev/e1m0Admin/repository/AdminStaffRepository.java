@@ -1,25 +1,51 @@
 package tvgirl.elmodev.e1m0Admin.repository;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jdbi.v3.core.Jdbi;
-import tvgirl.elmodev.e1m0Admin.api.repo.SystemRepository;
+import tvgirl.elmodev.e1m0Admin.api.repo.StaffRepositoryAPI;
 import tvgirl.elmodev.e1m0Admin.dao.AdminsDAO;
-import tvgirl.elmodev.e1m0Admin.state.Admin;
+import tvgirl.elmodev.e1m0Admin.dao.BonusDAO;
+import tvgirl.elmodev.e1m0Admin.dao.ReportDAO;
+import tvgirl.elmodev.e1m0Admin.state.admin.Admin;
 
 import java.util.UUID;
 
-public class AdminSystemRepository implements SystemRepository {
+public class AdminStaffRepository implements StaffRepositoryAPI {
 
     private final Jdbi jdbi;
 
-    public AdminSystemRepository(Jdbi jdbi) {
+    public AdminStaffRepository(Jdbi jdbi) {
         this.jdbi = jdbi;
     }
 
     @Override
-    public int adminSalary(UUID id) {
+    public void setAdminStatus(UUID id, String nick, int weight, int salary, String prefix, String IP) {
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(id);
-        return admin.salary();
+        adminDao.insert(id, nick, weight, salary, prefix, IP);
     }
 
+    @Override
+    public void upAdminStatus(UUID id) {
+        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+        Admin admin = adminDao.findByUuid(id);
+        adminDao.upStatus(admin.uuid(), admin.weight(), admin.salary(), admin.prefix());
+    }
+
+    @Override
+    public void downAdminStatus(UUID id) {
+        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+        Admin admin = adminDao.findByUuid(id);
+        adminDao.downStatus(admin.uuid(), admin.weight(), admin.salary(), admin.prefix());
+    }
+
+    @Override
+    public void giveBonus(UUID staffID, UUID adminID, int sum, String message) {
+        BonusDAO bonusDAO = jdbi.onDemand(BonusDAO.class);
+
+        Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        bonusDAO.insert(UUID.randomUUID(), staffID, adminID, staff.getName(), admin.getName(), sum, message);
+    }
 }

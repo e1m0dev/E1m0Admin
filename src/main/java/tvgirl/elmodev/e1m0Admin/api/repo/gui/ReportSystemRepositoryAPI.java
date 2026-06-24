@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.api.gui.repository;
+package tvgirl.elmodev.e1m0Admin.api.repo.gui;
 
 import tvgirl.elmodev.e1m0Admin.state.report.Report;
 

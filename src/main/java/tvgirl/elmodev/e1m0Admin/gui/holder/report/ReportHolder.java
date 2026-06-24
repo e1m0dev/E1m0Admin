@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.gui.holder;
+package tvgirl.elmodev.e1m0Admin.gui.holder.report;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

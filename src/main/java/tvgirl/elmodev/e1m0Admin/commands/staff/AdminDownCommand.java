@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
-public class AdminUpCommand implements CommandExecutor {
+public class AdminDownCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminsStaffService staffService;
 
-    public AdminUpCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService) {
+    public AdminDownCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService) {
         this.cfg = cfg;
         this.sender = sender;
         this.staffService = staffService;
@@ -30,7 +30,12 @@ public class AdminUpCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("aup")) {
+        if(strings.length < 1) {
+            sender.sendPath(staff, "Messages.Errors.lengthError");
+            return false;
+        }
+
+        if(command.getName().toLowerCase().equalsIgnoreCase("downadmin")) {
             Player admin = Bukkit.getPlayer(strings[0]);
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
@@ -38,7 +43,7 @@ public class AdminUpCommand implements CommandExecutor {
             }
 
             if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
-                staffService.upStatus(staff.getUniqueId(), admin.getUniqueId());
+                staffService.downStatus(staff.getUniqueId(), admin.getUniqueId());
             }
         }
 

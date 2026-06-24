@@ -10,19 +10,19 @@ import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
-public class AdminSetCommand implements CommandExecutor {
+public class AdminChangeSecretCode implements CommandExecutor {
 
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminsStaffService staffService;
 
-    public AdminSetCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService) {
-        this.cfg = cfg;
-        this.sender = sender;
+    public AdminChangeSecretCode(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService) {
         this.staffService = staffService;
+        this.sender = sender;
+        this.cfg = cfg;
     }
 
-    // /aset E1m0 1
+    // /asecret E1m0 7777
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if(!(commandSender instanceof Player staff)) {
@@ -35,14 +35,8 @@ public class AdminSetCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("setadmin")) {
+        if(command.getName().toLowerCase().equalsIgnoreCase("acodechange")) {
             Player admin = Bukkit.getPlayer(strings[0]);
-            int weight = Integer.parseInt(strings[1]);
-
-            if(weight <= 0) {
-                sender.sendPath(staff, "Messages.Errors.setAdminWeightIsNull");
-                return false;
-            }
 
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");

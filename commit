@@ -1,0 +1,13 @@
+Commit Version 1.1 | PIN-Generation
+
+Добавлена система PIN-кодов
+Добавлены возможности для STAFF по поритету PIN
+
+Добавлены огромные кол-ва точек входа, команд, работающих с SecretCode
+Добавлена GUI работа с SecretCode и проверки доступа у администратора.
+
+Переделана система приоритетов и permission связанная с PIN-Code
+Добавлены новые State and StateManager для работы с Permission Manager
+Переписана API PermissionManager под новый State
+
+TODO: Не забыть дополнить

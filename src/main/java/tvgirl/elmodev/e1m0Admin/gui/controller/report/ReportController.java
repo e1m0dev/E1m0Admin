@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.gui.controller;
+package tvgirl.elmodev.e1m0Admin.gui.controller.report;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import tvgirl.elmodev.e1m0Admin.gui.holder.ReportHolder;
+import tvgirl.elmodev.e1m0Admin.gui.holder.report.ReportHolder;
 import tvgirl.elmodev.e1m0Admin.service.gui.ReportSystemService;
 
 import java.util.UUID;

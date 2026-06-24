@@ -1,38 +1,28 @@
 package tvgirl.elmodev.e1m0Admin.repository;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jdbi.v3.core.Jdbi;
-import tvgirl.elmodev.e1m0Admin.api.repo.StaffRepositoryAPI;
-import tvgirl.elmodev.e1m0Admin.dao.AdminsDAO;
-import tvgirl.elmodev.e1m0Admin.state.Admin;
+import tvgirl.elmodev.e1m0Admin.api.repo.GameRepositoryAPI;
+import tvgirl.elmodev.e1m0Admin.dao.ReportDAO;
 
 import java.util.UUID;
 
-public class AdminStaffRepository implements StaffRepositoryAPI {
+public class AdminGameRepository implements GameRepositoryAPI {
 
     private final Jdbi jdbi;
 
-    public AdminStaffRepository(Jdbi jdbi) {
+    public AdminGameRepository(Jdbi jdbi) {
         this.jdbi = jdbi;
     }
 
     @Override
-    public void setAdminStatus(UUID id, String nick, int weight, int salary, String prefix) {
-        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(id);
-        adminDao.insert(id, nick, weight, salary, prefix);
-    }
+    public void gameReport(UUID playerID, UUID adminID, String request, String response, String status) {
+        ReportDAO reportDAO = jdbi.onDemand(ReportDAO.class);
 
-    @Override
-    public void upAdminStatus(UUID id, int weight, int salary, String prefix) {
-        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(id);
-        adminDao.upStatus(id, weight, salary, prefix);
-    }
+        Player admin = Bukkit.getPlayer(adminID);
+        Player player = Bukkit.getPlayer(playerID);
 
-    @Override
-    public void downAdminStatus(UUID id, int weight, int salary, String prefix) {
-        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(id);
-        adminDao.downStatus(id, weight, salary, prefix);
+        reportDAO.sendReport(UUID.randomUUID(), adminID, playerID, admin.getName(), player.getName(), request, response, status);
     }
 }

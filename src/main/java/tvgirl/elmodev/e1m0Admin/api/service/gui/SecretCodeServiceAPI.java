@@ -1,4 +1,11 @@
-package tvgirl.elmodev.e1m0Admin.api.repo.gui;
+package tvgirl.elmodev.e1m0Admin.api.service.gui;
 
-public interface SecretCodeRepositoryAPI {
+import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeState;
+
+import java.util.UUID;
+
+public interface SecretCodeServiceAPI {
+    void oneStepHandler(UUID id, byte i);
+
+    String getInputCode(UUID id);
 }

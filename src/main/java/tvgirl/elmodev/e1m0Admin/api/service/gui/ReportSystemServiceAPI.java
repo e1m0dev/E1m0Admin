@@ -1,10 +1,13 @@
-package tvgirl.elmodev.e1m0Admin.api.gui.service;
+package tvgirl.elmodev.e1m0Admin.api.service.gui;
 
+import tvgirl.elmodev.e1m0Admin.state.report.Report;
+
+import java.util.List;
 import java.util.UUID;
 
 public interface ReportSystemServiceAPI {
 
-    void openReportMenu(UUID admin);
-    void clickToReport(UUID reportID, UUID adminID, UUID playerID, String reportMessage, String responseMessage);
+    List<Report> getReports();
+    void clickToReport(UUID reportID);
 
 }

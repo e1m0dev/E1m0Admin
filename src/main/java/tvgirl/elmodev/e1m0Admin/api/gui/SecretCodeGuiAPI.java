@@ -1,4 +1,9 @@
 package tvgirl.elmodev.e1m0Admin.api.gui;
 
-public class PINGuiAPI {
+import java.util.UUID;
+
+public interface SecretCodeGuiAPI {
+
+    void openPINGui(UUID id);
+
 }

@@ -7,30 +7,25 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import tvgirl.elmodev.e1m0Admin.service.AdminSystemService;
-import tvgirl.elmodev.e1m0Admin.state.AdminSession;
-import tvgirl.elmodev.e1m0Admin.state.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.state.admin.AdminSessionManager;
 
-public class JoinListener implements Listener {
+public class QuitListener implements Listener {
 
     private final FileConfiguration cfg;
     private final AdminSystemService systemService;
     private final AdminSessionManager sessionManager;
 
-    public JoinListener(FileConfiguration cfg, AdminSystemService systemService, AdminSessionManager sessionManager) {
+    public QuitListener(FileConfiguration cfg, AdminSystemService systemService, AdminSessionManager sessionManager) {
         this.cfg = cfg;
         this.systemService = systemService;
         this.sessionManager = sessionManager;
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onAdminJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         if(!p.hasPermission(cfg.getString("Permissions.admin"))) return;
 
-        // Админ зарплата.
-        if (cfg.getBoolean("Server.adminPay")) {
-            sessionManager.join(p.getUniqueId());
-            systemService.adminPay(p.getUniqueId());
-        }
+        sessionManager.quit(p.getUniqueId());
     }
 }

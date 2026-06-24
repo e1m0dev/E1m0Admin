@@ -2,6 +2,9 @@ name: E1m0Admin
 version: '1.0-DEV'
 main: tvgirl.elmodev.e1m0Admin.E1m0Admin
 api-version: '1.21'
-prefix: ENight
+prefix: EAdmin
 authors: [ E1m0 ]
 description: ELM Laboratories | E1m0Admin
+
+softdepend:
+  - "PlaceholderAPI"

@@ -1,6 +1,5 @@
 package tvgirl.elmodev.e1m0Admin.commands.admin;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,15 +7,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
+import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
-public class RewatchCommand implements CommandExecutor {
+public class ReportCommand implements CommandExecutor {
 
+    private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminGameService service;
 
-    public RewatchCommand(FileConfiguration cfg, AdminGameService service) {
-        this.cfg = cfg;
+    public ReportCommand(E1m0Sender sender, FileConfiguration cfg, AdminGameService service) {
         this.service = service;
+        this.sender = sender;
+        this.cfg = cfg;
     }
 
     @Override
@@ -26,16 +28,17 @@ public class RewatchCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("rewatch")) {
-            String user = strings[1];
-            Player player = Bukkit.getPlayer(user);
+        // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
+        if(command.getName().toLowerCase().equalsIgnoreCase("arep")) {
+            String response = String.join(" ", strings[0]);
+
+            if(strings.length > 2) {
+                sender.sendPath(adm, "Messages.Errors.lengthError");
+                return false;
+            }
 
             if(adm.hasPermission(cfg.getString("Permissions.rewatch"))) {
-                service.handleRewatch(adm.getUniqueId(), player.getUniqueId());
-            }
-        } else if(command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
-            if(adm.hasPermission(cfg.getString("Permissions.rewatch"))) {
-                service.handleReoff(adm.getUniqueId());
+                service.openReportGUI(adm.getUniqueId(), response);
             }
         }
 
