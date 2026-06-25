@@ -8,13 +8,13 @@ import tvgirl.elmodev.e1m0Admin.commands.admin.RewatchCommand;
 import tvgirl.elmodev.e1m0Admin.tabcompliter.MainTabCompleter;
 import tvgirl.elmodev.e1m0Admin.database.DatabaseManager;
 import tvgirl.elmodev.e1m0Admin.database.DatabaseSource;
-import tvgirl.elmodev.e1m0Admin.listeners.JoinListener;
+import tvgirl.elmodev.e1m0Admin.listeners.bukkit.JoinListener;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
 import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.service.AdminSystemService;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
-import tvgirl.elmodev.e1m0Admin.state.admin.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 
 import java.util.HashMap;
 import java.util.Map;

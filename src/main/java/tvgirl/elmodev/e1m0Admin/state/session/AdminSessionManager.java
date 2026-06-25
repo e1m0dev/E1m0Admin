@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.state.admin;
+package tvgirl.elmodev.e1m0Admin.state.session;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

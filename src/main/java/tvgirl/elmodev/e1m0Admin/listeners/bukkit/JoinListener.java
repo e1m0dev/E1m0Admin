@@ -1,4 +1,4 @@
-package tvgirl.elmodev.e1m0Admin.listeners;
+package tvgirl.elmodev.e1m0Admin.listeners.bukkit;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import tvgirl.elmodev.e1m0Admin.state.admin.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 
 public class JoinListener implements Listener {
 

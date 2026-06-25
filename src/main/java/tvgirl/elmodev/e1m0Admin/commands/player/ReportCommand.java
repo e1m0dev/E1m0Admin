@@ -40,6 +40,8 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
+        // TODO: Сделать проверку на отправленный репорт из ReportManagerState
+
         if(command.getName().toLowerCase().equalsIgnoreCase("report")) {
             int minLength = cfg.getInt("Admin.Report.minReportLength");
             String reportMessage = String.join(" ", strings);

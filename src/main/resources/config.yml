@@ -86,10 +86,6 @@ Admin:
       weight: 1                         # Важно | Какой вес будет у данной роли? Например: Некоторые администраторы - не могут забанить некоторых игроков.
       salary: "333"                     # Важно | Какая зарплата будет у администратора в Вашей валюте?
       scom: "eco give %player %salary"  # Важно | Какая команда будет выдавать валюту которая закреплена за администратором?
-      commands:                         # Важно | Какие команды может использовать данный администратор?
-        - "arep"
-        - "invise"
-        - "rewatch"
 
     # Около средние ранги на который будет поставлен администратор при повышении.
     adm:
@@ -97,13 +93,6 @@ Admin:
       prefix: "Администратор"
       salary: "777"
       weight: 2
-      commands:
-        - "arep"
-        - "invise"
-        - "rewatch"
-
-        - "adminbonusall"
-        - "adminbonus"
 
     # Здесь например ваши максимальные ранги среди всех.
     stadm:
@@ -111,26 +100,13 @@ Admin:
       prefix: "Ст. Администратор"
       weight: 3
       salary: "888"
-      commands:
-        - "a"
-        - "rewatch"
-        - "rep"
-
-        - "adminbonusall"
-        - "adminbonus"
-
-        - "deladmin"
-        - "setadmin"
-        - "asecret"
-        - "upadmin"
-        - "adown"
 
   SecretCode:
     wrongCodeTrigger: true  # ❗| Будет ли извещение, что администратор не правильно ввел пароль?
     accessCodeTrigger: true # ❗| Будет ли извещение, что администратор правильно ввел пароль?
 
-    wrongCodeNotify: "&4&bОй! Администратор %admin ввел не правильный секретный код!"
     adminAccessNotify: "&aПоприветствуйте! Администратор %admin зарегистрировался в системе!"
+    wrongCodeNotify: "&4&bОй! Администратор %admin ввел не правильный секретный код!"
 
     Actions:
       wrongCodeActions:
@@ -236,11 +212,13 @@ Messages:
   changeCodeAdmin: "❗ Внимание! Вам сменили игровой код администратора, тот кто сменил: %staff. Код: %code"
   changeCodeStaff: "❗ Внимание! ВЫ сменили игровой код администратора %admin. Его новый код: %code!"
 
+
 Errors:
   nullPlayer: "Такого игрока не существует..."
   lengthError: "Неправильное использование команды! Пробейте /ahelp —— Для просмотра помощи для администрации."
   consoleError: "Консоли нельзя."
 
+  secretCodeNotInput: "❗Внимание! | Вы еще не получили права администратора своего уровня, просим Вас подтвердите статус администратора: /aaccess!"
   secretCodeIsWrong: "Вы ввели неправильный код! Попробуйте снова!"
 
   reportLengthError: "Минимальный набор репорта составляет %len символов!"
@@ -248,10 +226,12 @@ Errors:
   setAdminWeightIsNull: "&cВыдаваемый ранг —— должен быть больше 0!"
   setAdminWeightNotFound: "&cВведенный ранг —— НЕ найден.."
 
+  downAdminLevelError: "Администратор уже находится на минимальном уровне!"
+
   upAdminLevelError: "Администратор уже находится на максимальном уровне!"
   upAdminSelfError: "Вы не можете повысить себя!"
 
-  downAdminLevelError: "Администратор уже находится на минимальном уровне!"
+  setAdminCodeWrong: "Вы не правильно ввели новый код для администратора, пример кода: 7777"
 
 Database:
   type: "PostgresSQL" # PostgreSQL, MySQL, MariaDB

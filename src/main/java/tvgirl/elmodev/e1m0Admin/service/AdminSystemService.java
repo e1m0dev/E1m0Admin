@@ -10,8 +10,8 @@ import tvgirl.elmodev.e1m0Admin.api.service.SystemServiceAPI;
 import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
-import tvgirl.elmodev.e1m0Admin.state.admin.AdminSession;
-import tvgirl.elmodev.e1m0Admin.state.admin.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSession;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 
 import java.util.UUID;
 

@@ -3,18 +3,18 @@ package tvgirl.elmodev.e1m0Admin.state.secretcode;
 import java.util.UUID;
 
 public class SecretCodeState {
-    private final UUID id;
+    private final UUID adminID;
     private byte one_step = 0;
     private byte two_step = 0;
     private byte three_step = 0;
     private byte fours_step = 0;
 
-    public SecretCodeState(UUID id) {
-        this.id = id;
+    public SecretCodeState(UUID adminID) {
+        this.adminID = adminID;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getAdminID() {
+        return adminID;
     }
 
     public byte getOne_step() {
