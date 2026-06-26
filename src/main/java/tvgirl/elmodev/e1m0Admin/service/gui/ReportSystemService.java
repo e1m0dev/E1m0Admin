@@ -35,18 +35,32 @@ public class ReportSystemService implements ReportSystemServiceAPI {
         return reportRepository.getReportList(status, limit);
     }
 
-    public void clickToReport(UUID reportID) {
+    public void clickToReport(UUID adminID, UUID reportID, String response) {
+        Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Обработка репорта ID: " + reportID); // ТЕСТЕР
         Report report = reportRepository.getReport(reportID);
 
-        Player adm = Bukkit.getPlayer(report.getAdminID());
+        Player admin = Bukkit.getPlayer(adminID);
         Player player = Bukkit.getPlayer(report.getPlayerID());
 
-        // TODO: Добавить кнопку инвиза + телепортации в ховер?
-        sender.sendPath(adm, cfg.getString("Messages.reportTake")
+        Report newReport = new Report(
+                report.getUuid(),
+                adminID,
+                report.getPlayerID(),
+                admin.getName(),
+                player.getName(),
+                report.getReport(),
+                response,
+                report.getStatus(),
+                report.getCreatedAt()
+        );
+
+        sender.sendPath(admin, cfg.getString("Messages.reportTake")
                 .replace("%content", report.getReport())
                 .replace("%player", report.getPlayerNick()));
 
-        reportRepository.updateReport(report);
+        sender.sendString(player, response);
+
+        reportRepository.updateReport(newReport);
         reportPlayers.remove(report.getPlayerID());
     }
 }

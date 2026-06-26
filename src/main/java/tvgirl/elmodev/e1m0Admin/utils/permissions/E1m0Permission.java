@@ -18,12 +18,6 @@ public class E1m0Permission implements PermissionsManagerAPI {
         this.cfg = cfg;
     }
 
-    // TODO: Система - полная херь, переработать на CommandEnum у администраторов
-    //  Причина простая, я хочу полную адаптивность, а эта хуня из под коня не
-    //   заточена под нее, короче сделать Enum + проверки так проще будет
-
-    // TODO: Сделать просто HashMap pinCode или State manager Secret который хранит кэш и управлять через permissions
-
     @Override
     public boolean checkSecretCodeAccess(UUID id) {
         return codeManager.getAdminByID(id) != null;

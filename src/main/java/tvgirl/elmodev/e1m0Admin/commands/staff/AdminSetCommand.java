@@ -43,7 +43,7 @@ public class AdminSetCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("setadmin")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("aset")) {
             Player admin = Bukkit.getPlayer(strings[0]);
             int weight = Integer.parseInt(strings[1]);
 
@@ -57,8 +57,9 @@ public class AdminSetCommand implements CommandExecutor {
                 return false;
             }
 
-            if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
+            if (staff.hasPermission(cfg.getString("Permissions.setadmin"))) {
                 staffService.setAdmin(staff.getUniqueId(), admin.getUniqueId(), weight);
+                Bukkit.getLogger().info("AdminSetCommand | COMMAND: /setadmin. Команда прошла успешно, ушла в обработчик.");
             }
         }
 

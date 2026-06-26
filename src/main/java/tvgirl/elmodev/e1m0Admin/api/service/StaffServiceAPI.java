@@ -8,6 +8,8 @@ public interface StaffServiceAPI {
 
     void setAdmin(UUID staffID, UUID adminID, int weight);  // Поставить администратора.
 
+    void deleteAdmin(UUID staffID, UUID adminID, String reason); // Снять администратора.
+
     void adminBonusGive(UUID staffID, UUID id, int sum, String message); // Выдать админ-бонус администратору
     void adminBonusAll(UUID staffID, int sum, String message); // Выдать админ-бонус администраторам
 

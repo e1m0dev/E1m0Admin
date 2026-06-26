@@ -38,22 +38,29 @@ public class AdminSetSecretCode implements CommandExecutor {
             return false;
         }
 
-        if(strings.length < 2) {
-            sender.sendPath(staff, "Messages.Errors.lengthError");
-            return false;
-        }
 
-        if (command.getName().toLowerCase().equalsIgnoreCase("acodechange")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("asecret")) {
             Player admin = Bukkit.getPlayer(strings[0]);
-            byte code = Byte.parseByte(strings[1]);
+            String strCode = strings[1];
+
+            if (strCode.length() < 4) {
+                sender.sendPath(staff, "Messages.Errors.setAdminCodeWrong");
+                return false;
+            }
 
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
                 return false;
             }
 
+            byte code = Byte.parseByte(strCode);
             if(staff.hasPermission(cfg.getString("Permissions.acodechange"))) {
                 staffService.changeSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
+
+                Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND: /acodechange. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
+                        .replace("%staff", staff.getName())
+                        .replace("%admin", admin.getName())
+                        .replace("%code", String.valueOf(code))); // ТЕСТЕР
             }
         }
 

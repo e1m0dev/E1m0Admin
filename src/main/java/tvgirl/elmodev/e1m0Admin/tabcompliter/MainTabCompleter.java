@@ -39,9 +39,10 @@ public class MainTabCompleter implements TabCompleter {
 
         if (strings.length == 1) {
             // 🧑‍🔬 | Admin
+            tab.add("ainv");
+            tab.add("arec");
             tab.add("arep");
-            tab.add("invise");
-            tab.add("rewatch");
+            tab.add("areoff");
 
             if (sender.hasPermission(cfg.getString("Permissions.staff"))) {
                 // 🧑‍🔬 | STAFF
@@ -57,11 +58,14 @@ public class MainTabCompleter implements TabCompleter {
                 case "arep": tab.add("Form");
 
                 case "aup":
+                case "adel":
                 case "aset":
                 case "adown":
                 case "abonus":
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        tab.add(player.getName());
+                        if (player.hasPermission(cfg.getString("Permissions.admin"))) {
+                            tab.add(player.getName());
+                        }
                     }
 
                 break;
@@ -71,12 +75,14 @@ public class MainTabCompleter implements TabCompleter {
             switch (sub) {
 
                 case "aset":
-                    tab.add("Weight");
+                    tab.add("Уровень/Weight?");
                     break;
 
                 case "abonus":
                 case "abonusall":
                     tab.add("10");
+                    tab.add("100");
+                    tab.add("777?");
                     break;
             }
         } else if (strings.length == 4) {

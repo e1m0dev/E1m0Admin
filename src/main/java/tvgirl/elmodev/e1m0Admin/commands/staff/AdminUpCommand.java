@@ -43,15 +43,16 @@ public class AdminUpCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("upadmin")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("aup")) {
             Player admin = Bukkit.getPlayer(strings[0]);
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
                 return false;
             }
 
-            if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
+            if (staff.hasPermission(cfg.getString("Permissions.adminup"))) {
                 staffService.upStatus(staff.getUniqueId(), admin.getUniqueId());
+                Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aup. Администратор НЕ поставлен, ошибка weight"); // ТЕСТЕР
             }
         }
 

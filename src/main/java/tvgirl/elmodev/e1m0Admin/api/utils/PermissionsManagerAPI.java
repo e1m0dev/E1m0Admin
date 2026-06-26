@@ -4,5 +4,4 @@ import java.util.UUID;
 
 public interface PermissionsManagerAPI {
     boolean checkSecretCodeAccess(UUID id);
-
 }

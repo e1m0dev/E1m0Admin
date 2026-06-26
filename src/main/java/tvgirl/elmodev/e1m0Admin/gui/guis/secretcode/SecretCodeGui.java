@@ -72,8 +72,9 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
     private void createInventory(Inventory i) {
 
-        // TODO
-        //  Головы - Добавить поддержку форматтера?
+        //TODO
+        // Головы - Добавить поддержку форматтера?
+        //  E1m0: Я думаю да, но уже в 2.0 что-ли, в обновлении PlayerStructure, там я уже буду работать над внешним видом а не логикой.
 
         List<String> loreNumber = new ArrayList<>();
         loreNumber.add("Просто нажмите для введения цифры.");

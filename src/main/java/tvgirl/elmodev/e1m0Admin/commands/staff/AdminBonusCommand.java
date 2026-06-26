@@ -38,7 +38,7 @@ public class AdminBonusCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("adminbonus")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("abonus")) {
             if(strings.length < 3) {
                 sender.sendPath(staff, "Messages.Errors.lengthError");
                 return false;
@@ -53,8 +53,9 @@ public class AdminBonusCommand implements CommandExecutor {
                 return false;
             }
 
-            if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
+            if (staff.hasPermission(cfg.getString("Permissions.adminbonus"))) {
                 staffService.adminBonusGive(staff.getUniqueId(), admin.getUniqueId(), sum, message);
+                Bukkit.getLogger().info("AdminBonusCommand | COMMAND: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
             }
         }
 

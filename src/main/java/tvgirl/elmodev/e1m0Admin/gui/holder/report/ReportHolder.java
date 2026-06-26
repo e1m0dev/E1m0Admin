@@ -25,4 +25,16 @@ public class ReportHolder implements InventoryHolder {
         Inventory inv = Bukkit.createInventory(this, 27, "holder");
         return inv;
     }
+
+    public Player getAdm() {
+        return adm;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
 }

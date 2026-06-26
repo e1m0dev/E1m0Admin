@@ -11,21 +11,21 @@ import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
-public class AdminChangeSecretCode implements CommandExecutor {
+public class AdminDeleteCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminsStaffService staffService;
     private final E1m0Permission permissionManager;
 
-    public AdminChangeSecretCode(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService, E1m0Permission permissionManager) {
+    public AdminDeleteCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService, E1m0Permission permissionManager) {
         this.cfg = cfg;
         this.sender = sender;
         this.staffService = staffService;
         this.permissionManager = permissionManager;
     }
 
-    // /asecret E1m0 7777
+    // /adel E1m0 ПСЖ
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if(!(commandSender instanceof Player staff)) {
@@ -43,23 +43,18 @@ public class AdminChangeSecretCode implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("acodechange")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("adel")) {
             Player admin = Bukkit.getPlayer(strings[0]);
-            String strCode = strings[1];
+            String reason = strings[1];
 
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
                 return false;
             }
 
-            if (strCode.length() < 4) {
-                sender.sendPath(staff, "Messages.Errors.setAdminCodeWrong");
-                return false;
-            }
-
-            byte code = Byte.parseByte(strCode);
-            if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
-                staffService.changeSecretPassword(admin.getUniqueId(), admin.getUniqueId(), code);
+            if (staff.hasPermission(cfg.getString("Permissions.deladmin"))) {
+                staffService.deleteAdmin(staff.getUniqueId(), admin.getUniqueId(), reason);
+                Bukkit.getLogger().info("AdminSetCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
             }
         }
 

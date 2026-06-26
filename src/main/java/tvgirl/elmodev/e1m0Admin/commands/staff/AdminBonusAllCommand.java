@@ -1,5 +1,6 @@
     package tvgirl.elmodev.e1m0Admin.commands.staff;
 
+    import org.bukkit.Bukkit;
     import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
     import org.bukkit.command.CommandSender;
@@ -17,7 +18,6 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
     private final AdminsStaffService staffService;
         private final E1m0Permission permissionManager;
 
-
         public AdminBonusAllCommand(E1m0Sender sender, FileConfiguration cfg, AdminsStaffService staffService, E1m0Permission permissionManager) {
         this.cfg = cfg;
         this.sender = sender;
@@ -25,7 +25,7 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             this.permissionManager = permissionManager;
     }
 
-    // /abonusall E1m0 Работаем негры
+        // /abonusall 777 Работаем негры
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if(!(commandSender instanceof Player staff)) {
@@ -38,7 +38,7 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("adminbonusall")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("abonusall")) {
             if(strings.length < 2) {
                 sender.sendPath(staff, "Messages.Errors.lengthError");
                 return false;
@@ -47,8 +47,9 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             int sum = Integer.parseInt(strings[1]);
             String message = String.join(" ", strings[2]);
 
-            if(staff.hasPermission(cfg.getString("Permissions.invisibility"))) {
+            if (staff.hasPermission(cfg.getString("Permissions.adminbonusall"))) {
                 staffService.adminBonusAll(staff.getUniqueId(), sum, message);
+                Bukkit.getLogger().info("AdminBonusAllCommand | Точка входа COMMAND: /abonusall была введена и пропущена. Вызов обработчика: adminBonusAll"); // ТЕСТЕР
             }
         }
 

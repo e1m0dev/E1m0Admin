@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.gui.controller.secretcode;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,9 +44,6 @@ public class SecretCodeController implements Listener {
             return;
         }
 
-        // Controller
-        // Вопрос: Как понять на какой предмет я нажимаю и достать от туда номер? Особенно важно, понять в каком именно GUI я это делаю
-
         ItemStack item = e.getCurrentItem();
         String action = item.getPersistentDataContainer().get(actionKey, PersistentDataType.STRING);
 
@@ -57,18 +55,22 @@ public class SecretCodeController implements Listener {
             return;
         }
 
+        Bukkit.getLogger().info("SecretCodeController | Точка входа GUI-CONTROLLER: Администратор нажал: " + num + " Этап: " + holder.getName()); // ТЕСТЕР
+
         switch (holder.getName()) {
-            case "step_one":
+            case "step_one" -> {
                 codeService.oneStepHandler(playerID, num);
                 codeGUI.openTwoStepGUI(playerID, num);
-            case "step_two":
+            }
+            case "step_two" -> {
                 codeService.twoStepHandler(playerID, num);
                 codeGUI.openThreeStepGUI(playerID, num);
-            case "step_three":
+            }
+            case "step_three" -> {
                 codeService.threeStepHandler(playerID, num);
                 codeGUI.openFoursStepGUI(playerID, num);
-            case "step_fours":
-                codeService.foursStepHandler(playerID, num);
+            }
+            case "step_fours" -> codeService.foursStepHandler(playerID, num);
         }
     }
 

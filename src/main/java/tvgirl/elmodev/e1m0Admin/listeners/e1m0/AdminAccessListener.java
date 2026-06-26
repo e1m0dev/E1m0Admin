@@ -27,7 +27,7 @@ public class AdminAccessListener implements Listener {
         //   ❗Actions
         //   ❗Skins
 
-        Bukkit.getLogger().info("AdminAccessListener | Точка входа 1: Администратор зарегистрировался."); // ТЕСТЕР
+        Bukkit.getLogger().info("AdminAccessListener | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE-EVENT-LISTENER: Администратор зарегистрировался."); // ТЕСТЕР
         sender.sendPath(admin, "Messages.secretCodeAccess");
     }
 }

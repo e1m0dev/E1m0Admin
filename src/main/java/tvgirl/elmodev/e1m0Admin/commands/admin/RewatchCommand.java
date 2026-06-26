@@ -42,17 +42,20 @@ public class RewatchCommand implements CommandExecutor {
             return false;
         }
 
-        // /recon E1m0 || /rewatch E1m0
-        if(command.getName().toLowerCase().equalsIgnoreCase("rewatch")) {
+        // /arec E1m0 || /rewatch E1m0
+        if (command.getName().toLowerCase().equalsIgnoreCase("arec")) {
             String user = strings[1];
             Player player = Bukkit.getPlayer(user);
 
             if (admin.hasPermission(cfg.getString("Permissions.rewatch"))) {
                 service.handleRewatch(admin.getUniqueId(), player.getUniqueId());
+                Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleRewatch | Следящий режим"); // ТЕСТЕР
+
             }
-        } else if(command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
+        } else if (command.getName().toLowerCase().equalsIgnoreCase("areoff")) {
             if (admin.hasPermission(cfg.getString("Permissions.rewatch"))) {
                 service.handleReoff(admin.getUniqueId());
+                Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleReoff | Админ-режим"); // ТЕСТЕР
             }
         }
 

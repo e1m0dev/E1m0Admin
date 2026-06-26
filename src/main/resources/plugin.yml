@@ -6,10 +6,60 @@ prefix: EAdmin
 authors: [ E1m0 ]
 description: ELM Laboratories | E1m0Admin
 
+softdepend:
+  - "PlaceholderAPI"
 
 # TODO
 commands:
+  # | ADMIN
+  arep:
+    description: "Команда ответа на репорт"
+    aliases: [ rep ]
+    usage: "/arep Спешу к Вам на помощь!"
+  ainv:
+    description: "Команда сокрытия администратора"
+    aliases: [ ainvise, ainvisibility ]
+    usage: "/ainv"
+  arec:
+    description: "Команда слежки за игроком"
+    aliases: [ recon, re, rec ]
+    usage: "/arec E1m0"
+  areoff:
+    description: "Отключение слежки за игроком"
+    aliases: [ recon, re, rec ]
+    usage: "/arec E1m0"
 
+  # | ADMIN
+  report:
+    description: "Отправить жалобу"
+    usage: "/report E1m0 Нарушает правила SOLID!"
 
-softdepend:
-  - "PlaceholderAPI"
+  # | STAFF
+  abonusall:
+    description: "Выдать администраторам бонус"
+    usage: "/abonusall 777 Хорошая работа."
+
+  asecret:
+    description: "Сменить код-пароль для администратора"
+    aliases: [ setsecret ]
+    usage: "/asecret E1m0 7777"
+
+  abonus:
+    description: "Выдать бонус одному администратору"
+    usage: "/arec E1m0"
+
+  adown:
+    description: "Понизить администратора"
+    usage: "/arec E1m0"
+
+  aset:
+    description: "Поставить администратора"
+    usage: "/arec E1m0"
+
+  adel:
+    description: "Снять администратора"
+    usage: "/arec E1m0"
+
+  aup:
+    description: "Повысить администратора"
+    usage: "/arec E1m0"

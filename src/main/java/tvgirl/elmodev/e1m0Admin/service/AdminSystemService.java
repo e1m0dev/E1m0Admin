@@ -7,29 +7,41 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import tvgirl.elmodev.e1m0Admin.E1m0Admin;
 import tvgirl.elmodev.e1m0Admin.api.service.SystemServiceAPI;
+import tvgirl.elmodev.e1m0Admin.repository.gui.ReportSystemRepository;
+import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSession;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class AdminSystemService implements SystemServiceAPI {
 
+    private final ReportSystemRepository reportRepository;
     private final AdminSystemRepository systemRepository;
     private final AdminStaffRepository staffRepository;
     private final AdminSessionManager sessionManager;
 
+    private final Map<UUID, UUID> reportPlayer;
+
     private final FileConfiguration cfg;
+    private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
     private E1m0Color c = new E1m0Color();
 
-    public AdminSystemService(AdminSessionManager sessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, FileConfiguration cfg, E1m0Admin plugin) {
+    public AdminSystemService(ReportSystemRepository reportRepository, AdminSessionManager sessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, Map<UUID, UUID> reportPlayer, FileConfiguration cfg, E1m0Sender sender, E1m0Admin plugin) {
+        this.reportRepository = reportRepository;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
         this.sessionManager = sessionManager;
+        this.reportPlayer = reportPlayer;
+        this.sender = sender;
         this.plugin = plugin;
         this.cfg = cfg;
     }
@@ -102,11 +114,39 @@ public class AdminSystemService implements SystemServiceAPI {
                 }
             }
             }
-        }.runTaskTimer(plugin, 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"),20 * cfg.getLong("Settings.Dev.salaryCheck"));
+                }.runTaskTimer(plugin, 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"), 20 * cfg.getLong("Settings.dev.elm.salaryCheck"));
     }
 
     @Override
-    public void fastEmergency(UUID id, String message) { // TODO: Не забыть.
+    public void handleReportAccept(UUID adminID, UUID reportID) {
+        Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Обработка репорта ID: " + reportID); // ТЕСТЕР
+        Report report = reportRepository.getReport(reportID);
 
+        Player admin = Bukkit.getPlayer(adminID);
+        Player player = Bukkit.getPlayer(report.getPlayerID());
+        String response = cfg.getString("Admin.Report.fastTakeReportMessage");
+
+        Report newReport = new Report(
+                report.getUuid(),
+                adminID,
+                report.getPlayerID(),
+                admin.getName(),
+                player.getName(),
+                report.getReport(),
+                response,
+                report.getStatus(),
+                report.getCreatedAt()
+        );
+
+        sender.sendPath(admin, cfg.getString("Messages.reportTake")
+                .replace("%content", report.getReport())
+                .replace("%player", report.getPlayerNick()));
+
+        sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast")
+                .replace("%content", report.getReport())
+                .replace("%admin", admin.getName()));
+
+        reportRepository.updateReport(newReport);
+        reportPlayer.remove(report.getPlayerID());
     }
 }

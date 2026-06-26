@@ -26,21 +26,33 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     }
 
     @Override
-    public void upAdminStatus(UUID id) {
+    public void deleteAdminStatus(UUID adminID) {
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(id);
+        adminDao.delAdmin(adminID);
+    }
+
+    @Override
+    public void deleteAdminStatusLog(UUID staffID, UUID adminID, String reason) {
+        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+        adminDao.delAdminLog(staffID, adminID, reason);
+    }
+
+    @Override
+    public void upAdminStatus(UUID adminID) {
+        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+        Admin admin = adminDao.findByUuid(adminID);
         adminDao.upStatus(admin.uuid(), admin.weight(), admin.salary(), admin.prefix());
     }
 
     @Override
-    public void downAdminStatus(UUID id) {
+    public void downAdminStatus(UUID adminID) {
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(id);
+        Admin admin = adminDao.findByUuid(adminID);
         adminDao.downStatus(admin.uuid(), admin.weight(), admin.salary(), admin.prefix());
     }
 
     @Override
-    public void giveBonus(UUID staffID, UUID adminID, int sum, String message) {
+    public void giveBonusLog(UUID staffID, UUID adminID, int sum, String message) {
         BonusDAO bonusDAO = jdbi.onDemand(BonusDAO.class);
 
         Player staff = Bukkit.getPlayer(staffID);

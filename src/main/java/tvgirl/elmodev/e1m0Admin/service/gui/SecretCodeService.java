@@ -73,6 +73,9 @@ public class SecretCodeService implements SecretCodeServiceAPI {
         Player user = Bukkit.getPlayer(id);
         byte repoCode = secretCodeRepository.getSecretCode(id);
 
+        Bukkit.getLogger().info("SecretCodeService | Точка входа: repoCode: %repoCode"
+                .replace("%repoCode", String.valueOf(repoCode))); // ТЕСТЕР
+
         if (repoCode == Byte.valueOf(code)) { // ❗ | Опасная точка, перепроверить в тестерах. By: E1m0.
             if(cfg.getBoolean("Admin.SecretCode.accessCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
@@ -90,11 +93,12 @@ public class SecretCodeService implements SecretCodeServiceAPI {
                 }
             }
 
-            // Вот тут - Админ имеет *ВЕС*, именно по этому действия уже с фактом системы, а не надуманным мной действием.
+            Bukkit.getLogger().info("SecretCodeService | Точка выхода: Code-Actions: Прошло успешно, действия были применены."); // ТЕСТЕР
 
+            // Вот тут - Админ имеет *ВЕС*, именно по этому действия уже с фактом системы, а не надуманным мной действием.
             manager.addAdminAccess(state);
             Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user));
-            Bukkit.getLogger().info("SecretCodeService | Точка входа foursStepHandler: 💚 Прошел.."); // ТЕСТЕР
+            Bukkit.getLogger().info("SecretCodeService | Точка выхода: foursStepHandler: 💚 Прошел полностью.."); // ТЕСТЕР
         } else {
             if(cfg.getBoolean("Admin.SecretCode.wrongCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
@@ -112,7 +116,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
                 }
             }
 
-            Bukkit.getLogger().info("SecretCodeService | Точка входа foursStepHandler: ❤️ НЕ прошел.."); // ТЕСТЕР
+            Bukkit.getLogger().info("SecretCodeService | Точка выхода: foursStepHandler: ❤️ НЕ прошел.."); // ТЕСТЕР
         }
     }
 

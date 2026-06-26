@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.commands.admin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -45,8 +46,9 @@ public class ReportCommand implements CommandExecutor {
         if(command.getName().toLowerCase().equalsIgnoreCase("arep")) {
             String response = String.join(" ", strings[0]);
 
-            if (admin.hasPermission(cfg.getString("Permissions.rewatch"))) {
+            if (admin.hasPermission(cfg.getString("Permissions.arep"))) {
                 service.openReportGUI(admin.getUniqueId(), response);
+                Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /arep была введена и пропущена. Сообщение от администратора: " + response); // ТЕСТЕР
             }
         }
 

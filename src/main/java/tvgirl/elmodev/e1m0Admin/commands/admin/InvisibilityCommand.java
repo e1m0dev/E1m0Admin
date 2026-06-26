@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.commands.admin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,8 +37,9 @@ public class InvisibilityCommand implements CommandExecutor {
             return false;
         }
 
-        if(command.getName().toLowerCase().equalsIgnoreCase("invise")) {
+        if (command.getName().toLowerCase().equalsIgnoreCase("ainv")) {
             if (admin.hasPermission(cfg.getString("Permissions.invisibility"))) {
+                Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND: /ainvise была введена и пропущена."); // ТЕСТЕР
                 service.handleInvisibility(admin.getUniqueId());
             }
         }

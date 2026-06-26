@@ -51,6 +51,25 @@ public interface AdminsDAO {
             @Bind("prefix") String prefix
     );
 
+    @SqlUpdate("""
+                DELETE FROM e1admin_admins WHERE uuid = :uuid
+            """)
+    void delAdmin(
+            @Bind("adminID") UUID adminID
+    );
+
+    @SqlUpdate("""
+                INSERT INTO e1admin_deletedAdminsLog
+                (adminID, staffID, reason)
+                VALUES
+                (:adminID, :staffID, :reason)
+            """)
+    void delAdminLog(
+            @Bind("adminID") UUID adminID,
+            @Bind("staffID") UUID staffID,
+            @Bind("reason") String reason
+    );
+
     @SqlQuery("""
         SELECT *
         FROM e1admin_admins

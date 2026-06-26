@@ -72,7 +72,8 @@ public class DatabaseManager {
                         );
                     """;
 
-            /* BONUS | 🚨 */
+            /* CODE | 💾 */
+            // Проверить у
             String SQL_CODE = """
                     CREATE TABLE IF NOT EXISTS e1admin_code (
                         uuid VARCHAR(36) NOT NULL,
@@ -86,9 +87,23 @@ public class DatabaseManager {
                         );
                     """;
 
+            /* DEL ADMIN LOG | 💾 */
+            String SQL_DELADMIN = """
+                    CREATE TABLE IF NOT EXISTS e1admin_deletedAdminsLogs (
+                        uuid VARCHAR(36) NOT NULL,
+                        adminNick VARCHAR(24) NOT NULL,
+                        staffNick VARCHAR(24) NOT NULL,
+                        reason VARCHAR(128) NOT NULL,
+                        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    
+                        PRIMARY KEY(uuid)
+                        );
+                    """;
+
 
             try {
                 jdbi.useHandle(handle -> {
+                    handle.execute(SQL_DELADMIN);
                     handle.execute(SQL_ADMINS);
                     handle.execute(SQL_REPORT);
                     handle.execute(SQL_BONUS);

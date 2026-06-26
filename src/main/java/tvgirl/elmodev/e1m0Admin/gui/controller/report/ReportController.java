@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.gui.controller.report;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -58,8 +59,8 @@ public class ReportController implements Listener {
             return;
         }
 
+        Bukkit.getLogger().info("SecretCodeController | Точка входа GUI-CONTROLLER: Администратор взял репорт"); // ТЕСТЕР
         UUID reportUuid = UUID.fromString(rawUuid);
-
-        reportService.clickToReport(reportUuid);
+        reportService.clickToReport(e.getWhoClicked().getUniqueId(), reportUuid, holder.getAnswer());
     }
 }

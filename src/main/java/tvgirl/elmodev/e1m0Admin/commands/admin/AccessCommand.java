@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.commands.admin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -31,6 +32,7 @@ public class AccessCommand implements CommandExecutor {
 
         if(command.getName().toLowerCase().equalsIgnoreCase("aaccess")) {
             if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
+                Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess была введена и пропущена."); // ТЕСТЕР
                 service.handleAccess(admin.getUniqueId());
             }
         }
