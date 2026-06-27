@@ -19,7 +19,7 @@ public interface SecretCodeDAO {
     void systemSetSecretCode(
             @Bind("uuid") UUID uuid,
             @Bind("adminNick") String nick,
-            @Bind("code") byte code,
+            @Bind("code") int code,
             @Bind("regIP") String IP
     );
 
@@ -27,13 +27,13 @@ public interface SecretCodeDAO {
         INSERT INTO e1admin_code
         (uuid, adminNick, staffNick code, regIP)
         VALUES
-        (:uuid, :adminNick, :staffNick :code, :regIP)
+                (:uuid, :adminNick, :staffNick, :code, :regIP)
     """)
     void staffSetSecretCode(
             @Bind("uuid") UUID uuid,
             @Bind("adminNick") String anick,
             @Bind("staffNick") String snick,
-            @Bind("code") byte code,
+            @Bind("code") int code,
             @Bind("regIP") String IP
     );
 
@@ -46,7 +46,7 @@ public interface SecretCodeDAO {
     void staffChangeSecretCode(
             @Bind("uuid") UUID uuid,
             @Bind("stuffNick") String staffNick,
-            @Bind("code") byte code
+            @Bind("code") int code
     );
 
     @SqlQuery("""

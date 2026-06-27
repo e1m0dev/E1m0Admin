@@ -13,5 +13,5 @@ public interface StaffServiceAPI {
     void adminBonusGive(UUID staffID, UUID id, int sum, String message); // Выдать админ-бонус администратору
     void adminBonusAll(UUID staffID, int sum, String message); // Выдать админ-бонус администраторам
 
-    void changeSecretPassword(UUID adminID, UUID staffID, byte code);
+    void changeSecretPassword(UUID adminID, UUID staffID, int code);
 }

@@ -143,4 +143,52 @@ SecretCodeState.
 plugin:
 💚 plugin.yml | Добавлена поддержка команд и их регистрация на сервере на котором установлен плагин.
 
-2.0 Admin Optional && Player Structure
+Commit 1.4-DEV | fit: Commit 1.4. First startup, fix bugs in boot/host/server/package and rework Secret-Code system to
+int:
+CFG:
+💚 config.yml | Добавлены подсказки, описания, использования и шаблоны в главный конфиг.
+💛 config.yml | Исправлен баг конфига в базе
+💛 config.yml | База перекинута на самый верх в конфиге
+
+Database:
+💚 DatabaseSource | База под клиента с данными была откорректирована, подключены новые модули, указатели. Позже: Полная
+система выборки драйвера с улучшениями
+💛 DatabaseManager | Откорректирована так же модуляция и синтаксис таблиц в базе данных, да, даже лишние запятые :3
+
+DAO:
+💚 SecretCodeDAO | Перевод на INT систему
+💛 ReportDAO | Фикс и добавление забытого uuid в методе updateReport (35).
+💛 ReportDAO | Починил ReportDAO, убрал все лишнее и сделал правильное использование.
+💛 AdminsDAO | Починил AdminsDAO, починил все лишнее и сделал правильное использование.
+
+SecretCodeSystem:
+❤️ Система Byte code HashMap - была удалена. Причина: Архитектурная замена.
+💚 SecretCode переходит на INT, переписана API и система, раньше до коммита 1.1 архитектура была другой, связанной с
+HashMap, но потом было принято решение о переработке
+
+Plugin:
+💚 ./DEVLOG.MD | Определены цели на после будущие действия
+
+Commands:
+💚 SecretCodeCommand | Переведена на систему INT.
+
+State:
+💚 SecretCodeState | Переведена на систему INT.
+
+Service
+💚 SecretCodeService | Переведен на систему INT.
+
+API:
+💚 SecretCodeRepositoryAPI | Переведен на систему INT.
+💚 SecretCodeServiceAPI | Переведен на систему INT.
+💚 StaffServiceAPI | Метод changeSecretPassword (16): Переведен на систему INT.
+
+E1m0/Main:
+💛 Откорректирована архитектура зависимостей, композиции и архитектурных цепей. Да - не так красиво как раньше, но
+работает.
+
+Контроль качества:
+❗ Выполнен чек лист E1m0: FIRST PICKUP START PACKAGE CHECKLIST. | Прошел первый чек лист, был сгенерирован, запущен.
+
+2.0 Admin Optional && Player Structure:
+Сделать поддержку СБД

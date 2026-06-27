@@ -28,6 +28,6 @@ public class ReportSystemRepository implements ReportSystemRepositoryAPI {
 
     @Override
     public void updateReport(Report report) {
-        reportDAO.updateReport(report.getAdminID(), report.getAdminNick(), report.getResponse(), report.getStatus());
+        reportDAO.updateReport(report.getUuid(), report.getAdminID(), report.getAdminNick(), report.getResponse(), report.getStatus());
     }
 }

@@ -51,7 +51,7 @@ public final class E1m0Admin extends JavaPlugin {
     // Boot
 
     /* SENDER */
-    E1m0Sender sender = new E1m0Sender(getConfig());
+    private E1m0Sender sender;
 
     /* DATABASE */
     private DatabaseSource databaseSource;
@@ -103,13 +103,15 @@ public final class E1m0Admin extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults();
 
+        // 💬 | Sender
+        sender = new E1m0Sender(getConfig());
+
         // ⚙️ | Database
         databaseSource = new DatabaseSource(getConfig());
-        databaseManager = new DatabaseManager(databaseSource.getSource(), this);
+        databaseSource.init();
 
-        // ♾️ | State
-        secretCodeManager = new SecretCodeManager();
-        sessionManager = new AdminSessionManager(systemRepository);
+        databaseManager = new DatabaseManager(databaseSource.getSource(), this);
+        databaseManager.initDatabase(databaseSource.getSource());
 
         // 📊 | Repository
         reportSystemRepository = new ReportSystemRepository(databaseManager.getJdbi());
@@ -119,8 +121,16 @@ public final class E1m0Admin extends JavaPlugin {
         staffRepository = new AdminStaffRepository(databaseManager.getJdbi());
         gameRepository = new AdminGameRepository(databaseManager.getJdbi());
 
+        // ♾️ | State
+        secretCodeManager = new SecretCodeManager();
+        sessionManager = new AdminSessionManager(systemRepository);
+
         // ⌚ | Permissions
         permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
+
+        // 🌐 | GUI
+        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
+        reportGui = new ReportGUI(reportKey, reportActions, reportService, getConfig(), this);
 
         // 🧑‍🔬 | Service
         reportService = new ReportSystemService(sender, getConfig(), reportSystemRepository, reportPlayer);
@@ -129,12 +139,6 @@ public final class E1m0Admin extends JavaPlugin {
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, reportPlayer, getConfig(), sender, this);
         staffService = new AdminsStaffService(secretCodeRepository, staffRepository, systemRepository, getConfig(), sender);
         gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, reportPlayer, getConfig(), reportGui, this, sender);
-
-//       Проверить точку соприкаснованеия в консоли, gameService не может существовать без GUI который требует в себе secretCodeService. Потенциальный Exception
-
-        // 🌐 | GUI
-        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
-        reportGui = new ReportGUI(reportKey, reportActions, reportService, getConfig(), this);
 
         // 🗣️ | Listeners
         lManager.registerEvents(new JoinListener(getConfig(), sessionManager), this);
@@ -177,9 +181,6 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("adel").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("aset").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("aup").setTabCompleter(new MainTabCompleter(getConfig()));
-
-        // ⌛ | Database INIT:
-        databaseManager.initDatabase(databaseSource.getSource());
 
         // 💳 | AdminPay
         systemService.adminPay();

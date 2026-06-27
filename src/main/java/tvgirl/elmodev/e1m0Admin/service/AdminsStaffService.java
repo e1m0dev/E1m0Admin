@@ -233,7 +233,7 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void changeSecretPassword(UUID adminID, UUID staffID, byte code) {
+    public void changeSecretPassword(UUID adminID, UUID staffID, int code) {
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 

@@ -29,10 +29,11 @@ public interface ReportDAO {
     );
 
     @SqlUpdate("""
-        UPDATE e1admin_reports SET adminID = :adminID, adminNick = :adminNick, response = :response, status = :status,
-        WHERE :uuid
+                UPDATE e1admin_reports SET adminID = :adminID, adminNick = :adminNick, response = :response, status = :status
+                WHERE uuid = :uuid
     """)
     void updateReport(
+            @Bind("uuid") UUID uuid,
             @Bind("adminID") UUID adminID,
             @Bind("adminNick") String adminNick,
             @Bind("response") String response,
@@ -40,7 +41,7 @@ public interface ReportDAO {
     );
 
     @SqlQuery("""
-        SELECT uuid, adminID, playerID, adminNick, playerNick, report, response, status = :status,
+                SELECT uuid, adminID, playerID, adminNick, playerNick, report, response, status
         FROM e1admin_reports
         WHERE :status
         LIMIT :limit
@@ -54,7 +55,7 @@ public interface ReportDAO {
     @SqlQuery("""
         SELECT uuid, adminID, playerID, adminNick, playerNick, report, response, status, createdAt
         FROM e1admin_reports
-        WHERE :uuid
+                WHERE uuid = :uuid
     """)
     Report getReport(
             @Bind("uuid") UUID uuid

@@ -38,7 +38,6 @@ public class AdminSetSecretCode implements CommandExecutor {
             return false;
         }
 
-
         if (command.getName().toLowerCase().equalsIgnoreCase("asecret")) {
             Player admin = Bukkit.getPlayer(strings[0]);
             String strCode = strings[1];
@@ -48,12 +47,17 @@ public class AdminSetSecretCode implements CommandExecutor {
                 return false;
             }
 
+            if (strCode.length() > 4) {
+                sender.sendPath(staff, "Messages.Errors.setAdminCodeWrong");
+                return false;
+            }
+
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
                 return false;
             }
 
-            byte code = Byte.parseByte(strCode);
+            int code = Integer.parseInt(strCode);
             if(staff.hasPermission(cfg.getString("Permissions.acodechange"))) {
                 staffService.changeSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
 

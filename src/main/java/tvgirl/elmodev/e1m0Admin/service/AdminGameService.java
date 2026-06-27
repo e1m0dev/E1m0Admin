@@ -135,6 +135,7 @@ public class AdminGameService implements GameServiceAPI {
                     String sword = s.toLowerCase();
                     Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 3. Выборка"); // ТЕСТЕР
 
+                    // TODO: Сделать ли кастом hover для всех?
                     if (report.getReport().toLowerCase().contains(sword)) {
                         if (cfg.getBoolean("Server.emergencyRep")) {
                             // 🚨 | Если это сообщение срочное:
@@ -184,7 +185,6 @@ public class AdminGameService implements GameServiceAPI {
 
         // Text
         for (String message : emergencyList) {
-
             Component component = MiniMessage.miniMessage().deserialize(
                     message
                             .replace("%content", report.getReport())

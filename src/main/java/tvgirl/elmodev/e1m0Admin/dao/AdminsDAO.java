@@ -27,7 +27,7 @@ public interface AdminsDAO {
 
     @SqlUpdate("""
         UPDATE e1admin_admins SET
-        weight = :weight, salary = :salary, prefix:prefix
+                weight = :weight, salary = :salary, prefix = :prefix
         WHERE
         :uuid
     """)
@@ -40,7 +40,7 @@ public interface AdminsDAO {
 
     @SqlUpdate("""
         UPDATE e1admin_admins SET
-        weight = :weight, salary = :salary, prefix:prefix
+                weight = :weight, salary = :salary, prefix = :prefix
         WHERE
         :uuid
     """)

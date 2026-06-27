@@ -35,7 +35,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
     }
 
     @Override
-    public void oneStepHandler(UUID id, byte i) {
+    public void oneStepHandler(UUID id, int i) {
         if(!secretCode.containsKey(id)) return;
         SecretCodeState state = secretCode.get(id);
 
@@ -43,7 +43,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
         Bukkit.getLogger().info("SecretCodeService | Точка входа twoStepHandler: " + i); // ТЕСТЕР
     }
 
-    public void twoStepHandler(UUID id, byte i) {
+    public void twoStepHandler(UUID id, int i) {
         if(!secretCode.containsKey(id)) return;
         SecretCodeState state = secretCode.get(id);
 
@@ -51,7 +51,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
         Bukkit.getLogger().info("SecretCodeService | Точка входа twoStepHandler: " + i); // ТЕСТЕР
     }
 
-    public void threeStepHandler(UUID id, byte i) {
+    public void threeStepHandler(UUID id, int i) {
         if(!secretCode.containsKey(id)) return;
         SecretCodeState state = secretCode.get(id);
 
@@ -59,7 +59,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
         Bukkit.getLogger().info("SecretCodeService | Точка входа threeStepHandler: " + i); // ТЕСТЕР
     }
 
-    public void foursStepHandler(UUID id, byte i) {
+    public void foursStepHandler(UUID id, int i) {
         if(!secretCode.containsKey(id)) return;
         SecretCodeState state = secretCode.get(id);
 

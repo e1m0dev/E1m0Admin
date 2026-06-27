@@ -2,6 +2,7 @@ package tvgirl.elmodev.e1m0Admin.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class DatabaseSource {
@@ -18,27 +19,31 @@ public class DatabaseSource {
         hConfig.setPoolName("e1M0dEv");
 
         String type = pConfig.getString("Database.type", "postgresql").toLowerCase();
-        String host = pConfig.getString("Database.host");
-        int port = pConfig.getInt("Database.port");
         String database = pConfig.getString("Database.name");
+        String host = pConfig.getString("Database.host");
 
         String user = pConfig.getString("Database.user");
         String pass = pConfig.getString("Database.pass");
 
+        int port = pConfig.getInt("Database.port");
+
         String jdbcUrl;
 
         switch (type) {
-            case "postgresql" -> jdbcUrl =
-                    "jdbc:postgresql://" + host + ":" + port + "/" + database +
-                            "?sslmode=disable";
+            case "postgresql" -> {
+                jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + database + "?sslmode=disable";
+                hConfig.setDriverClassName("org.postgresql.Driver");
+            }
 
-            case "mysql" -> jdbcUrl =
-                    "jdbc:mysql://" + host + ":" + port + "/" + database +
-                            "?useSSL=false&serverTimezone=UTC";
+            case "mysql" -> {
+                jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
+                hConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            }
 
-            case "mariadb" -> jdbcUrl =
-                    "jdbc:mariadb://" + host + ":" + port + "/" + database +
-                            "?useSSL=false&serverTimezone=UTC";
+            case "mariadb" -> {
+                jdbcUrl = "jdbc:mariadb://" + host + ":" + port + "/" + database;
+                hConfig.setDriverClassName("org.mariadb.jdbc.Driver");
+            }
 
             default -> throw new IllegalArgumentException("Unsupported DB type: " + type);
         }
@@ -55,8 +60,6 @@ public class DatabaseSource {
 
         this.source = new HikariDataSource(hConfig);
     }
-
-    // Class
 
     public HikariDataSource getSource() {
         if (this.source == null) {
