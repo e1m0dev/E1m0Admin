@@ -27,9 +27,14 @@ commands:
   areoff:
     description: "Отключение слежки за игроком"
     aliases: [ recon, re, rec ]
-    usage: "/arec E1m0"
+    usage: "/areoff E1m0"
 
   # | ADMIN
+  aaccess:
+    description: "Войти в систему"
+    aliases: [ adminaccess, acc ]
+    usage: "/aaccess"
+
   report:
     description: "Отправить жалобу"
     usage: "/report E1m0 Нарушает правила SOLID!"
@@ -46,20 +51,41 @@ commands:
 
   abonus:
     description: "Выдать бонус одному администратору"
-    usage: "/arec E1m0"
+    usage: "/abonus E1m0"
 
   adown:
     description: "Понизить администратора"
-    usage: "/arec E1m0"
+    usage: "/adown E1m0"
 
   aset:
     description: "Поставить администратора"
-    usage: "/arec E1m0"
+    usage: "/aset E1m0 1"
 
   adel:
     description: "Снять администратора"
-    usage: "/arec E1m0"
+    usage: "/adel E1m0"
 
   aup:
     description: "Повысить администратора"
-    usage: "/arec E1m0"
+    usage: "/aup E1m0"
+
+  # | Console
+  cup:
+    description: "Повысить администратора | Удаленно ❗"
+    usage: "/cup E1m0"
+
+  cdel:
+    description: "Снять администратора | Удаленно ❗"
+    usage: "/cdel E1m0 Уволен"
+
+  cdown:
+    description: "Понизить администратора | Удаленно ❗"
+    usage: "/cdown E1m0"
+
+  csetadmin:
+    description: "Поставить администратора | Удаленно ❗"
+    usage: "/csetadmin E1m0 1"
+
+  csetsecret:
+    description: "Поменять код администратора | Удаленно ❗"
+    usage: "/csetsecret E1m0 1"

@@ -14,7 +14,7 @@ public interface SecretCodeDAO {
         INSERT INTO e1admin_code
         (uuid, adminNick, code, regIP)
         VALUES
-        (:uuid, :nick, :code, :regIP)
+                        (:uuid, :adminNick, :code, :regIP)
     """)
     void systemSetSecretCode(
             @Bind("uuid") UUID uuid,
@@ -35,18 +35,6 @@ public interface SecretCodeDAO {
             @Bind("staffNick") String snick,
             @Bind("code") int code,
             @Bind("regIP") String IP
-    );
-
-    @SqlUpdate("""
-        UPDATE e1admin_code SET
-        code = :code, staffNick = :staffNick
-        WHERE
-        :uuid
-    """)
-    void staffChangeSecretCode(
-            @Bind("uuid") UUID uuid,
-            @Bind("stuffNick") String staffNick,
-            @Bind("code") int code
     );
 
     @SqlQuery("""

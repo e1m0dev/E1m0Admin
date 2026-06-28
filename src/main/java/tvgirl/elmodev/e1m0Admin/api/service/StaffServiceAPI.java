@@ -7,11 +7,10 @@ public interface StaffServiceAPI {
     void downStatus(UUID staffID, UUID adminID); // Понизить админ-уровень.
 
     void setAdmin(UUID staffID, UUID adminID, int weight);  // Поставить администратора.
-
     void deleteAdmin(UUID staffID, UUID adminID, String reason); // Снять администратора.
 
     void adminBonusGive(UUID staffID, UUID id, int sum, String message); // Выдать админ-бонус администратору
     void adminBonusAll(UUID staffID, int sum, String message); // Выдать админ-бонус администраторам
 
-    void changeSecretPassword(UUID adminID, UUID staffID, int code);
+    void setSecretPassword(UUID adminID, UUID staffID, int code); // Сменить администратору код
 }

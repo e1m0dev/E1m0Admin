@@ -48,8 +48,8 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             String message = String.join(" ", strings[2]);
 
             if (staff.hasPermission(cfg.getString("Permissions.adminbonusall"))) {
-                staffService.adminBonusAll(staff.getUniqueId(), sum, message);
                 Bukkit.getLogger().info("AdminBonusAllCommand | Точка входа COMMAND: /abonusall была введена и пропущена. Вызов обработчика: adminBonusAll"); // ТЕСТЕР
+                staffService.adminBonusAll(staff.getUniqueId(), sum, message);
             }
         }
 

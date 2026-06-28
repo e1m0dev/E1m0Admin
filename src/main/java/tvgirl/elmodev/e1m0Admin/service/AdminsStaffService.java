@@ -39,7 +39,6 @@ public class AdminsStaffService implements StaffServiceAPI {
             return;
         }
 
-
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
         String prefixBase = systemRepository.getAdminPrefix(adminID);
 
@@ -174,9 +173,6 @@ public class AdminsStaffService implements StaffServiceAPI {
 
     @Override
     public void deleteAdmin(UUID staffID, UUID adminID, String reason) {
-        Player admin = Bukkit.getPlayer(adminID);
-        Player staff = Bukkit.getPlayer(staffID);
-
         staffRepository.deleteAdminStatus(adminID);
         staffRepository.deleteAdminStatusLog(staffID, adminID, reason);
         Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /adel. Команда прошла sendRepo.");
@@ -233,7 +229,7 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void changeSecretPassword(UUID adminID, UUID staffID, int code) {
+    public void setSecretPassword(UUID adminID, UUID staffID, int code) {
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
@@ -247,8 +243,8 @@ public class AdminsStaffService implements StaffServiceAPI {
                 .replace("%code", String.valueOf(code)))
         );
 
-        secretCodeRepository.staffChangeSecretCode(adminID, staffID, code);
-        Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND-SERVICE: /achangesecret. Регистрирование репо + закрепление факта"); // ТЕСТЕР
+        secretCodeRepository.staffSetSecretCode(adminID, staffID, code);
+        Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND-SERVICE: /asecret. Регистрирование репо + закрепление факта"); // ТЕСТЕР
         // TODO: Event?
     }
 }

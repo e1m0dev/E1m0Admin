@@ -40,6 +40,12 @@ public class AdminSetSecretCode implements CommandExecutor {
 
         if (command.getName().toLowerCase().equalsIgnoreCase("asecret")) {
             Player admin = Bukkit.getPlayer(strings[0]);
+
+            if (admin == null) {
+                sender.sendPath(staff, "Messages.Errors.nullPlayer");
+                return false;
+            }
+
             String strCode = strings[1];
 
             if (strCode.length() < 4) {
@@ -52,19 +58,14 @@ public class AdminSetSecretCode implements CommandExecutor {
                 return false;
             }
 
-            if(admin == null) {
-                sender.sendPath(staff, "Messages.Errors.nullPlayer");
-                return false;
-            }
-
             int code = Integer.parseInt(strCode);
-            if(staff.hasPermission(cfg.getString("Permissions.acodechange"))) {
-                staffService.changeSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
-
-                Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND: /acodechange. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
+            if (staff.hasPermission(cfg.getString("Permissions.asecret"))) {
+                Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND: /asecret. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
                         .replace("%staff", staff.getName())
                         .replace("%admin", admin.getName())
                         .replace("%code", String.valueOf(code))); // ТЕСТЕР
+
+                staffService.setSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
             }
         }
 

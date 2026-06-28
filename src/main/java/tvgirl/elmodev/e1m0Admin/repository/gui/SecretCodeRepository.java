@@ -17,24 +17,16 @@ public class SecretCodeRepository implements SecretCodeRepositoryAPI {
     }
 
     @Override
-    public void staffChangeSecretCode(UUID adminID, UUID staffID, int code) {
-        Player staff = Bukkit.getPlayer(staffID);
-
-        secretDAO.staffChangeSecretCode(adminID, staff.getName(), code);
-    }
-
-    @Override
     public void staffSetSecretCode(UUID adminID, UUID staffID, int code) {
         Player staff = Bukkit.getPlayer(staffID);
-        Player adm = Bukkit.getPlayer(adminID);
+        Player admin = Bukkit.getPlayer(adminID);
 
-        secretDAO.staffSetSecretCode(adminID, adm.getName(), staff.getName(), code, adm.getAddress().toString());
+        secretDAO.staffSetSecretCode(adminID, admin.getName(), staff.getName(), code, admin.getAddress().toString());
     }
 
     @Override
     public void systemSetSecretCode(UUID adminID, int code) {
         Player adm = Bukkit.getPlayer(adminID);
-
         secretDAO.systemSetSecretCode(adminID, adm.getName(), code, adm.getAddress().toString());
     }
 

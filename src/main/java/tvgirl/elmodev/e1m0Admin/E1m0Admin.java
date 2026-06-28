@@ -4,9 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import tvgirl.elmodev.e1m0Admin.commands.admin.AccessCommand;
 import tvgirl.elmodev.e1m0Admin.commands.admin.InvisibilityCommand;
 import tvgirl.elmodev.e1m0Admin.commands.admin.ReportCommand;
 import tvgirl.elmodev.e1m0Admin.commands.admin.RewatchCommand;
+import tvgirl.elmodev.e1m0Admin.commands.console.*;
 import tvgirl.elmodev.e1m0Admin.commands.player.PlayerReportCommand;
 import tvgirl.elmodev.e1m0Admin.commands.staff.*;
 import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
@@ -16,6 +18,7 @@ import tvgirl.elmodev.e1m0Admin.listeners.e1m0.AdminAccessListener;
 import tvgirl.elmodev.e1m0Admin.repository.AdminGameRepository;
 import tvgirl.elmodev.e1m0Admin.repository.gui.ReportSystemRepository;
 import tvgirl.elmodev.e1m0Admin.repository.gui.SecretCodeRepository;
+import tvgirl.elmodev.e1m0Admin.service.ConsoleService;
 import tvgirl.elmodev.e1m0Admin.service.gui.ReportSystemService;
 import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
@@ -70,6 +73,8 @@ public final class E1m0Admin extends JavaPlugin {
     private AdminGameRepository gameRepository;
 
     /* Service */
+    private ConsoleService consoleService;
+
     private ReportSystemService reportService;
     private SecretCodeService secretCodeService;
 
@@ -133,6 +138,8 @@ public final class E1m0Admin extends JavaPlugin {
         reportGui = new ReportGUI(reportKey, reportActions, reportService, getConfig(), this);
 
         // 🧑‍🔬 | Service
+        consoleService = new ConsoleService(secretCodeRepository, systemRepository, staffRepository, getConfig(), sender);
+
         reportService = new ReportSystemService(sender, getConfig(), reportSystemRepository, reportPlayer);
         secretCodeService = new SecretCodeService(secretCodeRepository, permissionManager, getConfig(), sender);
 
@@ -153,6 +160,7 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("areoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("arec").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("arep").setExecutor(new ReportCommand(sender, getConfig(), gameService, permissionManager));
+        getCommand("aaccess").setExecutor(new AccessCommand(getConfig(), gameService, permissionManager));
 
         // - | Player
         getCommand("arep").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, reportPlayer));
@@ -165,6 +173,14 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("adel").setExecutor(new AdminDeleteCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("aset").setExecutor(new AdminSetCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("aup").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
+
+        // - | Console
+        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(getConfig(), consoleService));
+        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(getConfig(), consoleService));
+        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(getConfig(), consoleService));
+
+        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(getConfig(), consoleService));
+        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(getConfig(), consoleService));
 
         // ❓ | Tab-Completer.
         getCommand("ainv").setTabCompleter(new MainTabCompleter(getConfig()));
@@ -181,6 +197,9 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("adel").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("aset").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("aup").setTabCompleter(new MainTabCompleter(getConfig()));
+
+        getCommand("csetadmin").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("csetsecret").setTabCompleter(new MainTabCompleter(getConfig()));
 
         // 💳 | AdminPay
         systemService.adminPay();

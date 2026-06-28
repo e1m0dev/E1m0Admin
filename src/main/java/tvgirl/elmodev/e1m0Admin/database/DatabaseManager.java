@@ -101,7 +101,6 @@ public class DatabaseManager {
                         );
                     """;
 
-
             try {
                 jdbi.useHandle(handle -> {
                     handle.execute(SQL_DELADMIN);

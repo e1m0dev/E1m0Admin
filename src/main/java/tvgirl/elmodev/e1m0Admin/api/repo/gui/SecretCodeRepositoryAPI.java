@@ -7,8 +7,6 @@ public interface SecretCodeRepositoryAPI {
     /* STAFF | 🧑‍🔬 */
     void staffSetSecretCode(UUID adminID, UUID staffID, int code);
 
-    void staffChangeSecretCode(UUID adminID, UUID staffID, int code);
-
     /* SYSTEM | 💾 */
     void systemSetSecretCode(UUID adminID, int code);
     byte getSecretCode(UUID adminID);

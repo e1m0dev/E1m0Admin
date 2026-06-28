@@ -54,8 +54,8 @@ public class AdminBonusCommand implements CommandExecutor {
             }
 
             if (staff.hasPermission(cfg.getString("Permissions.adminbonus"))) {
-                staffService.adminBonusGive(staff.getUniqueId(), admin.getUniqueId(), sum, message);
                 Bukkit.getLogger().info("AdminBonusCommand | COMMAND: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
+                staffService.adminBonusGive(staff.getUniqueId(), admin.getUniqueId(), sum, message);
             }
         }
 

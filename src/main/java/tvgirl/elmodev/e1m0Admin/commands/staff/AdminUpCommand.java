@@ -51,8 +51,8 @@ public class AdminUpCommand implements CommandExecutor {
             }
 
             if (staff.hasPermission(cfg.getString("Permissions.adminup"))) {
-                staffService.upStatus(staff.getUniqueId(), admin.getUniqueId());
                 Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aup. Администратор НЕ поставлен, ошибка weight"); // ТЕСТЕР
+                staffService.upStatus(staff.getUniqueId(), admin.getUniqueId());
             }
         }
 

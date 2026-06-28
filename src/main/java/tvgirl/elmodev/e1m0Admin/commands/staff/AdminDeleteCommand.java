@@ -53,8 +53,8 @@ public class AdminDeleteCommand implements CommandExecutor {
             }
 
             if (staff.hasPermission(cfg.getString("Permissions.deladmin"))) {
-                staffService.deleteAdmin(staff.getUniqueId(), admin.getUniqueId(), reason);
                 Bukkit.getLogger().info("AdminSetCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
+                staffService.deleteAdmin(staff.getUniqueId(), admin.getUniqueId(), reason);
             }
         }
 

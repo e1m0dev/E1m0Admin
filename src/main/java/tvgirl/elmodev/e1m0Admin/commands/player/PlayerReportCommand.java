@@ -70,9 +70,10 @@ public class PlayerReportCommand implements CommandExecutor {
                     System.currentTimeMillis()
             );
 
+            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /report была введена и пропущена. PlayerID: " + player.getUniqueId() + "PlayerName: " + player.getName() + "Сообщение: " + reportMessage); // ТЕСТЕР
+
             service.sendReport(report);
             reportPlayers.put(player.getUniqueId(), randomID);
-            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /report была введена и пропущена. PlayerID: " + player.getUniqueId() + "PlayerName: " + player.getName() + "Сообщение: " + reportMessage); // ТЕСТЕР
         }
 
         return true;

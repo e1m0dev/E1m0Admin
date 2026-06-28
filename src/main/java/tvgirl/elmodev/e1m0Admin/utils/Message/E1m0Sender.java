@@ -17,15 +17,15 @@ public class E1m0Sender implements SenderAPI {
     }
 
     @Override
-    public void sendString(@NotNull Player p, @NotNull String str) {
-        String text = PlaceholderAPI.setPlaceholders(p, str);
-        p.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + text));
+    public void sendString(Player sendedPlayer, @NotNull String str) {
+        String text = PlaceholderAPI.setPlaceholders(sendedPlayer, str);
+        sendedPlayer.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + text));
     }
 
     @Override
-    public void sendPath(@NotNull Player p,  @NotNull String path) {
-        String text = PlaceholderAPI.setPlaceholders(p, path);
-        p.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + cfg.getString(path)));
+    public void sendPath(Player sendedPlayer, @NotNull String path) {
+        String text = PlaceholderAPI.setPlaceholders(sendedPlayer, path);
+        sendedPlayer.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + cfg.getString(path)));
     }
 
 }

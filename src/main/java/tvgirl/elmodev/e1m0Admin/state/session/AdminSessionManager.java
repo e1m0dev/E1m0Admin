@@ -20,6 +20,7 @@ public class AdminSessionManager {
 
     public void join(UUID id) {
         Player p = Bukkit.getPlayer(id);
+
         sessions.put(
                 p.getUniqueId(),
                 new AdminSession(

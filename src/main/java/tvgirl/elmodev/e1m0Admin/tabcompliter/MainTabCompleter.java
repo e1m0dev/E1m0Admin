@@ -24,82 +24,53 @@ public class MainTabCompleter implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] strings) {
         List<String> tab = new ArrayList<>();
 
+        String sub = strings.length > 0 ? strings[0].toLowerCase() : "";
+
         if (!sender.hasPermission(cfg.getString("Permissions.admin"))) {
 
             if (strings.length == 1) {
-                tab.add("report");
-            } else if(strings.length == 2) {
-                tab.add("Message");
-            }
-
-            return tab;
-        }
-
-        String sub = strings.length > 0 ? strings[0].toLowerCase() : "";
-
-        if (strings.length == 1) {
-            // 🧑‍🔬 | Admin
-            tab.add("ainv");
-            tab.add("arec");
-            tab.add("arep");
-            tab.add("areoff");
-
-            if (sender.hasPermission(cfg.getString("Permissions.staff"))) {
-                // 🧑‍🔬 | STAFF
-                tab.add("aup");
-                tab.add("aset");
-                tab.add("adown");
-                tab.add("abonus");
-                tab.add("abonusall");
-            }
-        } else if (strings.length == 2) {
-
-            switch (sub) {
-                case "arep": tab.add("Form");
-
-                case "aup":
-                case "adel":
-                case "aset":
-                case "adown":
-                case "abonus":
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.hasPermission(cfg.getString("Permissions.admin"))) {
-                            tab.add(player.getName());
+                switch (sub) {
+                    case "aup":
+                    case "adel":
+                    case "aset":
+                    case "adown":
+                    case "abonus":
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            if (player.hasPermission(cfg.getString("Permissions.admin"))) {
+                                tab.add(player.getName());
+                            }
                         }
+
+                    case "arep": {
+                        tab.add("Form");
+                        break;
                     }
+                }
+            } else if (strings.length == 2) {
+                switch (sub) {
 
-                break;
-            }
-        } else if (strings.length == 3) {
+                    case "aset":
+                        tab.add("Уровень/Weight?");
+                        break;
 
-            switch (sub) {
+                    case "abonus":
+                    case "abonusall":
+                        tab.add("10");
+                        tab.add("100");
+                        tab.add("777?");
+                        break;
+                }
+            } else if (strings.length == 3) {
+                switch (sub) {
 
-                case "aset":
-                    tab.add("Уровень/Weight?");
-                    break;
-
-                case "abonus":
-                case "abonusall":
-                    tab.add("10");
-                    tab.add("100");
-                    tab.add("777?");
-                    break;
-            }
-        } else if (strings.length == 4) {
-
-            switch (sub) {
-
-                case "abonus":
-                case "abonusall":
-                    tab.add("Message?");
-                    break;
+                    case "abonus":
+                    case "abonusall":
+                        tab.add("Message?");
+                        break;
+                }
             }
         }
 
-        String current = strings[strings.length - 1].toLowerCase();
-
-        return tab.stream()
-                .filter(s -> s.toLowerCase().startsWith(current))
-                .toList();
+        return tab;
     }
 }
