@@ -33,7 +33,7 @@ public class RewatchCommand implements CommandExecutor {
         }
 
         if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
-            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
+            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput", "", "");
             return false;
         }
 

@@ -50,8 +50,8 @@ public class PlayerReportCommand implements CommandExecutor {
             String reportMessage = String.join(" ", strings);
 
             if(reportMessage.length() < minLength) {
-                sender.sendPath(player, cfg.getString("Messages.Errors.reportLengthError!")
-                        .replace("%len", String.valueOf(minLength)));
+                sender.sendPath(player, cfg.getString("Messages.Errors.reportLengthError!"),
+                        "%len", String.valueOf(minLength));
 
                 return false;
             }

@@ -32,8 +32,8 @@ public class DatabaseManager {
                             nick VARCHAR(24) NOT NULL,
                             weight INTEGER NOT NULL,
                             salary INTEGER NOT NULL,
-                            IP VARCHAR(32) NOT NULL,
                             prefix VARCHAR(64),
+                            IP VARCHAR(32) NOT NULL,
                             setAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     
                             PRIMARY KEY(uuid)

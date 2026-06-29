@@ -36,7 +36,7 @@ public class ConsoleDownAdminCommand implements CommandExecutor {
             }
 
             Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND: /cdown. Команда прошла успешно, ушла в обработчик.");
-            consoleService.downAdminConsole(consoleID, admin.getUniqueId());
+            consoleService.downAdminConsole(admin.getUniqueId(), consoleID);
         }
 
         return true;

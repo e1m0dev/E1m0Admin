@@ -33,7 +33,7 @@ commands:
   aaccess:
     description: "Войти в систему"
     aliases: [ adminaccess, acc ]
-    usage: "/aaccess"
+    usage: "/aaccess, или /acc"
 
   report:
     description: "Отправить жалобу"

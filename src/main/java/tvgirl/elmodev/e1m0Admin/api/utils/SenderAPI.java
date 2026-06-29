@@ -5,7 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface SenderAPI {
 
-    void sendString(@NotNull Player p, @NotNull String str);
-    void sendPath(@NotNull Player p,  @NotNull String path);
+    void sendString(@NotNull Player p, @NotNull String message, String... replacements);
+
+    void sendPath(@NotNull Player p, @NotNull String path, String... replacements);
 
 }

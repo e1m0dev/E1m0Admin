@@ -26,6 +26,12 @@ public class ConsoleSetSecretCommand implements CommandExecutor {
     // $csetsecret E1m0 6969
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (strings.length < 2) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
+            return false;
+        }
+
         if (command.getName().toLowerCase().equalsIgnoreCase("csetsecret")) {
             Player admin = Bukkit.getPlayer(strings[0]);
 

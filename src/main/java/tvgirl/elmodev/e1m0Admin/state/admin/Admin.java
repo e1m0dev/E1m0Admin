@@ -8,5 +8,5 @@ public record Admin(
         int weight,
         int salary,
         String prefix,
-        String IP
+        String ip
 ) {}

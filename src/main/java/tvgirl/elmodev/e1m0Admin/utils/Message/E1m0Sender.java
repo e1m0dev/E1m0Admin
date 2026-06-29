@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tvgirl.elmodev.e1m0Admin.api.utils.SenderAPI;
 import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 
@@ -17,15 +18,28 @@ public class E1m0Sender implements SenderAPI {
     }
 
     @Override
-    public void sendString(Player sendedPlayer, @NotNull String str) {
-        String text = PlaceholderAPI.setPlaceholders(sendedPlayer, str);
+    public void sendString(@NotNull Player sendedPlayer, @NotNull String message, @Nullable String... replacements) {
+        String text = PlaceholderAPI.setPlaceholders(sendedPlayer, message);
+
+        if (replacements != null) {
+            for (int i = 0; i < replacements.length; i += 2) {
+                message = message.replace(replacements[i], replacements[i + 1]);
+            }
+        }
+
         sendedPlayer.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + text));
     }
 
     @Override
-    public void sendPath(Player sendedPlayer, @NotNull String path) {
+    public void sendPath(@NotNull Player sendedPlayer, @NotNull String path, @Nullable String... replacements) {
         String text = PlaceholderAPI.setPlaceholders(sendedPlayer, path);
+
+        if (replacements != null) {
+            for (int i = 0; i < replacements.length; i += 2) {
+                path = path.replace(replacements[i], replacements[i + 1]);
+            }
+        }
+
         sendedPlayer.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + cfg.getString(path)));
     }
-
 }

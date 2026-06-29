@@ -4,8 +4,11 @@ import java.util.UUID;
 
 public interface SystemRepositoryAPI {
 
-    int getAdminSalary(UUID id);
-    int getAdminWeight(UUID id);
+    boolean checkAdminInBase(UUID adminID); // | Существует ли администратор вообще в базе данных?
 
-    String getAdminPrefix(UUID id);
+    int getAdminSalary(UUID adminID);
+
+    int getAdminWeight(UUID adminID);
+
+    String getAdminPrefix(UUID adminID);
 }

@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import tvgirl.elmodev.e1m0Admin.service.AdminSystemService;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
@@ -25,7 +26,7 @@ public class QuitListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onAdminJoin(PlayerJoinEvent e) {
+    public void onAdminJoin(PlayerQuitEvent e) {
         Player admin = e.getPlayer();
         if (!admin.hasPermission(cfg.getString("Permissions.admin"))) return;
 

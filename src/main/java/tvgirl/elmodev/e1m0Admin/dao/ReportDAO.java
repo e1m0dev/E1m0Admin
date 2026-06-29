@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.dao;
 
+import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -8,6 +9,7 @@ import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import java.util.List;
 import java.util.UUID;
 
+@RegisterConstructorMapper(Report.class)
 public interface ReportDAO {
 
     /* REPORT | 🚨 */

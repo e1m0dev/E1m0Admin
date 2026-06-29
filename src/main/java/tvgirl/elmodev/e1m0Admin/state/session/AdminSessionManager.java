@@ -21,6 +21,14 @@ public class AdminSessionManager {
     public void join(UUID id) {
         Player p = Bukkit.getPlayer(id);
 
+        String adminPrefix = systemRepository.getAdminPrefix(id);
+        int adminWeight = systemRepository.getAdminWeight(id);
+
+        if (adminWeight == -1 || adminPrefix.equalsIgnoreCase("NULL")) {
+            Bukkit.getLogger().warning("Администратора который только что зашел - не существует в базе. ❗ ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ");
+            return;
+        }
+
         sessions.put(
                 p.getUniqueId(),
                 new AdminSession(
@@ -28,8 +36,8 @@ public class AdminSessionManager {
                         p.getName(),
                         0,
                         System.currentTimeMillis(),
-                        systemRepository.getAdminWeight(id),
-                        systemRepository.getAdminPrefix(id)
+                        adminWeight,
+                        adminPrefix
                 )
         );
     }

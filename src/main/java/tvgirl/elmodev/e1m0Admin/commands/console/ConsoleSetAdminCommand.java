@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.service.ConsoleService;
+import tvgirl.elmodev.e1m0Admin.state.admin.Admin;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
@@ -29,6 +30,12 @@ public class ConsoleSetAdminCommand implements CommandExecutor {
     // $csetadmin E1m0 1
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (strings.length < 2) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
+            return false;
+        }
+
         if (command.getName().toLowerCase().equalsIgnoreCase("csetadmin")) {
             Player admin = Bukkit.getPlayer(strings[0]);
             int weight = Integer.parseInt(strings[1]);

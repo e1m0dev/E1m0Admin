@@ -221,7 +221,7 @@ public class AdminGameService implements GameServiceAPI {
 
     @Override
     public void handleAccess(UUID adminID) {
-        secretCodeGui.openPINGui(adminID);
         Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND-SERVICE: /aacess была введена и пропущена."); // ТЕСТЕР
+        secretCodeGui.openPINGui(adminID);
     }
 }

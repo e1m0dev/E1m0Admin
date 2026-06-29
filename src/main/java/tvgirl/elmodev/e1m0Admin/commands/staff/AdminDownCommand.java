@@ -54,6 +54,10 @@ public class AdminDownCommand implements CommandExecutor {
         }
 
         int weight = systemRepository.getAdminWeight(admin.getUniqueId());
+        if (weight == -1) {
+            sender.sendPath(staff, "Messages.Errors.nullPlayer");
+            return false;
+        }
 
         // Если weight равно 1 нельзя понизить
         if (weight >= 1) {

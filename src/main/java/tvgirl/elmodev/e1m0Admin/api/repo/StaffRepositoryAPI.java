@@ -9,8 +9,11 @@ public interface StaffRepositoryAPI {
 
     void deleteAdminStatusLog(UUID staffID, UUID adminID, String reason);
 
-    void upAdminStatus(UUID adminID);
-    void downAdminStatus(UUID adminID);
+    void systemDeleteAdminStatusLog(UUID staffID, UUID adminID, String reason);
+
+    void upAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary);
+
+    void downAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary);
 
     void giveBonusLog(UUID staffID, UUID adminID, int sum, String message);
 }

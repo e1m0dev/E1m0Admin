@@ -114,7 +114,8 @@ Service:
 💚 AdminStaffService | Добавлен обработчик deleteAdmin, логирование + удаление. Позже при надобности будет добавлен
 системный факт + действия.
 💚 AdminSystemService | handleReportAccept - Был добавлен и теперь появилась связующая цепь через Emergency Report.
-💛ReportSystemService | clickToReport - Был переработан, исправлен основной баг теперь полноценная связующая цепь.
+
+🧡ReportSystemService | clickToReport - Был переработан, исправлен основной баг теперь полноценная связующая цепь.
 
 ❤️ AdminSystemService/fastEmergency | Удален метод fastEmergency. Причина: Заброшен, больше не нужен, нашлось решение
 лучше. fastReport(adm.getUniqueId(), report); в AdminGameService.
@@ -149,7 +150,9 @@ int:
 
 CFG:
 💚 config.yml | Добавлены подсказки, описания, использования и шаблоны в главный конфиг.
-💛 config.yml | Исправлен баг конфига в базе
+
+🧡 config.yml | Исправлен баг конфига в базе
+
 💛 config.yml | База перекинута на самый верх в конфиге
 
 Database:
@@ -261,6 +264,98 @@ STAFF:
 CONSOLE:
 $csetadmin - Отработала отлично, работает прекрасно. | Прошла тестеры: ➕
 $csetsecret - Отработала отлично, работает прекрасно. | Прошла тестеры: ➕
+
+Commit 1.6-DEV: E1m0Sender all fix && Tests commands, fix API, fix commands, and review commands
+
+API:
+💚 SystemRepositoryAPI | Новый метод checkAdminInBase который позволяет удостовериться и ответить на вопрос: Eсть ли
+администратор в базе?
+💚 SenderAPI | Добавлена возможность добавлять Replacement без надобности переписывать структуру..
+
+💛 SystemRepositoryAPI | Замена мелочи для читаемости: id -> adminID. То есть уточнение что это ИМЕННО админ, потому что
+getADMIN... | Добавление защиты от NullPointerException 🧑‍💻
+
+Sender:
+💚 E1m0Sender | Была проведена работа по Replacement, аннотациями и вставками, да, я знал что так с ключами и получится
+но решил проверить и забыл что не нужно пускать все. Причина; Ключи - не передают данные, не забывать ❗
+💚 Service, Repo, Managers, Commanmds | И везде где был replace + E1m0Sender - Были успешно заменены
+
+Commands:
+🧡 ConsoleDelAdminCommand | Исправлен баг с проверкой аргументов.
+🧡 ConsoleSetAdminCommand | Исправлен баг с проверкой аргументов.
+🧡 ConsoleSetSecretCommand | Исправлен баг с проверкой аргументов.
+
+Service:
+
+💚 ConsoleService && AdminStaffService | Защита от вставки уже существующего админа - добавлена в setAdminConsole через
+checkAdminInBase()
+💚 ConsoleService && AdminStaffService | В связи с последними работами над NullPointerException. Добавлены защиты от базы
+❗
+
+🧡 ConsoleService && StaffService | Исправлен баг проверки в методе downAdminConsole между cfgWeight и targetWeight,
+кажется я либо забыл либо забил.. Это странно, уже третий баг именно в down а не в UP, хотя up я писал первее..
+🧡 ConsoleService && AdminStaffService | Исправлена одна и та же логическая ошибка в методе понижения администрации, у
+кого downStatus, у кого consoleDownAdmin, короче в двух исправлен баг.
+🧡 ConsoleService | Исправлен интересный баг опечатка, что в consoleUp - был downAdminStatus
+
+💛 ConsoleService && AdminStaffService | Переписаны проверки на новый лад в downStatus && upStatus, выходит дороже - но
+можно парировать это асинхронностью в 2.0
+
+💛 AdminSystemService | Убрал легаси adm.sendMessage от Bukkit, закралась мысли что где то - Есть еще не пропатченные
+sender'ом сообщения, стоит проверить.
+💛 AdminStaffService | Так и знал, все таки остались куски легаси при быстром написании, надо быть внимательнее и ловить
+их. Так как я думаю над логикой в первую очередь - могу упускать.
+
+DAO && DATABASE:
+💚 DAO && DATABASE | Переход с UUID - StringUUID. Причина: Так как я пользовался postgreSQL долгое время, я забыл что
+UUID то метода в других БД - нет. По этому принял решение перейти на String UUID, проблем никаких нет, единственная
+доп.задача - преобразование, но для JVM эта задача на раз плюнуть особенно есть JIT
+
+CFG:
+🧡 config.yml | Очень кривое нарушение табуляции привело к null среди ошибок, как взглянул на цепь сразу понял в чем
+дело. Мдамс.. Быть внимательнее❗ Хотя писал я основу еще очень давно, а сейчас взялся за нее, так что внимание
+повышенное.
+
+❤️ config.yml | От permissions в "Admin.AdminRanks" - Решил отказаться. Причина: Архитектурный задел на будущий факт
+системы который раскроет и разрешения, и скины, и прочее. Решение: Кастомные permissions у рангов - отказано.
+
+Event:
+🧡 PlayerQuitEvent | Исправлен баг/недочет PlayerJoinEvent -> PlayerQuitEvent e.
+
+Manager:
+💚 AdminSessionManager | В связи с последними работами над NullPointerException. Добавлены защиты от базы ❗
+
+DAO:
+💚 SecretCodeDAO | Добавлен конструктор для mutable state;
+💚 AdminsDAO | Добавлен конструктор для immutable state;
+💚 ReportDAO | Добавлен конструктор для mutable state;
+
+💛 AdminsDAO | Изменено: delAdminLog -> delAdminLogInsert. Причина: Уточнение, лучше читается лучше исправляется -
+Порядок всегда важен.
+💛 AdminsDAO | Исправлена ошибка синтаксиса UUID в delAdmin.
+
+Repository:
+💚 AdminSystemRepository | Новый метод checkAdminInBase который позволяет удостовериться и ответить на вопрос: Eсть ли
+администратор в базе?
+
+🧡 AdminStaffRepository | Метод deleteAdminStatusLog(consoleID, adminID, reason) переделан под стандарт ELM
+deleteAdminStatusLog(adminID, consoleID, reason). В нем был баг ❗
+💛 AdminSystemRepository | Замена мелочи для читаемости: id -> adminID. То есть уточнение что это ИМЕННО админ, потому
+что getADMIN... | Добавление защиты от NullPointerException 🧑‍💻
+
+E1m0: 🧑‍💻 "Нормально оформлен TODO list 2.0 | -> DEVLOG.md"
+E1m0: 🧑‍💻 "Нормально оформлены таски, теперь 🧡 - Затык или баг | -> DEVLOG.md"
+
+PICK-CHECK COMMANDS:
+
+    ADMIN:
+
+    STAFF:
+    
+    CONSOLE:
+        $cup E1m0 | Отработала, исправлена вместе с половиной StaffService && StaffRepo. | Прошла тестеры: ➕
+        $cdel E1m0 | Отработала, опять исправлена вместе с половиной StaffService && StaffRepo. | Прошла тестеры: ➕
+        $cdown E1m0 | Отработала, опять исправлена вместе с половиной StaffService && StaffRepo. | Прошла тестеры: ➕
 
 2.0 Admin Optional && Player Structure:
 Сделать поддержку СБД

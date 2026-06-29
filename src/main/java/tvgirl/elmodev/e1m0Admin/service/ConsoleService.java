@@ -8,6 +8,7 @@ import tvgirl.elmodev.e1m0Admin.api.service.ConsoleServiceAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
 import tvgirl.elmodev.e1m0Admin.repository.gui.SecretCodeRepository;
+import tvgirl.elmodev.e1m0Admin.state.admin.Admin;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
 import java.util.UUID;
@@ -35,10 +36,9 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         secretCodeRepository.systemSetSecretCode(adminID, code);
 
-        sender.sendPath(admin, "Messages.changeCodeAdmin"
-                .replace("%staff", "CONSOLE"
-                        .replace("%code", String.valueOf(code)))
-        );
+        sender.sendPath(admin, "Messages.changeCodeAdmin",
+                "%staff", "CONSOLE",
+                "%code", String.valueOf(code));
 
         Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND-SERVICE: /csetsecret. Регистрирование репо + закрепление факта");
     }
@@ -47,6 +47,11 @@ public class ConsoleService implements ConsoleServiceAPI {
     public void setAdminConsole(UUID adminID, UUID consoleID, int weight) {
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
         Player admin = Bukkit.getPlayer(adminID);
+
+        if (systemRepository.checkAdminInBase(adminID)) {
+            Bukkit.getLogger().warning("Человек уже есть в базе данных!");
+            return;
+        }
 
         // ConfigSection | Как обычно перебираю конфиг секции.
         for (String key : ranksSection.getKeys(false)) {
@@ -76,6 +81,18 @@ public class ConsoleService implements ConsoleServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
+        if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
+            Bukkit.getLogger().warning("Администратора указанного в команде - не существует в базе.");
+            return;
+        }
+
+        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cup. Точка выхода -1 - Сбор информации. Нынешне: Префикс %prefix, Вес: %weight, Зарплата: %salary"
+                .replace("%prefix", prefixBase)
+                .replace("%weight", String.valueOf(weightBase))
+                .replace("%salary", String.valueOf(salaryBase))
+        ); // ТЕСТЕР
+
+
         String rankKey = null;
         int rankWeight = 0;
 
@@ -83,7 +100,9 @@ public class ConsoleService implements ConsoleServiceAPI {
         if (admin == null) return;
 
         for (String key : ranksSection.getKeys(false)) {
-            if (admin.hasPermission(cfg.getString("Admin.AdminRanks." + key + ".permission"))) {
+            int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
+
+            if (weightBase == cfgWeight) {
                 rankKey = key;
                 rankWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
@@ -107,18 +126,18 @@ public class ConsoleService implements ConsoleServiceAPI {
         }
 
         if (currentKey == null) {
-            admin.sendMessage(cfg.getString("Messages.Errors.upAdminLevelError"));
+            sender.sendPath(admin, "Messages.Errors.upAdminLevelError");
         }
 
         String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
+        int newWeight = cfg.getInt("Admin.AdminRanks." + currentKey + ".weight");
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
 
+        staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
         Bukkit.getLogger().info("ConsoleUpAdminCommand | COMMAND-SERVICE: /cup. Точка выхода 2 - Конечный результат + sendRepo: Ник: %admin. Префикс в базе: %prefix, зарплата: %salary"
                 .replace("%admin", admin.getName())
                 .replace("%prefix", newPrefix)
                 .replace("%salary", String.valueOf(newSalary))); // ТЕСТЕР
-
-        staffRepository.upAdminStatus(adminID);
     }
 
     @Override
@@ -127,8 +146,20 @@ public class ConsoleService implements ConsoleServiceAPI {
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
 
         String prefixBase = systemRepository.getAdminPrefix(adminID);
-        String weightBase = systemRepository.getAdminPrefix(adminID);
+        int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
+
+        if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
+            Bukkit.getLogger().warning("Администратора указанного в команде - не существует в базе.");
+            return;
+        }
+
+
+        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода -1 - Сбор информации. Нынешне: Префикс %prefix, Вес: %weight, Зарплата: %salary"
+                .replace("%prefix", prefixBase)
+                .replace("%weight", String.valueOf(weightBase))
+                .replace("%salary", String.valueOf(salaryBase))
+        ); // ТЕСТЕР
 
         String rankKey = null;
         int rankWeight = 0;
@@ -138,7 +169,8 @@ public class ConsoleService implements ConsoleServiceAPI {
         if (admin == null) return;
 
         for (String key : ranksSection.getKeys(false)) {
-            if (admin.hasPermission(cfg.getString("Admin.AdminRanks." + key + ".permission"))) {
+            int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
+            if (weightBase == cfgWeight) {
                 rankKey = key;
                 rankWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
@@ -151,9 +183,17 @@ public class ConsoleService implements ConsoleServiceAPI {
         int targetWeight = rankWeight - 1;
         int currentWeight = 0;
 
+        if (targetWeight < 0) {
+            sender.sendPath(admin, "Messages.Errors.downAdminLevelError", "", "");
+            return;
+        }
+
         Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода 1 - Проверки и баня с конфигом."); // ТЕСТЕР
         for (String key : ranksSection.getKeys(false)) {
-            if (cfg.getInt("Admin.AdminRanks." + key + ".weight") == targetWeight) {
+            int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
+            Bukkit.getLogger().info("Config Weight: " + cfgWeight);
+
+            if (cfgWeight == targetWeight) {
                 currentKey = key;
                 currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
@@ -161,17 +201,20 @@ public class ConsoleService implements ConsoleServiceAPI {
         }
 
         if (currentKey == null) {
-            sender.sendPath(admin, "Messages.Errors.downAdminLevelError");
+            sender.sendPath(admin, "Messages.Errors.downAdminLevelError", "", "");
         }
 
-        String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
+        int newWeight = cfg.getInt("Admin.AdminRanks." + currentKey + ".weight");
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
+        String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
 
-        staffRepository.downAdminStatus(adminID);
         Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода 2 - Конечный результат + sendRepo: Ник: %admin. Префикс в базе: %prefix, зарплата: %salary"
                 .replace("%admin", admin.getName())
-                .replace("%prefix", newPrefix)
-                .replace("%salary", String.valueOf(newSalary))); // ТЕСТЕР
+                .replace("%salary", String.valueOf(newSalary)) // ТЕСТЕР
+
+                .replace("%prefix", newPrefix));
+
+        staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
     }
 
     @Override
@@ -179,7 +222,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         Player admin = Bukkit.getPlayer(adminID);
 
         staffRepository.deleteAdminStatus(adminID);
-        staffRepository.deleteAdminStatusLog(consoleID, adminID, reason);
+        staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
         Bukkit.getLogger().info("ConsoleDelAdminCommand | COMMAND-SERVICE: /cdel. Команда прошла sendRepo.");
     }
 }

@@ -31,12 +31,16 @@ public class AccessCommand implements CommandExecutor {
         }
 
         if(command.getName().toLowerCase().equalsIgnoreCase("aaccess")) {
-            if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
+            Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess прошла регистрацию."); // ТЕСТЕР
+            String permission = cfg.getString("Permissions.admin");
+
+            Bukkit.getLogger().info("Permission: " + permission);
+
+            if (admin.hasPermission(permission)) {
                 Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess была введена и пропущена."); // ТЕСТЕР
                 service.handleAccess(admin.getUniqueId());
             }
         }
-
         return true;
     }
 

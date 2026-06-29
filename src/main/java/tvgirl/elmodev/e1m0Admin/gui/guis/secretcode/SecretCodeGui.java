@@ -31,7 +31,7 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
     @Override
     public void openPINGui(UUID id) {
-        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: " + codeService.getInputCode(id));
+        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: ****");
         Player p = Bukkit.getPlayer(id);
 
         createInventory(i);

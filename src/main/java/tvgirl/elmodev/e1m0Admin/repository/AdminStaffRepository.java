@@ -6,8 +6,6 @@ import org.jdbi.v3.core.Jdbi;
 import tvgirl.elmodev.e1m0Admin.api.repo.StaffRepositoryAPI;
 import tvgirl.elmodev.e1m0Admin.dao.AdminsDAO;
 import tvgirl.elmodev.e1m0Admin.dao.BonusDAO;
-import tvgirl.elmodev.e1m0Admin.dao.ReportDAO;
-import tvgirl.elmodev.e1m0Admin.state.admin.Admin;
 
 import java.util.UUID;
 
@@ -22,41 +20,53 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     @Override
     public void setAdminStatus(UUID id, String nick, int weight, int salary, String prefix, String IP) {
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        adminDao.insert(id, nick, weight, salary, prefix, IP);
+        adminDao.insert(id.toString(), nick, weight, salary, prefix, IP);
     }
 
     @Override
     public void deleteAdminStatus(UUID adminID) {
         Bukkit.getLogger().info("AdminsDAO | Администратор удален.");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        adminDao.delAdmin(adminID);
+        adminDao.delAdmin(adminID.toString());
     }
 
     @Override
-    public void deleteAdminStatusLog(UUID staffID, UUID adminID, String reason) {
+    public void deleteAdminStatusLog(UUID adminID, UUID staffID, String reason) {
         Bukkit.getLogger().info("AdminsDAO | Администратор удален и отпечатан лог");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        adminDao.delAdminLog(staffID, adminID, reason);
+
+        String uuid = UUID.randomUUID().toString();
+        Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        adminDao.delAdminLogInsert(uuid, admin.getName(), staff.getName(), reason);
     }
 
     @Override
-    public void upAdminStatus(UUID adminID) {
+    public void systemDeleteAdminStatusLog(UUID adminID, UUID staffID, String reason) {
         Bukkit.getLogger().info("AdminsDAO | Администратор удален и отпечатан лог");
-
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(adminID);
 
-        adminDao.upStatus(admin.uuid(), admin.weight(), admin.salary(), admin.prefix());
+        String uuid = UUID.randomUUID().toString();
+        Player admin = Bukkit.getPlayer(adminID);
+
+        adminDao.delAdminLogInsert(uuid, admin.getName(), "CONSOLE", reason);
     }
 
     @Override
-    public void downAdminStatus(UUID adminID) {
+    public void upAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary) {
+        Bukkit.getLogger().info("AdminsDAO | Адмиминистратор был повышен!");
+        AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+
+        adminDao.upStatus(adminID.toString(), newPrefix, newWeight, newSalary);
+    }
+
+    @Override
+    public void downAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary) {
         Bukkit.getLogger().info("AdminsDAO | Администратор был понижен.");
-
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
-        Admin admin = adminDao.findByUuid(adminID);
 
-        adminDao.downStatus(admin.uuid(), admin.weight(), admin.salary(), admin.prefix());
+        adminDao.downStatus(adminID.toString(), newPrefix, newWeight, newSalary);
     }
 
     @Override

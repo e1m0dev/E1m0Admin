@@ -81,8 +81,8 @@ public class AdminSystemService implements SystemServiceAPI {
                         int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
 
                         // Вывожу сообщение + выдаю ему честно нажитое.
-                        adm.sendMessage(c.parse(cfg.getString("Messages.adminPay")
-                                .replace("%salary", String.valueOf(salary))));
+                        sender.sendPath(adm, "Messages.adminPay",
+                                "%salary", String.valueOf(salary));
 
                         // Достаю его зарплату из конфига по патчу
                         String str = cfg.getString("Admin.AdminRanks" + key + ".scom")
@@ -138,15 +138,18 @@ public class AdminSystemService implements SystemServiceAPI {
                 report.getCreatedAt()
         );
 
-        sender.sendPath(admin, cfg.getString("Messages.reportTake")
-                .replace("%content", report.getReport())
-                .replace("%player", report.getPlayerNick()));
+        sender.sendPath(admin, "Messages.reportTake",
+                "%content", report.getReport(),
+                "%player", report.getPlayerNick());
 
-        sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast")
-                .replace("%content", report.getReport())
-                .replace("%admin", admin.getName()));
+        sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast"),
+                "%content", report.getReport(),
+                "%admin", admin.getName());
+
+
 
         reportRepository.updateReport(newReport);
         reportPlayer.remove(report.getPlayerID());
+        Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Репорт выполнен! " + reportID); // ТЕСТЕР
     }
 }
