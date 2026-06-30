@@ -31,53 +31,59 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
     @Override
     public void openPINGui(UUID id) {
-        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: ****");
+        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_pin"), 54, "PIN: ****");
         Player p = Bukkit.getPlayer(id);
 
-        createInventory(i);
+        createItemsInInventory(i);
         p.openInventory(i);
     }
 
-    public void openOneStepGui(UUID id, byte lastCode) {
-        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: " + codeService.getInputCode(id));
+    public void openTwoStepGUI(UUID id) {
+        String inputCode = codeService.getInputCode(id);
+
+        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_two"), 54, "PIN: " + codeService.getInputCode(id));
         Player p = Bukkit.getPlayer(id);
 
-        createInventory(i);
+        createItemsInInventory(i);
         p.openInventory(i);
+
+        Bukkit.getLogger().info("SecretCodeGui | ОТКРЫТО ВТОРОЕ МЕНЮ"); // ТЕСТЕР
     }
 
-    public void openTwoStepGUI(UUID id, byte lastCode) {
-        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: " + codeService.getInputCode(id));
+    public void openThreeStepGUI(UUID id) {
+        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_three"), 54, "PIN: " + codeService.getInputCode(id));
         Player p = Bukkit.getPlayer(id);
 
-        createInventory(i);
+        createItemsInInventory(i);
         p.openInventory(i);
+
+        Bukkit.getLogger().info("SecretCodeGui | ОТКРЫТО ТРЕТЬЕ МЕНЮ"); // ТЕСТЕР
     }
 
-    public void openThreeStepGUI(UUID id, byte lastCode) {
-        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: " + codeService.getInputCode(id));
+    public void openFoursStepGUI(UUID id) {
+        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_fours"), 54, "PIN: " + codeService.getInputCode(id));
         Player p = Bukkit.getPlayer(id);
 
-        createInventory(i);
+        createItemsInInventory(i);
         p.openInventory(i);
+
+        Bukkit.getLogger().info("SecretCodeGui | ОТКРЫТО ЧЕТВЕРТОЕ МЕНЮ"); // ТЕСТЕР
     }
 
-    public void openFoursStepGUI(UUID id, byte lastCode) {
-        Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_one"), 54, "PIN: " + codeService.getInputCode(id));
-        Player p = Bukkit.getPlayer(id);
-
-        createInventory(i);
-        p.openInventory(i);
-    }
-
-    private void createInventory(Inventory i) {
+    private void createItemsInInventory(Inventory i) {
 
         //TODO
-        // Головы - Добавить поддержку форматтера?
+        // Головы - Добавить поддержку форматтера пользовательских голов?
         //  E1m0: Я думаю да, но уже в 2.0 что-ли, в обновлении PlayerStructure, там я уже буду работать над внешним видом а не логикой.
 
         List<String> loreNumber = new ArrayList<>();
         loreNumber.add("Просто нажмите для введения цифры.");
+
+        List<String> loreClose = new ArrayList<>();
+        loreClose.add("Просто нажмите для закрытия");
+
+        //TODO
+        // Я думаю в конфиг так же добавить адаптивность к меню в Secret CodeGUI, но это уже в 2.0, потому что не знаю будет ли gui.yml
 
         i.setItem(2, createButtonItem("Цифра: 1", "BUTTON_ONE", Material.PLAYER_HEAD, 1, loreNumber));
         i.setItem(4, createButtonItem("Цифра: 2", "BUTTON_TWO", Material.PLAYER_HEAD, 1, loreNumber));
@@ -88,10 +94,7 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
         i.setItem(38, createButtonItem("Цифра: 7", "BUTTON_SEVEN", Material.PLAYER_HEAD, 1, loreNumber));
         i.setItem(40, createButtonItem("Цифра: 8", "BUTTON_EIGHT", Material.PLAYER_HEAD, 1, loreNumber));
         i.setItem(42, createButtonItem("Цифра: 9", "BUTTON_NINE", Material.PLAYER_HEAD, 1, loreNumber));
-
-        List<String> loreClose = new ArrayList<>();
-        loreNumber.add("Просто нажмите для введения цифры.");
-        createButtonItem("Закрыть", "CLOSE", Material.BARRIER,  49, loreClose);
+        i.setItem(49, createButtonItem("Закрыть", "CLOSE", Material.BARRIER, 1, loreClose));
     }
 
     private ItemStack createButtonItem(String name, String action, Material mat, int i, List<String> lore) {

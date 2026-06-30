@@ -54,67 +54,70 @@ public class AdminSystemService implements SystemServiceAPI {
                 new BukkitRunnable() {
             @Override
             public void run() {
-            for(AdminSession aSession : sessionManager.getSessions()) {
-                Player adm = Bukkit.getPlayer(aSession.getUuid());
+                for (AdminSession aSession : sessionManager.getSessions()) {
+                    Player adm = Bukkit.getPlayer(aSession.getUuid());
 
-                // Проверяю: A) Время нажитое на сервере. B) Какой это час?
-                long onlineTime = System.currentTimeMillis() - aSession.getJoinTime();
-                long hours = onlineTime / 3600000L;
+                    if (aSession.getUuid() != adm.getUniqueId()) continue;
 
-                // Если час превышает тот что был в State = значит он новый.
-                if(hours > aSession.getWorkedHours()) {
-                    aSession.plusWorkedHours();
+                    // Проверяю: A) Время нажитое на сервере. B) Какой это час?
+                    long onlineTime = System.currentTimeMillis() - aSession.getJoinTime();
+                    long hours = onlineTime / 3600000L;
 
-                    if(!cfg.getBoolean("Server.adminPay")) return;
-                    // Игрок все еще жив и на сервере?
-                    if (adm == null) {
-                        continue;
-                    }
+                    // Если час превышает тот что был в State = значит он новый.
+                    if (hours > aSession.getWorkedHours()) {
+                        aSession.plusWorkedHours();
 
-                    for(String key : sectionSalary.getKeys(true)) {
-                        String adminPrefix = aSession.getAdminPrefix();
+                        if (!cfg.getBoolean("Server.adminPay")) return;
+                        // Игрок все еще жив и на сервере?
+                        if (adm == null) {
+                            continue;
+                        }
 
-                        // Если не подошел по prefix = скип.
-                        if(!cfg.getString("Admin.AdminRanks." + key + ".prefix").equalsIgnoreCase(adminPrefix)) continue;
+                        for (String key : sectionSalary.getKeys(true)) {
+                            String adminPrefix = aSession.getAdminPrefix();
 
-                        // Получаю зарплату
-                        int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
+                            // Если не подошел по prefix = скип.
+                            if (!cfg.getString("Admin.AdminRanks." + key + ".prefix").equalsIgnoreCase(adminPrefix))
+                                continue;
 
-                        // Вывожу сообщение + выдаю ему честно нажитое.
-                        sender.sendPath(adm, "Messages.adminPay",
-                                "%salary", String.valueOf(salary));
+                            // Получаю зарплату
+                            int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
 
-                        // Достаю его зарплату из конфига по патчу
-                        String str = cfg.getString("Admin.AdminRanks" + key + ".scom")
-                                .replace("%player", adm.getName())
-                                .replace("%salary", String.valueOf(salary));
+                            // Вывожу сообщение + выдаю ему честно нажитое.
+                            sender.sendPath(adm, "Messages.adminPay",
+                                    "%salary", String.valueOf(salary));
 
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
-                    }
+                            // Достаю его зарплату из конфига по патчу
+                            String str = cfg.getString("Admin.AdminRanks" + key + ".scom")
+                                    .replace("%player", adm.getName())
+                                    .replace("%salary", String.valueOf(salary));
 
-                    // Если админ бонус на сервере выключен - скип.
-                    if(!cfg.getBoolean("Server.adminBonus")) continue;
-                    for(String key : sectionBonus.getKeys(true)) {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
+                        }
 
-                        // Получаю часы и зарплату игрока из его таблицы + state session.
-                        int hour = cfg.getInt("Admin.Salary.SalaryActions." + key + ".hour");
-                        int salary = aSession.getAdminSalary();
+                        // Если админ бонус на сервере выключен - скип.
+                        if (!cfg.getBoolean("Server.adminBonus")) continue;
+                        for (String key : sectionBonus.getKeys(true)) {
 
-                        if(hour == aSession.getWorkedHours()) {
-                            // Если часы совпадают - делаем определенные действия
-                            for(String s : cfg.getStringList("Admin.Salary.SalaryActions." + key + ".Actions")) {
-                                String str = s
-                                        .replace("%player", adm.getName())
-                                        .replace("%salary", String.valueOf(salary));
+                            // Получаю часы и зарплату игрока из его таблицы + state session.
+                            int hour = cfg.getInt("Admin.Salary.SalaryActions." + key + ".hour");
+                            int salary = aSession.getAdminSalary();
 
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
+                            if (hour == aSession.getWorkedHours()) {
+                                // Если часы совпадают - делаем определенные действия
+                                for (String s : cfg.getStringList("Admin.Salary.SalaryActions." + key + ".Actions")) {
+                                    String str = s
+                                            .replace("%player", adm.getName())
+                                            .replace("%salary", String.valueOf(salary));
+
+                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
+                                }
                             }
                         }
                     }
                 }
             }
-            }
-                }.runTaskTimer(plugin, 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"), 20 * cfg.getLong("Settings.dev.elm.salaryCheck"));
+                }.runTaskTimer(plugin, 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"), 20 * cfg.getLong("Settings.salaryCheck"));
     }
 
     @Override

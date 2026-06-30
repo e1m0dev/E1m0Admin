@@ -23,11 +23,11 @@ public class ReportSystemRepository implements ReportSystemRepositoryAPI {
 
     @Override
     public Report getReport(UUID id) {
-        return reportDAO.getReport(id);
+        return reportDAO.getReport(id.toString());
     }
 
     @Override
     public void updateReport(Report report) {
-        reportDAO.updateReport(report.getUuid(), report.getAdminID(), report.getAdminNick(), report.getResponse(), report.getStatus());
+        reportDAO.updateReport(report.getUuid().toString(), report.getAdminID().toString(), report.getAdminNick(), report.getResponse(), report.getStatus());
     }
 }

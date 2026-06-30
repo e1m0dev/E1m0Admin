@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
 import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
@@ -14,14 +15,16 @@ import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 public class ReportCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
+    private final ReportGUI reportGUI;
     private final FileConfiguration cfg;
     private final AdminGameService service;
     private final E1m0Permission permissionManager;
 
-    public ReportCommand(E1m0Sender sender, FileConfiguration cfg, AdminGameService service, E1m0Permission permissionManager) {
+    public ReportCommand(E1m0Sender sender, ReportGUI reportGUI, FileConfiguration cfg, AdminGameService service, E1m0Permission permissionManager) {
         this.cfg = cfg;
         this.sender = sender;
         this.service = service;
+        this.reportGUI = reportGUI;
         this.permissionManager = permissionManager;
     }
 
@@ -47,7 +50,7 @@ public class ReportCommand implements CommandExecutor {
             String response = String.join(" ", strings[0]);
 
             if (admin.hasPermission(cfg.getString("Permissions.arep"))) {
-                service.openReportGUI(admin.getUniqueId(), response);
+                reportGUI.openReportGUI(admin.getUniqueId(), response);
                 Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /arep была введена и пропущена. Сообщение от администратора: " + response); // ТЕСТЕР
             }
         }

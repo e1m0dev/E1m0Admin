@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import tvgirl.elmodev.e1m0Admin.gui.guis.secretcode.SecretCodeGui;
 import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
@@ -14,11 +15,13 @@ public class AccessCommand implements CommandExecutor {
 
     private final FileConfiguration cfg;
     private final AdminGameService service;
+    private final SecretCodeGui secretCodeGui;
     private final E1m0Permission permissionManager;
 
-    public AccessCommand(FileConfiguration cfg, AdminGameService service, E1m0Permission permissionManager) {
+    public AccessCommand(FileConfiguration cfg, AdminGameService service, SecretCodeGui secretCodeGui, E1m0Permission permissionManager) {
         this.cfg = cfg;
         this.service = service;
+        this.secretCodeGui = secretCodeGui;
         this.permissionManager = permissionManager;
     }
 
@@ -34,11 +37,9 @@ public class AccessCommand implements CommandExecutor {
             Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess прошла регистрацию."); // ТЕСТЕР
             String permission = cfg.getString("Permissions.admin");
 
-            Bukkit.getLogger().info("Permission: " + permission);
-
             if (admin.hasPermission(permission)) {
                 Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess была введена и пропущена."); // ТЕСТЕР
-                service.handleAccess(admin.getUniqueId());
+                secretCodeGui.openPINGui(admin.getUniqueId());
             }
         }
         return true;

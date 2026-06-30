@@ -20,9 +20,9 @@ public interface ReportDAO {
         (:uuid, :adminID, :playerID, :adminNick, :playerNick, :report, :response, :status)
     """)
     void sendReport(
-            @Bind("uuid") UUID uuid,
-            @Bind("adminID") UUID adminID,
-            @Bind("playerID") UUID playerID,
+            @Bind("uuid") String uuid,
+            @Bind("adminID") String adminID,
+            @Bind("playerID") String playerID,
             @Bind("adminNick") String adminNick,
             @Bind("playerNick") String playerNick,
             @Bind("report") String report,
@@ -35,8 +35,8 @@ public interface ReportDAO {
                 WHERE uuid = :uuid
     """)
     void updateReport(
-            @Bind("uuid") UUID uuid,
-            @Bind("adminID") UUID adminID,
+            @Bind("uuid") String uuid,
+            @Bind("adminID") String adminID,
             @Bind("adminNick") String adminNick,
             @Bind("response") String response,
             @Bind("status") String status
@@ -60,6 +60,6 @@ public interface ReportDAO {
                 WHERE uuid = :uuid
     """)
     Report getReport(
-            @Bind("uuid") UUID uuid
+            @Bind("uuid") String uuid
     );
 }

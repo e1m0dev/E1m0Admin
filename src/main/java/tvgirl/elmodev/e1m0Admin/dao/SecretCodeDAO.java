@@ -16,10 +16,10 @@ public interface SecretCodeDAO {
         INSERT INTO e1admin_code
         (uuid, adminNick, code, regIP)
         VALUES
-                        (:uuid, :adminNick, :code, :regIP)
+                (:uuid, :adminNick, :code, :regIP)
     """)
     void systemSetSecretCode(
-            @Bind("uuid") UUID uuid,
+            @Bind("uuid") String uuid,
             @Bind("adminNick") String nick,
             @Bind("code") int code,
             @Bind("regIP") String IP
@@ -32,7 +32,7 @@ public interface SecretCodeDAO {
                 (:uuid, :adminNick, :staffNick, :code, :regIP)
     """)
     void staffSetSecretCode(
-            @Bind("uuid") UUID uuid,
+            @Bind("uuid") String uuid,
             @Bind("adminNick") String anick,
             @Bind("staffNick") String snick,
             @Bind("code") int code,
@@ -40,11 +40,11 @@ public interface SecretCodeDAO {
     );
 
     @SqlQuery("""
-        SELECT *
+                SELECT code
         FROM e1admin_code
         WHERE uuid = :uuid
     """)
-    byte getCode(
-            @Bind("uuid") UUID uuid
+    int getCode(
+            @Bind("uuid") String uuid
     );
 }

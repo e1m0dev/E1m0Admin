@@ -77,6 +77,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        bonusDAO.insert(UUID.randomUUID(), staffID, adminID, staff.getName(), admin.getName(), sum, message);
+        bonusDAO.insert(UUID.randomUUID().toString(), staffID.toString(), adminID.toString(), staff.getName(), admin.getName(), sum, message);
     }
 }

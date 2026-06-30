@@ -17,9 +17,9 @@ public interface BonusDAO {
         (:uuid, :staffID, :adminID, :staffNick, :adminNick, :sum, :message)
     """)
     void insert(
-            @Bind("uuid") UUID uuid,
-            @Bind("staffID") UUID staffID,
-            @Bind("adminID") UUID adminID,
+            @Bind("uuid") String uuid,
+            @Bind("staffID") String staffID,
+            @Bind("adminID") String adminID,
             @Bind("staffNick") String staffNick,
             @Bind("adminNick") String adminNick,
             @Bind("sum") int sum,

@@ -23,6 +23,6 @@ public class AdminGameRepository implements GameRepositoryAPI {
         Player admin = Bukkit.getPlayer(adminID);
         Player player = Bukkit.getPlayer(playerID);
 
-        reportDAO.sendReport(UUID.randomUUID(), adminID, playerID, admin.getName(), player.getName(), request, response, status);
+        reportDAO.sendReport(UUID.randomUUID().toString(), adminID.toString(), playerID.toString(), admin.getName(), player.getName(), request, response, status);
     }
 }

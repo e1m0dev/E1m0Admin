@@ -211,17 +211,4 @@ public class AdminGameService implements GameServiceAPI {
 
         reportPlayers.remove(report.getPlayerID());
     }
-
-    // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
-    @Override
-    public void openReportGUI(UUID adminID, String response) {
-        reportGUI.openReportGUI(adminID, response);
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /arep была введена и пропущена. Админ ID: " + adminID); // ТЕСТЕР
-    }
-
-    @Override
-    public void handleAccess(UUID adminID) {
-        Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND-SERVICE: /aacess была введена и пропущена."); // ТЕСТЕР
-        secretCodeGui.openPINGui(adminID);
-    }
 }

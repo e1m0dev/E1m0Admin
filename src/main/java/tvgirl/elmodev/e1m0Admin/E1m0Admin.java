@@ -11,6 +11,8 @@ import tvgirl.elmodev.e1m0Admin.commands.admin.RewatchCommand;
 import tvgirl.elmodev.e1m0Admin.commands.console.*;
 import tvgirl.elmodev.e1m0Admin.commands.player.PlayerReportCommand;
 import tvgirl.elmodev.e1m0Admin.commands.staff.*;
+import tvgirl.elmodev.e1m0Admin.gui.controller.report.ReportController;
+import tvgirl.elmodev.e1m0Admin.gui.controller.secretcode.SecretCodeController;
 import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
 import tvgirl.elmodev.e1m0Admin.gui.guis.secretcode.SecretCodeGui;
 import tvgirl.elmodev.e1m0Admin.listeners.bukkit.QuitListener;
@@ -22,6 +24,7 @@ import tvgirl.elmodev.e1m0Admin.service.ConsoleService;
 import tvgirl.elmodev.e1m0Admin.service.gui.ReportSystemService;
 import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSession;
 import tvgirl.elmodev.e1m0Admin.tabcompliter.MainTabCompleter;
 import tvgirl.elmodev.e1m0Admin.database.DatabaseManager;
 import tvgirl.elmodev.e1m0Admin.database.DatabaseSource;
@@ -41,9 +44,13 @@ import java.util.UUID;
 
 public final class E1m0Admin extends JavaPlugin {
 
-    // | ❗ PLUGIN MEMORY
+    // | ❗ PLUGIN MEMORY:
+
     // 🚨 | REPORT MEMORY
     private Map<UUID, UUID> reportPlayer = new HashMap<>();
+
+    // 🧑‍💻 | SESSION MEMORY
+    private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>();
 
     // 🌐 | NAMESPACED KEY
     private NamespacedKey secretKey = new NamespacedKey(this, "secretActions");
@@ -86,6 +93,10 @@ public final class E1m0Admin extends JavaPlugin {
     private SecretCodeGui secretCodeGui;
     private ReportGUI reportGui;
 
+    /* GUI CONTROLLERS */
+    private SecretCodeController secretCodeController;
+    private ReportController reportController;
+
     /* Manager */
     private PluginManager lManager = Bukkit.getPluginManager();
 
@@ -111,6 +122,9 @@ public final class E1m0Admin extends JavaPlugin {
         // 💬 | Sender
         sender = new E1m0Sender(getConfig());
 
+        // ⌚ | Permissions
+        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
+
         // ⚙️ | Database
         databaseSource = new DatabaseSource(getConfig());
         databaseSource.init();
@@ -128,14 +142,7 @@ public final class E1m0Admin extends JavaPlugin {
 
         // ♾️ | State
         secretCodeManager = new SecretCodeManager();
-        sessionManager = new AdminSessionManager(systemRepository);
-
-        // ⌚ | Permissions
-        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
-
-        // 🌐 | GUI
-        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
-        reportGui = new ReportGUI(reportKey, reportActions, reportService, getConfig(), this);
+        sessionManager = new AdminSessionManager(systemRepository, sessionsCache);
 
         // 🧑‍🔬 | Service
         consoleService = new ConsoleService(secretCodeRepository, systemRepository, staffRepository, getConfig(), sender);
@@ -147,20 +154,31 @@ public final class E1m0Admin extends JavaPlugin {
         staffService = new AdminsStaffService(secretCodeRepository, staffRepository, systemRepository, getConfig(), sender);
         gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, reportPlayer, getConfig(), reportGui, this, sender);
 
+        // - | E1m0
+        lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
+
+        // 🌐 | GUI
+        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
+        reportGui = new ReportGUI(reportKey, reportActions, reportService, getConfig(), this);
+
         // 🗣️ | Listeners
         lManager.registerEvents(new JoinListener(getConfig(), sessionManager), this);
         lManager.registerEvents(new QuitListener(getConfig(), systemService, sessionManager, secretCodeManager), this);
 
-        // - | E1m0
-        lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
+        // Controllers
+        secretCodeController = new SecretCodeController(secretCodeGui, secretKey, secretCodeService);
+        lManager.registerEvents(secretCodeController, this);
+
+        reportController = new ReportController(reportKey, reportActions, reportService);
+        lManager.registerEvents(reportController, this);
 
         // 🤖 | Commands
         // - | Admin
+        getCommand("arep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
+        getCommand("aaccess").setExecutor(new AccessCommand(getConfig(), gameService, secretCodeGui, permissionManager));
         getCommand("ainv").setExecutor(new InvisibilityCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("areoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("arec").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
-        getCommand("arep").setExecutor(new ReportCommand(sender, getConfig(), gameService, permissionManager));
-        getCommand("aaccess").setExecutor(new AccessCommand(getConfig(), gameService, permissionManager));
 
         // - | Player
         getCommand("arep").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, reportPlayer));
@@ -198,6 +216,9 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("aset").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("aup").setTabCompleter(new MainTabCompleter(getConfig()));
 
+        getCommand("cdel").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("cup").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("cdown").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("csetadmin").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("csetsecret").setTabCompleter(new MainTabCompleter(getConfig()));
 

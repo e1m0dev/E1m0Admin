@@ -9,6 +9,7 @@ public interface SecretCodeRepositoryAPI {
 
     /* SYSTEM | 💾 */
     void systemSetSecretCode(UUID adminID, int code);
-    byte getSecretCode(UUID adminID);
+
+    int getSecretCode(UUID adminID);
 
 }

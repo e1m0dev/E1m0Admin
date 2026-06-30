@@ -30,6 +30,12 @@ public class MainTabCompleter implements TabCompleter {
 
             if (strings.length == 1) {
                 switch (sub) {
+                    case "cup":
+                    case "cdel":
+                    case "cdown":
+                    case "csetadmin":
+                    case "csetsecret":
+
                     case "aup":
                     case "adel":
                     case "aset":
@@ -49,7 +55,12 @@ public class MainTabCompleter implements TabCompleter {
             } else if (strings.length == 2) {
                 switch (sub) {
 
+                    case "cdel":
+                        tab.add("Причина увольнения?");
+                        break;
+
                     case "aset":
+                    case "cset":
                         tab.add("Уровень/Weight?");
                         break;
 
@@ -65,7 +76,7 @@ public class MainTabCompleter implements TabCompleter {
 
                     case "abonus":
                     case "abonusall":
-                        tab.add("Message?");
+                        tab.add("Сообщение?");
                         break;
                 }
             }

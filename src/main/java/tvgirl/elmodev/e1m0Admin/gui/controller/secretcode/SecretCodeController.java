@@ -28,54 +28,73 @@ public class SecretCodeController implements Listener {
         this.codeService = codeService;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onClickToPin(InventoryClickEvent e) {
-        if (!(e.getView().getTopInventory().getHolder() instanceof SecretCodeHolder holder)) return;
         Inventory inv = e.getClickedInventory();
+        if (inv == null) return;
+
+        if (!(inv.getHolder() instanceof SecretCodeHolder holder)) return;
+        e.setCancelled(true);
+
+        Bukkit.getLogger().warning(holder.getName() + " Это holder]");
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        e.setCancelled(true);
         if (inv == null) {
             return;
         }
 
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) {
+            e.setCancelled(true);
             return;
         }
 
         ItemStack item = e.getCurrentItem();
+
+        if (item == null) return;
+
+        Bukkit.getLogger().warning(item + " Это предмет");
+
         String action = item.getPersistentDataContainer().get(actionKey, PersistentDataType.STRING);
 
+        Bukkit.getLogger().warning(action + " Это действие");
+
         UUID playerID = e.getWhoClicked().getUniqueId();
-        byte num = handlerButton(action);
+        int num = handlerButton(action);
 
         if(num == 0) {
             p.closeInventory();
             return;
         }
 
-        Bukkit.getLogger().info("SecretCodeController | Точка входа GUI-CONTROLLER: Администратор нажал: " + num + " Этап: " + holder.getName()); // ТЕСТЕР
+        Bukkit.getLogger().info("SecretCodeController | Точка входа COMMAND-GUI-CONTROLLER: Администратор нажал: " + num + " Этап: " + num); // ТЕСТЕР
 
-        switch (holder.getName()) {
-            case "step_one" -> {
+        switch (holder.getName().toLowerCase()) {
+            case "step_pin" -> {
+                Bukkit.getLogger().warning("STEP_PIN");
                 codeService.oneStepHandler(playerID, num);
-                codeGUI.openTwoStepGUI(playerID, num);
+                codeGUI.openTwoStepGUI(playerID);
             }
             case "step_two" -> {
+                Bukkit.getLogger().warning("step_two");
                 codeService.twoStepHandler(playerID, num);
-                codeGUI.openThreeStepGUI(playerID, num);
+                codeGUI.openThreeStepGUI(playerID);
             }
             case "step_three" -> {
+                Bukkit.getLogger().warning("step_three");
                 codeService.threeStepHandler(playerID, num);
-                codeGUI.openFoursStepGUI(playerID, num);
+                codeGUI.openFoursStepGUI(playerID);
             }
-            case "step_fours" -> codeService.foursStepHandler(playerID, num);
+            case "step_fours" -> {
+                Bukkit.getLogger().warning("step_fours");
+                codeService.foursStepHandler(playerID, num);
+            }
         }
     }
 
-    private byte handlerButton(String action) {
-        byte i = 0;
+    // Если ошибка любая - переписать byte - int
+    private int handlerButton(String action) {
+        int i = 0;
 
         switch (action) {
             case "BUTTON_ONE":

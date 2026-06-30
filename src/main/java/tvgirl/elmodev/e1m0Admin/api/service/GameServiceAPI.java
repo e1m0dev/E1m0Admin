@@ -13,7 +13,4 @@ public interface GameServiceAPI {
 
     void sendReport(Report report);
     void fastReport(UUID adminID, Report report);
-    void openReportGUI(UUID adminID, String response);
-
-    void handleAccess(UUID adminID);
 }
