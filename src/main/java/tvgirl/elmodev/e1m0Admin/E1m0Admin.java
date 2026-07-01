@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import tvgirl.elmodev.e1m0Admin.commands.admin.AccessCommand;
 import tvgirl.elmodev.e1m0Admin.commands.admin.InvisibilityCommand;
 import tvgirl.elmodev.e1m0Admin.commands.admin.ReportCommand;
@@ -24,6 +25,7 @@ import tvgirl.elmodev.e1m0Admin.service.ConsoleService;
 import tvgirl.elmodev.e1m0Admin.service.gui.ReportSystemService;
 import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
+import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeState;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSession;
 import tvgirl.elmodev.e1m0Admin.tabcompliter.MainTabCompleter;
 import tvgirl.elmodev.e1m0Admin.database.DatabaseManager;
@@ -39,6 +41,7 @@ import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,18 +50,28 @@ public final class E1m0Admin extends JavaPlugin {
     // | ❗ PLUGIN MEMORY:
 
     // 🚨 | REPORT MEMORY
-    private Map<UUID, UUID> reportPlayer = new HashMap<>();
+    private HashMap<UUID, UUID> playerReportCache = new HashMap<>();
 
     // 🧑‍💻 | SESSION MEMORY
     private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>();
 
-    // 🌐 | NAMESPACED KEY
-    private NamespacedKey secretKey = new NamespacedKey(this, "secretActions");
+    // 🌐 | PERMISSIONS MEMORY
+    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>();
 
+    // 🪼 | Invise Memory
+    private HashSet<UUID> inviseCache = new HashSet<>(); // Администраторы в инвизе;
+
+    // 🧑‍💻 |  RECON MEMORY
+    private HashMap<UUID, UUID> reconCache = new HashMap<>(); // Администраторы в рекона;
+    private HashMap<UUID, BukkitTask> rewatchTasksCache = new HashMap<>(); // Таски для переноса и защитки;
+
+    // 🌐 | NAMESPACED KEY
     private NamespacedKey reportActions = new NamespacedKey(this, "reportActions");
     private NamespacedKey reportKey = new NamespacedKey(this, "reportKey");
 
-    // Boot
+    private NamespacedKey secretKey = new NamespacedKey(this, "secretActions");
+
+    // BOOT:
 
     /* SENDER */
     private E1m0Sender sender;
@@ -122,9 +135,6 @@ public final class E1m0Admin extends JavaPlugin {
         // 💬 | Sender
         sender = new E1m0Sender(getConfig());
 
-        // ⌚ | Permissions
-        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
-
         // ⚙️ | Database
         databaseSource = new DatabaseSource(getConfig());
         databaseSource.init();
@@ -141,18 +151,21 @@ public final class E1m0Admin extends JavaPlugin {
         gameRepository = new AdminGameRepository(databaseManager.getJdbi());
 
         // ♾️ | State
-        secretCodeManager = new SecretCodeManager();
+        secretCodeManager = new SecretCodeManager(codeCache);
         sessionManager = new AdminSessionManager(systemRepository, sessionsCache);
 
         // 🧑‍🔬 | Service
         consoleService = new ConsoleService(secretCodeRepository, systemRepository, staffRepository, getConfig(), sender);
 
-        reportService = new ReportSystemService(sender, getConfig(), reportSystemRepository, reportPlayer);
-        secretCodeService = new SecretCodeService(secretCodeRepository, permissionManager, getConfig(), sender);
+        reportService = new ReportSystemService(sender, getConfig(), reportSystemRepository, playerReportCache);
+        secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, permissionManager, secretCodeManager, getConfig(), sender);
 
-        systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, reportPlayer, getConfig(), sender, this);
+        systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
         staffService = new AdminsStaffService(secretCodeRepository, staffRepository, systemRepository, getConfig(), sender);
-        gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, reportPlayer, getConfig(), reportGui, this, sender);
+        gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), reportGui, sender, this);
+
+        // ⌚ | Permissions
+        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
 
         // - | E1m0
         lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
@@ -174,14 +187,14 @@ public final class E1m0Admin extends JavaPlugin {
 
         // 🤖 | Commands
         // - | Admin
-        getCommand("arep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
-        getCommand("aaccess").setExecutor(new AccessCommand(getConfig(), gameService, secretCodeGui, permissionManager));
+        getCommand("rep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
+        getCommand("aaccess").setExecutor(new AccessCommand(sender, getConfig(), gameService, secretCodeGui, permissionManager));
         getCommand("ainv").setExecutor(new InvisibilityCommand(sender, getConfig(), gameService, permissionManager));
-        getCommand("areoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
-        getCommand("arec").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
+        getCommand("reoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
+        getCommand("re").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
 
         // - | Player
-        getCommand("arep").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, reportPlayer));
+        getCommand("arep").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, playerReportCache));
 
         // - | Staff
         getCommand("adown").setExecutor(new AdminDownCommand(sender, getConfig(), staffService, permissionManager, systemRepository));
@@ -201,10 +214,12 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(getConfig(), consoleService));
 
         // ❓ | Tab-Completer.
+        getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("rec").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("ainv").setTabCompleter(new MainTabCompleter(getConfig()));
-        getCommand("arec").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("arep").setTabCompleter(new MainTabCompleter(getConfig()));
-        getCommand("areoff").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("recon").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("reoff").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("report").setTabCompleter(new MainTabCompleter(getConfig()));
 

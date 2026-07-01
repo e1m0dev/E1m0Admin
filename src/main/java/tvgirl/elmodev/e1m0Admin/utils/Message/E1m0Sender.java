@@ -1,6 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.utils.Message;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +28,18 @@ public class E1m0Sender implements SenderAPI {
             }
         }
 
-        sendedPlayer.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + text));
+        String prefix = cfg.getString("Settings.prefixEnable");
+
+        if (cfg.getBoolean("Settings.prefixEnable")) {
+            sendedPlayer.sendMessage(color.parse(prefix + " " + text));
+        } else {
+            sendedPlayer.sendMessage(color.parse(text));
+        }
     }
 
     @Override
-    public void sendPath(@NotNull Player sendedPlayer, @NotNull String path, @Nullable String... replacements) {
-        String text = PlaceholderAPI.setPlaceholders(sendedPlayer, path);
+    public void sendPath(@NotNull Player sendUser, @NotNull String path, @Nullable String... replacements) {
+        String text = PlaceholderAPI.setPlaceholders(sendUser, path);
 
         if (replacements != null) {
             for (int i = 0; i < replacements.length; i += 2) {
@@ -40,6 +47,13 @@ public class E1m0Sender implements SenderAPI {
             }
         }
 
-        sendedPlayer.sendMessage(color.parse(cfg.getString("Settings.prefix") + " " + cfg.getString(path)));
+        String prefix = cfg.getString("Settings.prefixEnable");
+        String cfgMessage = cfg.getString(path);
+
+        if (cfg.getBoolean("Settings.prefixEnable")) {
+            sendUser.sendMessage(color.parse(prefix + " " + cfgMessage));
+        } else {
+            sendUser.sendMessage(color.parse(cfgMessage));
+        }
     }
 }

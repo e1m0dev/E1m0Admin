@@ -24,64 +24,84 @@ public class MainTabCompleter implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] strings) {
         List<String> tab = new ArrayList<>();
 
-        String sub = strings.length > 0 ? strings[0].toLowerCase() : "";
 
-        if (!sender.hasPermission(cfg.getString("Permissions.admin"))) {
+        if (sender.hasPermission(cfg.getString("Permissions.admin"))) {
+            switch (command.getName().toLowerCase()) {
 
-            if (strings.length == 1) {
-                switch (sub) {
-                    case "cup":
-                    case "cdel":
-                    case "cdown":
-                    case "csetadmin":
-                    case "csetsecret":
-
-                    case "aup":
-                    case "adel":
-                    case "aset":
-                    case "adown":
-                    case "abonus":
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            if (player.hasPermission(cfg.getString("Permissions.admin"))) {
-                                tab.add(player.getName());
-                            }
-                        }
-
-                    case "arep": {
-                        tab.add("Form");
-                        break;
+                case "abonus":
+                    if (strings.length == 1) {
+                        tab.add("Player?");
+                    } else if (strings.length == 2) {
+                        tab.add("10?");
+                        tab.add("100?");
+                        tab.add("1000?");
+                    } else if (strings.length == 3) {
+                        tab.add("Message?");
                     }
-                }
-            } else if (strings.length == 2) {
-                switch (sub) {
 
-                    case "cdel":
-                        tab.add("Причина увольнения?");
-                        break;
+                    break;
 
-                    case "aset":
-                    case "cset":
-                        tab.add("Уровень/Weight?");
-                        break;
+                case "abonusall":
+                    if (strings.length == 1) {
+                        tab.add("10?");
+                        tab.add("100?");
+                        tab.add("1000?");
+                    } else if (strings.length == 2) {
+                        tab.add("Message?");
+                    }
 
-                    case "abonus":
-                    case "abonusall":
-                        tab.add("10");
-                        tab.add("100");
-                        tab.add("777?");
-                        break;
-                }
-            } else if (strings.length == 3) {
-                switch (sub) {
+                    break;
 
-                    case "abonus":
-                    case "abonusall":
-                        tab.add("Сообщение?");
-                        break;
+                case "adel":
+                case "cdel":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    } else if (strings.length == 2) {
+                        tab.add("Reason?");
+                    }
+
+                    break;
+
+                case "aset":
+                case "csetadmin":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    } else if (strings.length == 2) {
+                        tab.add("Weight?");
+                    }
+
+                    break;
+
+
+                case "csetsecret":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    } else if (strings.length == 2) {
+                        tab.add("Code?");
+                    }
+
+                    break;
+
+                case "re":
+                case "arec":
+                case "recon":
+
+                case "cup":
+                case "cdown":
+
+                case "aup":
+                case "adown":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
                 }
             }
         }
-
         return tab;
+    }
+
+    private void getOnlinePlayers(List<String> tab) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            tab.add(player.getName());
+        }
     }
 }

@@ -31,42 +31,47 @@ public class AdminGameService implements GameServiceAPI {
     private final AdminGameRepository gameRepository;
     private final SecretCodeGui secretCodeGui;
 
-    private HashSet<UUID> invAdmins = new HashSet<>(); // Администраторы в инвизе;
+    // Перенести в дамп E1m0
+    private final HashSet<UUID> inviseCache; // Администраторы в инвизе;
 
-    private final Map<UUID, UUID> reportPlayers; // Игроки с репортом в памяти;
-    private final Map<UUID, UUID> reAdmins = new HashMap<>(); // Администраторы в рекона;
-    private final Map<UUID, BukkitTask> rewatchTasks = new HashMap<>(); // Таски для переноса и защитки;
+    private final HashMap<UUID, BukkitTask> rewatchTasksCache; // Таски для переноса и защитки;
+    private final HashMap<UUID, UUID> playerReportCache; // Игроки с репортом в памяти;
+    private final HashMap<UUID, UUID> reconCache; // Администраторы в рекона;
 
     private final FileConfiguration cfg;
     private final ReportGUI reportGUI;
     private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
-    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, Map<UUID, UUID> reportPlayers, FileConfiguration cfg, ReportGUI reportGUI, E1m0Admin plugin, E1m0Sender sender) {
+    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, UUID> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
+        this.rewatchTasksCache = rewatchTasksCache;
+        this.playerReportCache = playerReportCache;
         this.reportRepository = reportRepository;
         this.gameRepository = gameRepository;
         this.secretCodeGui = secretCodeGui;
-        this.reportPlayers = reportPlayers;
+        this.inviseCache = inviseCache;
+        this.reconCache = reconCache;
         this.reportGUI = reportGUI;
-        this.plugin = plugin;
         this.sender = sender;
+        this.plugin = plugin;
         this.cfg = cfg;
     }
-
 
     @Override
     public void handleInvisibility(UUID adminID) {
         Player p = Bukkit.getPlayer(adminID);
-        if (!(invAdmins.contains(adminID))) {
+        Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND-SERVICE: /ainvise | Успешно прошел в команду."); // ТЕСТЕР
+
+        if (!(inviseCache.contains(adminID))) {
             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, true));
             sender.sendPath(p, "Messages.inviseOn");
-            invAdmins.add(adminID);
+            inviseCache.add(adminID);
 
             Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND-SERVICE: /ainvise | Был успешно включен. Статус бакета HashMap: Не найден."); // ТЕСТЕР
         } else {
             p.removePotionEffect(PotionEffectType.INVISIBILITY);
             sender.sendPath(p, "Messages.inviseOff");
-            invAdmins.remove(adminID);
+            inviseCache.remove(adminID);
 
             Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND-SERVICE: /ainvise | Был успешно выключен. Статус бакета HashMap: Найден"); // ТЕСТЕР
         }
@@ -74,12 +79,17 @@ public class AdminGameService implements GameServiceAPI {
 
     @Override
     public void handleRewatch(UUID adminID, UUID playerID) {
-        BukkitTask old = rewatchTasks.remove(adminID);
+        Bukkit.getLogger().info("InvisibilityCommand | Команда в обработчике!"); // ТЕСТЕР
+
+        if (rewatchTasksCache.containsKey(adminID)) {
+            BukkitTask old = rewatchTasksCache.remove(adminID);
+
+            reconCache.remove(adminID);
+            old.cancel();
+        }
+
         Player admin = Bukkit.getPlayer(adminID);
         Player player = Bukkit.getPlayer(playerID);
-
-        reAdmins.remove(adminID);
-        old.cancel();
 
         admin.setGameMode(GameMode.SPECTATOR);
 
@@ -94,8 +104,8 @@ public class AdminGameService implements GameServiceAPI {
         };
 
         BukkitTask task = runnable.runTaskTimer(plugin, cfg.getLong("Settings.Dev.rewatchTick"), cfg.getLong("Settings.Dev.rewatchTick"));
-        reAdmins.put(adminID, playerID);
-        rewatchTasks.put(adminID, task);
+        reconCache.put(adminID, playerID);
+        rewatchTasksCache.put(adminID, task);
     }
 
     @Override
@@ -108,11 +118,11 @@ public class AdminGameService implements GameServiceAPI {
         double y = cfg.getDouble("Admin.AdminZone.y");
         double z = cfg.getDouble("Admin.AdminZone.z");
 
-        BukkitTask task = rewatchTasks.remove(adminID);
+        BukkitTask task = rewatchTasksCache.remove(adminID);
         task.cancel();
 
         admin.teleportAsync(new Location(world, x, y, z));
-        reAdmins.remove(adminID);
+        reconCache.remove(adminID);
     }
 
     @Override
@@ -209,6 +219,6 @@ public class AdminGameService implements GameServiceAPI {
         report.answer(adminID, adm.getName(), cfg.getString("Admin.Report.EmergencyReport.emergencyMessage"), cfg.getString("Admin.Report.status_answered"));
         reportRepository.updateReport(report);
 
-        reportPlayers.remove(report.getPlayerID());
+        playerReportCache.remove(report.getPlayerID());
     }
 }

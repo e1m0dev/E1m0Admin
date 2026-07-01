@@ -62,5 +62,7 @@ public class ReportController implements Listener {
         Bukkit.getLogger().info("SecretCodeController | Точка входа GUI-CONTROLLER: Администратор взял репорт"); // ТЕСТЕР
         UUID reportUuid = UUID.fromString(rawUuid);
         reportService.clickToReport(e.getWhoClicked().getUniqueId(), reportUuid, holder.getAnswer());
+
+        // TODO: Event?
     }
 }

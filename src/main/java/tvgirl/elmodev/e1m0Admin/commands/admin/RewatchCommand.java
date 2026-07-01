@@ -32,31 +32,41 @@ public class RewatchCommand implements CommandExecutor {
             return false;
         }
 
+        String permission = cfg.getString("Permissions.rewatch");
+
         if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
-            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput", "", "");
+            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
-        if(strings.length < 2) {
+        if (admin.hasPermission(permission)) {
+            Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleRewatch | Следящий режим"); // ТЕСТЕР
+        } else {
+            Bukkit.getLogger().info("RewatchCommand | У мужлан нет прав"); // ТЕСТЕР
+        }
+
+        // /reoff
+        if (command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
+            Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleReoff | Админ-режим"); // ТЕСТЕР
+            service.handleReoff(admin.getUniqueId());
+        }
+
+        String user = strings[0];
+
+        Player player = Bukkit.getPlayer(user);
+        if (player == null) {
+            sender.sendPath(admin, "Messages.Errors.nullPlayer");
+            return false;
+        }
+
+        if (strings.length < 1) {
             sender.sendPath(admin, "Messages.Errors.lengthError");
             return false;
         }
 
-        // /arec E1m0 || /rewatch E1m0
-        if (command.getName().toLowerCase().equalsIgnoreCase("arec")) {
-            String user = strings[1];
-            Player player = Bukkit.getPlayer(user);
-
-            if (admin.hasPermission(cfg.getString("Permissions.rewatch"))) {
-                service.handleRewatch(admin.getUniqueId(), player.getUniqueId());
-                Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleRewatch | Следящий режим"); // ТЕСТЕР
-
-            }
-        } else if (command.getName().toLowerCase().equalsIgnoreCase("areoff")) {
-            if (admin.hasPermission(cfg.getString("Permissions.rewatch"))) {
-                service.handleReoff(admin.getUniqueId());
-                Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleReoff | Админ-режим"); // ТЕСТЕР
-            }
+        // /re E1m0 || /rewatch E1m0
+        if (command.getName().toLowerCase().equalsIgnoreCase("re") || command.getName().toLowerCase().equalsIgnoreCase("rewatch")) {
+            service.handleRewatch(admin.getUniqueId(), player.getUniqueId());
         }
 
         return true;

@@ -49,7 +49,7 @@ public class AdminSetSecretCode implements CommandExecutor {
             String strCode = strings[1];
 
             if (strCode.length() < 4) {
-                sender.sendPath(staff, "Messages.Errors.setAdminCodeWrong");
+                sender.sendPath(staff, "Messages.Errors.setAdminCodeIsWrong");
                 return false;
             }
 

@@ -20,7 +20,7 @@ public class AdminAccessListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onAdminJoin(AdminAccessEvent e) {
+    public void onAdminRegistered(AdminAccessEvent e) {
         Player admin = e.getAdmin();
 
         // TODO 2.0:

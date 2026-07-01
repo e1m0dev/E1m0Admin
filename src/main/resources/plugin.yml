@@ -12,7 +12,7 @@ softdepend:
 # TODO
 commands:
   # | ADMIN
-  arep:
+  rep:
     description: "Команда ответа на репорт"
     aliases: [ rep ]
     usage: "/arep Спешу к Вам на помощь!"
@@ -20,14 +20,14 @@ commands:
     description: "Команда сокрытия администратора"
     aliases: [ ainvise, ainvisibility ]
     usage: "/ainv"
-  arec:
+  re:
     description: "Команда слежки за игроком"
     aliases: [ recon, re, rec ]
     usage: "/arec E1m0"
-  areoff:
+  reoff:
     description: "Отключение слежки за игроком"
-    aliases: [ recon, re, rec ]
-    usage: "/areoff E1m0"
+    aliases: [ roff, arewatchoff ]
+    usage: "/areoff"
 
   # | ADMIN
   aaccess:

@@ -20,18 +20,20 @@ import java.util.UUID;
 
 public class SecretCodeService implements SecretCodeServiceAPI {
 
-    private final HashMap<UUID, SecretCodeState> secretCode = new HashMap<>();
+    private final HashMap<UUID, SecretCodeState> secretCode;
     private final SecretCodeRepository secretCodeRepository;
     private final E1m0Permission e1m0Permission;
+    private final SecretCodeManager manager;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
-    private SecretCodeManager manager = new SecretCodeManager();
     private E1m0Color color = new E1m0Color();
 
-    public SecretCodeService(SecretCodeRepository secretCodeRepository, E1m0Permission e1m0Permission, FileConfiguration cfg, E1m0Sender sender) {
+    public SecretCodeService(HashMap<UUID, SecretCodeState> secretCode, SecretCodeRepository secretCodeRepository, E1m0Permission e1m0Permission, SecretCodeManager manager, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
         this.e1m0Permission = e1m0Permission;
+        this.secretCode = secretCode;
+        this.manager = manager;
         this.sender = sender;
         this.cfg = cfg;
     }
@@ -119,6 +121,11 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             manager.addAdminAccess(state);
             Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user));
             Bukkit.getLogger().info("SecretCodeService | Точка выхода: foursStepHandler: 💚 Прошел полностью.."); // ТЕСТЕР
+
+            // CHECK ВЕТКА
+            SecretCodeState stateCheck = manager.getAdminByID(id);
+            boolean f = stateCheck != null;
+            Bukkit.getLogger().warning("Boolean: " + f);
         } else {
             if(cfg.getBoolean("Admin.SecretCode.wrongCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {

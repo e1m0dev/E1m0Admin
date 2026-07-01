@@ -58,6 +58,7 @@ CFG:
 Commit 1.3-DEV | Build, Packed, Tested:
 🧑‍💻 | E1m0: Подвожу итог разработки версии 1.0, коммиты идут, но версия то никуда не меняется, по этому -- сейчас
 собираю все это и запускаю, я думаю исправлять буду раз 30, плагин большой, так что работы у меня много
+
 Admin && Staff:
 Controllers;
 Repository;
@@ -431,6 +432,101 @@ listener.
 
     ARCHITECTURE-GUI:
         /acc -> COMMAND -> GUI -> CONTROLLER -> SERVICE -> EVENT -> LISTENER | ЦЕПЬ УСПЕШНО ПРОШЛА ➕
+
+Commit 1.8-DEV | feat: Check/Tests Admin commands and new message for config, new realisation for utils (E1m0Sender) &&
+Fix permission in commands and E1m0Permission
+
+API:
+❗ SecretCodeActions - Был удален из API. Причина: Архитектурная запутанность, нашлось решение быстрее через обычные
+Immutable String transfer State (+ Thread Safety)
+
+CFG:
+💚 config.yml | Messages/Errors: deleteAdminWeightError | Если вес администратора target перевешивает weight
+администратора admin который выполняет команду - Ошибка. Пример: Администратор 1-го уровня не может снять разработчика.
+💚 config.yml | Messages/Errors: downAdminWeightError | Если вес администратора target перевешивает weight администратора
+admin который выполняет команду - Ошибка. Пример: Администратор 1-го уровня не может понизить разработчика.
+💚 config.yml | Messages/Errors: upAdminWeightError | Если вес администратора target перевешивает weight администратора
+admin который выполняет команду - Ошибка. Пример: Администратор 1-го уровня не может повысить разработчика.
+
+💚 config.yml | setAdminCodeWrong -> setAdminCodeIsWrong | Улучшение читаемости и адаптивности, если будут разработчики
+сразу понимают что это и зачем.
+💚 config.yml | Permissions.setadmin -> Permissions.setadm | Улучшение скорости читаемости и композиции в цепи, все
+должно быть понятно и красиво.
+
+💚 config.yml | Добавил новую функцию как: prefixEnable? Свитчер отвечает за префикс соответсвенно, в утилите будет ли
+показан префикс или нет?
+💚 config.yml | Не большие правки архитектуры, поднял Server наверх для лучшей ориентации по конфигу для клиента.
+
+💚 config.yml | Добавил новую строчку в Messages.Errors: permissionError, если у администратора нет права на команду -
+вылетает она.
+
+❤️ config.yml | Убрана возможность адаптивности кнопок до следующих версий. Причина: Я посчитал что репортов можно
+сделать максимум 50. И просто сетать их в меню, пока - страницы не нужны.
+
+Sender:
+💚 E1m0Sender | Новый функционал в связи с добавлением prefixEnable в конфиг для моих методов sendPath и sendString 🧑‍💻
+
+Commands:
+💚 RewatchCommand | Поменял половину схематики команд re, теперь reoff не нужны аргументы, а re - да, создать отдельную
+команду? А зачем? Единая система - единый обработчик.
+
+💚 AdminUpCommand | Добавлена проверка на Staff point;
+💚 AdminDelCommand | Добавлена проверка на Staff point;
+💚 AdminDownCommand | Добавлена проверка на Staff point;
+
+💛 AccessCommand | Небольшое ревью с правами.
+💛 AdminSetCommand | Небольшое ревью с правами.
+
+💜 RewatchCommand | Небольшое исправление, поменял условие аргументов с 2 на 1, потому что нужен только Player, админ
+идет с команды.
+💜 RewatchCommand | Небольшое исправление strings[1] -> strings[0], потому что аргумент 1, всегда забываю
+
+Service:
+💚 AdminStaffService | Добавлена защита от неподобающей должности по weight в upAdmin
+💚 AdminStaffService | Добавлена защита от неподобающей должности по weight в delAdmin
+💚 AdminStaffService | Добавлена защита от неподобающей должности по weight в downAdmin
+
+💚 ConsoleService | Добавлена защита от неподобающей должности по weight в upAdmin
+💚 ConsoleService | Добавлена защита от неподобающей должности по weight в downAdmin
+
+Listener:
+💛 AdminAccessListener | onAdminJoin -> onAdminRegistered. Улучшение читаемости и адаптивности, если будут разработчики
+сразу понимают что это и зачем.
+
+TabCompleter:
+💚 MainTabCompliter: ПОЛНАЯ ПЕРЕСТРОЙКА ЛОГИКИ, все заменено на switch архитектуру, вместо не рабочего strings[].
+💛 Маленькое ревью логики, чисто для мелкой оптимизации и читаемости.
+
+E1m0Admin:
+💚 arec -> re | Переименование. Причина: Я думаю - что rewatch, reoff - это частые команды. И они - должны быть
+сокращенными, для любителей харда оставил aliases: [ roff, arewatchoff ]
+💚 areoff -> reoff | Переименование. Причина: Я думаю - что rewatch, reoff - это частые команды. И они - должны быть
+сокращенными, для любителей харда оставил aliases: [ roff, arewatchoff ]
+
+💚 Новые aliases в TAB-Completer чисто для удобства админов в игре.
+💚 Новый слой памяти по композиции перенесенный из SecretCodeStateManager: codeCache. Позволяет хранить пользовательские
+пароли с данными.
+💛 playerReport -> playerReportCache | Улучшение читаемости и адаптивности, если будут разработчики сразу понимают что
+это и зачем.
+
+Что было исправлено:
+💜 ПОЧИНИЛ ЦЕПОЧКУ PERMISSIONS ВМЕСТЕ С AINV ❗
+💜 Исправлена архитектура DI в связи с permissionManager. Перекинул его в самый низ.
+💜 Исправлена утечка информации среди сервиса и stateManager, я понял что происходит именно не свойство типов и нашел
+лик.
+
+E1m0: 🧑‍💻 "Новые идеи для TODO list 2.0 | -> DEVLOG.md"
+E1m0: Вот думаю, скорее всего растяну на несколько обновлений функции, если будет аудитория плагина надо решить вопрос с
+багами, а после - с обновлением, я же знаю что они точно будут у клиентов.
+
+PICK-CHECK COMMANDS:
+
+    ADMIN:
+        /re E1m0 - VDOVA | Отработала, исправлена | Прошла тестеры: ➕
+        /reoff E1m0 | Отработала, исправлена | Прошла тестеры: ➕
+        /re E1m0 | Отработала, исправлена | Прошла тестеры: ➕
+
+        /ainv | Отработала, исправлена | Прошла тестеры: ➕
 
 2.0 Admin Optional && Player Structure:
 Сделать поддержку СБД

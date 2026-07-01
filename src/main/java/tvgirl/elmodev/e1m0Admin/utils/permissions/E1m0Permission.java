@@ -1,10 +1,15 @@
 package tvgirl.elmodev.e1m0Admin.utils.permissions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import tvgirl.elmodev.e1m0Admin.api.utils.PermissionsManagerAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
+import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeState;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class E1m0Permission implements PermissionsManagerAPI {
@@ -20,6 +25,14 @@ public class E1m0Permission implements PermissionsManagerAPI {
 
     @Override
     public boolean checkSecretCodeAccess(UUID id) {
-        return codeManager.getAdminByID(id) != null;
+        Bukkit.getLogger().info("checkSecretCodeAccess | Сейчас тут"); // ТЕСТЕР
+        SecretCodeState state = codeManager.getAdminByID(id);
+
+        if (state == null) {
+            return false;
+        }
+
+        Bukkit.getLogger().warning("AdminUUID: " + state.getAdminID());
+        return true;
     }
 }

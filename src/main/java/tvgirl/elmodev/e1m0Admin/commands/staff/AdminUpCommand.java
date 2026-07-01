@@ -33,6 +33,11 @@ public class AdminUpCommand implements CommandExecutor {
             return false;
         }
 
+        if (!(staff.hasPermission(cfg.getString("Permission.staff")))) {
+            sender.sendPath(staff, "Messages.Errors.staffPermissionError");
+            return false;
+        }
+
         if (!(permissionManager.checkSecretCodeAccess(staff.getUniqueId()))) {
             sender.sendPath(staff, "Messages.Errors.secretCodeNotInput");
             return false;

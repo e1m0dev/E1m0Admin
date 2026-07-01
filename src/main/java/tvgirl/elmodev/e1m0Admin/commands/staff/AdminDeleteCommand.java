@@ -38,6 +38,11 @@ public class AdminDeleteCommand implements CommandExecutor {
             return false;
         }
 
+        if (!(staff.hasPermission(cfg.getString("Permission.staff")))) {
+            sender.sendPath(staff, "Messages.Errors.staffPermissionError");
+            return false;
+        }
+
         if(strings.length < 2) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;

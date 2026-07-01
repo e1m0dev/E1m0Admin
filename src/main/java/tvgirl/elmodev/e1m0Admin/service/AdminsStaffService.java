@@ -31,8 +31,8 @@ public class AdminsStaffService implements StaffServiceAPI {
 
     @Override
     public void upStatus(UUID adminID, UUID staffId) {
-        Player admin = Bukkit.getPlayer(adminID);
         Player staff = Bukkit.getPlayer(staffId);
+        Player admin = Bukkit.getPlayer(adminID);
 
         if (staffId == adminID) {
             sender.sendPath(staff, "Messages.Errors.upAdminSelfError");
@@ -40,9 +40,20 @@ public class AdminsStaffService implements StaffServiceAPI {
         }
 
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
+
+        int weightBaseStaff = systemRepository.getAdminWeight(staffId);
+
         String prefixBase = systemRepository.getAdminPrefix(adminID);
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
+
+
+        // Сделать ли триггер на слив через снятие?
+        // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        if (weightBaseStaff > weightBase) {
+            sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
+            return;
+        }
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
             sender.sendPath(staff, "Messages.Errors.nullPlayer");
@@ -122,9 +133,18 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
 
+        int weightBaseStaff = systemRepository.getAdminWeight(staffId);
+
         String prefixBase = systemRepository.getAdminPrefix(adminID);
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
+
+        // Сделать ли триггер на слив через снятие?
+        // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        if (weightBaseStaff > weightBase) {
+            sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
+            return;
+        }
 
         Bukkit.getLogger().info("AdminDownCommand | COMMAND-SERVICE: /cdown. Точка выхода -1 - Сбор информации. Нынешне: Префикс %prefix, Вес: %weight, Зарплата: %salary"
                 .replace("%prefix", prefixBase)
@@ -207,6 +227,18 @@ public class AdminsStaffService implements StaffServiceAPI {
 
     @Override
     public void deleteAdmin(UUID staffID, UUID adminID, String reason) {
+        Player staff = Bukkit.getPlayer(staffID);
+
+        int weightBaseStaff = systemRepository.getAdminWeight(staffID);
+        int weightBaseAdmin = systemRepository.getAdminWeight(adminID);
+
+        // Сделать ли триггер на слив через снятие?
+        // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        if (weightBaseStaff > weightBaseAdmin) {
+            sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+            return;
+        }
+
         staffRepository.deleteAdminStatus(adminID);
         staffRepository.deleteAdminStatusLog(staffID, adminID, reason);
         Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /adel. Команда прошла sendRepo.");

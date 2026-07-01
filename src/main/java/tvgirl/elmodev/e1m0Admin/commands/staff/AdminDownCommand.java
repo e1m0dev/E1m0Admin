@@ -41,6 +41,11 @@ public class AdminDownCommand implements CommandExecutor {
             return false;
         }
 
+        if (!(staff.hasPermission(cfg.getString("Permission.staff")))) {
+            sender.sendPath(staff, "Messages.Errors.staffPermissionError");
+            return false;
+        }
+
         if(strings.length < 1) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;

@@ -33,9 +33,12 @@ public class InvisibilityCommand implements CommandExecutor {
         }
 
         if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
+            Bukkit.getLogger().info("AccessCommand | ТОЧКА ЗАШЛА В ЧЕКЕР!"); // ТЕСТЕР
             sender.sendPath(admin, "Messages.Errors.secretCodeNotInput", "", "");
             return false;
         }
+
+        Bukkit.getLogger().info("InvisibilityCommand | ПРОШЛА РЕГИСТРАЦИЮ"); // ТЕСТЕР
 
         if (command.getName().toLowerCase().equalsIgnoreCase("ainv")) {
             if (admin.hasPermission(cfg.getString("Permissions.invisibility"))) {
