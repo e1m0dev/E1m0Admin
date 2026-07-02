@@ -70,13 +70,13 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     }
 
     @Override
-    public void giveBonusLog(UUID staffID, UUID adminID, int sum, String message) {
+    public void giveBonusLog(UUID adminID, UUID staffID, int sum, String message) {
         Bukkit.getLogger().info("AdminsDAO | Администратор получил бонус.");
         BonusDAO bonusDAO = jdbi.onDemand(BonusDAO.class);
 
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        bonusDAO.insert(UUID.randomUUID().toString(), staffID.toString(), adminID.toString(), staff.getName(), admin.getName(), sum, message);
+        bonusDAO.insert(UUID.randomUUID().toString(), staffID.toString(), adminID.toString(), admin.getName(), staff.getName(), sum, message);
     }
 }

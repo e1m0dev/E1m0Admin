@@ -38,13 +38,18 @@ public class InvisibilityCommand implements CommandExecutor {
             return false;
         }
 
+        String permission = cfg.getString("Permissions.invisibility");
+        if (!admin.hasPermission(permission)) {
+            sender.sendPath(admin, "Messages.Errors.permissionError");
+            return false;
+        }
+
+
         Bukkit.getLogger().info("InvisibilityCommand | ПРОШЛА РЕГИСТРАЦИЮ"); // ТЕСТЕР
 
         if (command.getName().toLowerCase().equalsIgnoreCase("ainv")) {
-            if (admin.hasPermission(cfg.getString("Permissions.invisibility"))) {
-                Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND: /ainvise была введена и пропущена."); // ТЕСТЕР
-                service.handleInvisibility(admin.getUniqueId());
-            }
+            Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND: /ainvise была введена и пропущена."); // ТЕСТЕР
+            service.handleInvisibility(admin.getUniqueId());
         }
 
         return true;

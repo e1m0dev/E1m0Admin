@@ -183,7 +183,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int targetWeight = rankWeight - 1;
         int currentWeight = 0;
 
-        if (targetWeight < 0) {
+        if (targetWeight < 1) {
             sender.sendPath(admin, "Messages.Errors.downAdminLevelError", "", "");
             return;
         }

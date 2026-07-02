@@ -33,24 +33,29 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             return false;
         }
 
+        if (strings.length != 2) {
+            sender.sendPath(staff, "Messages.Errors.lengthError");
+            return false;
+        }
+
+        String permission = cfg.getString("Permissions.adminbonusall");
+        if (!staff.hasPermission(permission)) {
+            sender.sendPath(staff, "Messages.Errors.permissionError");
+            return false;
+        }
+
         if (!(permissionManager.checkSecretCodeAccess(staff.getUniqueId()))) {
             sender.sendPath(staff, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("abonusall")) {
-            if(strings.length < 2) {
-                sender.sendPath(staff, "Messages.Errors.lengthError");
-                return false;
-            }
 
-            int sum = Integer.parseInt(strings[1]);
-            String message = String.join(" ", strings[2]);
+            int sum = Integer.parseInt(strings[0]);
+            String message = String.join(" ", strings[1]);
 
-            if (staff.hasPermission(cfg.getString("Permissions.adminbonusall"))) {
-                Bukkit.getLogger().info("AdminBonusAllCommand | Точка входа COMMAND: /abonusall была введена и пропущена. Вызов обработчика: adminBonusAll"); // ТЕСТЕР
-                staffService.adminBonusAll(staff.getUniqueId(), sum, message);
-            }
+            Bukkit.getLogger().info("AdminBonusAllCommand | Точка входа COMMAND: /abonusall была введена и пропущена. Вызов обработчика: adminBonusAll"); // ТЕСТЕР
+            staffService.adminBonusAll(staff.getUniqueId(), sum, message);
         }
 
         return true;

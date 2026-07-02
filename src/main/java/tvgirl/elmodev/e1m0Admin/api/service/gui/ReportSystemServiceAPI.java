@@ -7,8 +7,6 @@ import java.util.UUID;
 
 public interface ReportSystemServiceAPI {
 
-    List<Report> getReports();
-
     void clickToReport(UUID adminID, UUID reportID, String response);
 
 }

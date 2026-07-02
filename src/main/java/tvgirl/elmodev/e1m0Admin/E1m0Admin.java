@@ -24,6 +24,7 @@ import tvgirl.elmodev.e1m0Admin.repository.gui.SecretCodeRepository;
 import tvgirl.elmodev.e1m0Admin.service.ConsoleService;
 import tvgirl.elmodev.e1m0Admin.service.gui.ReportSystemService;
 import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
+import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeState;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSession;
@@ -50,13 +51,13 @@ public final class E1m0Admin extends JavaPlugin {
     // | ❗ PLUGIN MEMORY:
 
     // 🚨 | REPORT MEMORY
-    private HashMap<UUID, UUID> playerReportCache = new HashMap<>();
+    private HashMap<UUID, Report> playerReportCache = new HashMap<>(); // Игроки с их UUID репорта.
 
     // 🧑‍💻 | SESSION MEMORY
-    private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>();
+    private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>(); // Сессии кэша админов
 
-    // 🌐 | PERMISSIONS MEMORY
-    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>();
+    // 🌐 | CODE MEMORY
+    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>(); // Кэширование игроков с кодом для utils
 
     // 🪼 | Invise Memory
     private HashSet<UUID> inviseCache = new HashSet<>(); // Администраторы в инвизе;
@@ -145,7 +146,7 @@ public final class E1m0Admin extends JavaPlugin {
         // 📊 | Repository
         reportSystemRepository = new ReportSystemRepository(databaseManager.getJdbi());
         secretCodeRepository = new SecretCodeRepository(databaseManager.getJdbi());
-        
+
         systemRepository = new AdminSystemRepository(databaseManager.getJdbi());
         staffRepository = new AdminStaffRepository(databaseManager.getJdbi());
         gameRepository = new AdminGameRepository(databaseManager.getJdbi());
@@ -157,7 +158,7 @@ public final class E1m0Admin extends JavaPlugin {
         // 🧑‍🔬 | Service
         consoleService = new ConsoleService(secretCodeRepository, systemRepository, staffRepository, getConfig(), sender);
 
-        reportService = new ReportSystemService(sender, getConfig(), reportSystemRepository, playerReportCache);
+        reportService = new ReportSystemService(sender, getConfig(), playerReportCache, reportSystemRepository);
         secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, permissionManager, secretCodeManager, getConfig(), sender);
 
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
@@ -172,11 +173,11 @@ public final class E1m0Admin extends JavaPlugin {
 
         // 🌐 | GUI
         secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
-        reportGui = new ReportGUI(reportKey, reportActions, reportService, getConfig(), this);
+        reportGui = new ReportGUI(playerReportCache, reportKey, reportActions, reportService, getConfig(), this);
 
         // 🗣️ | Listeners
         lManager.registerEvents(new JoinListener(getConfig(), sessionManager), this);
-        lManager.registerEvents(new QuitListener(getConfig(), systemService, sessionManager, secretCodeManager), this);
+        lManager.registerEvents(new QuitListener(getConfig(), systemService, sessionManager, secretCodeManager, playerReportCache), this);
 
         // Controllers
         secretCodeController = new SecretCodeController(secretCodeGui, secretKey, secretCodeService);
@@ -194,7 +195,7 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("re").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
 
         // - | Player
-        getCommand("arep").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, playerReportCache));
+        getCommand("report").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, playerReportCache));
 
         // - | Staff
         getCommand("adown").setExecutor(new AdminDownCommand(sender, getConfig(), staffService, permissionManager, systemRepository));
@@ -216,14 +217,15 @@ public final class E1m0Admin extends JavaPlugin {
         // ❓ | Tab-Completer.
         getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("rec").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("rep").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("ainv").setTabCompleter(new MainTabCompleter(getConfig()));
-        getCommand("arep").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("recon").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("reoff").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("report").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("abonusall").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("setsecret").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("asecret").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("abonus").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("adown").setTabCompleter(new MainTabCompleter(getConfig()));

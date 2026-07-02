@@ -35,7 +35,7 @@ public class AdminGameService implements GameServiceAPI {
     private final HashSet<UUID> inviseCache; // Администраторы в инвизе;
 
     private final HashMap<UUID, BukkitTask> rewatchTasksCache; // Таски для переноса и защитки;
-    private final HashMap<UUID, UUID> playerReportCache; // Игроки с репортом в памяти;
+    private final HashMap<UUID, Report> playerReportCache; // Игроки с репортом в памяти;
     private final HashMap<UUID, UUID> reconCache; // Администраторы в рекона;
 
     private final FileConfiguration cfg;
@@ -43,9 +43,9 @@ public class AdminGameService implements GameServiceAPI {
     private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
-    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, UUID> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
-        this.rewatchTasksCache = rewatchTasksCache;
+    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
         this.playerReportCache = playerReportCache;
+        this.rewatchTasksCache = rewatchTasksCache;
         this.reportRepository = reportRepository;
         this.gameRepository = gameRepository;
         this.secretCodeGui = secretCodeGui;
@@ -118,8 +118,12 @@ public class AdminGameService implements GameServiceAPI {
         double y = cfg.getDouble("Admin.AdminZone.y");
         double z = cfg.getDouble("Admin.AdminZone.z");
 
-        BukkitTask task = rewatchTasksCache.remove(adminID);
-        task.cancel();
+        if (rewatchTasksCache.containsKey(adminID)) {
+            BukkitTask task = rewatchTasksCache.remove(adminID);
+            task.cancel();
+        } else {
+            sender.sendPath(admin, "Messages.Errors.reoffNullError");
+        }
 
         admin.teleportAsync(new Location(world, x, y, z));
         reconCache.remove(adminID);
@@ -127,19 +131,17 @@ public class AdminGameService implements GameServiceAPI {
 
     @Override
     public void sendReport(@NotNull Report report) {
+        Bukkit.getLogger().info("Точка 1 SERVICE"); // ТЕСТЕР
         Player p = Bukkit.getPlayer(report.getPlayerID());
         List<String> emergencySwords = cfg.getStringList("Admin.Report.EmergencyReportSword");
         Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 1. Обьявление."); // ТЕСТЕР
 
-
         for(Player adm : Bukkit.getOnlinePlayers()) {
             if(adm.hasPermission(cfg.getString("Permissions.admin"))) {
-                // Отправить репорт в базу данных через контроллер:
-                gameRepository.gameReport(report.getPlayerID(), report.getAdminID(), report.getReport(), report.getResponse(), cfg.getString("Admin.Report.status_send"));
-                Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 2. Отсеивание не адм + sendRepo."); // ТЕСТЕР
-
                 // Если в репорте есть контрольные слова – то он выделяется
                 if(!cfg.getBoolean("Server.emergencyRep")) return;
+
+                Bukkit.getLogger().info("Точка 2 EMERGENCY"); // ТЕСТЕР
 
                 for(String s : emergencySwords) {
                     String sword = s.toLowerCase();
@@ -181,6 +183,7 @@ public class AdminGameService implements GameServiceAPI {
 
     @Override
     public void fastReport(UUID adminID, Report report) {
+        Bukkit.getLogger().info("Точка 1 FAST REPORT"); // ТЕСТЕР
         List<String> emergencyList = cfg.getStringList("Admin.Report.EmergencyReport.emergencyMessage");
         List<String> hover = cfg.getStringList("Admin.Report.HoverReport");
         Player adm = Bukkit.getPlayer(adminID);
@@ -215,10 +218,24 @@ public class AdminGameService implements GameServiceAPI {
             adm.sendMessage(component);
         }
 
-        // Авто-репорт
-        report.answer(adminID, adm.getName(), cfg.getString("Admin.Report.EmergencyReport.emergencyMessage"), cfg.getString("Admin.Report.status_answered"));
-        reportRepository.updateReport(report);
+        String response = cfg.getString("Admin.Report.EmergencyReport.emergencyMessage");
+        Player player = Bukkit.getPlayer(adminID);
+        Player admin = Bukkit.getPlayer(adminID);
 
+        // Авто-репорт
+        Report newReport = new Report(
+                report.getUuid(),
+                adminID,
+                report.getPlayerID(),
+                admin.getName(),
+                player.getName(),
+                report.getReport(),
+                response,
+                report.getStatus(),
+                report.getCreatedAt()
+        );
+
+        reportRepository.gameReportSend(report);
         playerReportCache.remove(report.getPlayerID());
     }
 }

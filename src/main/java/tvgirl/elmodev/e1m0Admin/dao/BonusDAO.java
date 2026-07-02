@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public interface BonusDAO {
 
-    /* STAFF | 🧑‍🔬 */
+    /* BONUS | 🧑‍🔬 */
     @SqlUpdate("""
-        INSERT INTO e1admin_reports
+                INSERT INTO e1admin_bonus
         (uuid, staffID, adminID, staffNick, adminNick, sum, message)
         VALUES
         (:uuid, :staffID, :adminID, :staffNick, :adminNick, :sum, :message)

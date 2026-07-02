@@ -39,7 +39,8 @@ public class AdminSetCommand implements CommandExecutor {
             return false;
         }
 
-        if (!staff.hasPermission(cfg.getString("Permissions.setadm"))) {
+        String permission = cfg.getString("Permissions.setadm");
+        if (!staff.hasPermission(permission)) {
             sender.sendPath(staff, "Messages.Errors.permissionError");
             return false;
         }

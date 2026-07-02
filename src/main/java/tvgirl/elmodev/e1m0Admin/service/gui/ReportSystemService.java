@@ -17,22 +17,14 @@ public class ReportSystemService implements ReportSystemServiceAPI {
 
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
-    private final Map<UUID, UUID> reportPlayers;
+    private final Map<UUID, Report> playerReportCache;
     private final ReportSystemRepository reportRepository;
 
-    public ReportSystemService(E1m0Sender sender, FileConfiguration cfg, ReportSystemRepository reportRepository, Map<UUID, UUID> reportPlayers) {
+    public ReportSystemService(E1m0Sender sender, FileConfiguration cfg, Map<UUID, Report> playerReportCache, ReportSystemRepository reportRepository) {
         this.cfg = cfg;
         this.sender = sender;
         this.reportRepository = reportRepository;
-        this.reportPlayers = reportPlayers;
-    }
-
-    @Override
-    public List<Report> getReports() {
-        String status = cfg.getString("Admin.Report.status_inJob");
-        int limit = cfg.getInt("Admin.Report.reportInDataLimit");
-
-        return reportRepository.getReportList(status, limit);
+        this.playerReportCache = playerReportCache;
     }
 
     public void clickToReport(UUID adminID, UUID reportID, String response) {
@@ -60,7 +52,7 @@ public class ReportSystemService implements ReportSystemServiceAPI {
 
         sender.sendString(player, response);
 
-        reportRepository.updateReport(newReport);
-        reportPlayers.remove(report.getPlayerID());
+        reportRepository.gameReportSend(newReport);
+        playerReportCache.remove(report.getPlayerID());
     }
 }

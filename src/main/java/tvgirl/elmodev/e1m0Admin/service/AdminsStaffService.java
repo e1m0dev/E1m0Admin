@@ -50,8 +50,8 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         // Сделать ли триггер на слив через снятие?
         // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
-        if (weightBaseStaff > weightBase) {
-            sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
+        if (weightBaseStaff < weightBase) {
+            sender.sendPath(staff, "Messages.Errors.upAdminWeightError");
             return;
         }
 
@@ -85,7 +85,6 @@ public class AdminsStaffService implements StaffServiceAPI {
         String currentKey = null;
 
         int targetWeight = rankWeight + 1;
-        int currentWeight = 0;
 
         Bukkit.getLogger().info("AdminUpCommand | COMMAND-SERVICE: /aup. Точка выхода 1 - Баня с конфигом."); // ТЕСТЕР
 
@@ -94,7 +93,6 @@ public class AdminsStaffService implements StaffServiceAPI {
 
             if (cfgWeight == targetWeight) {
                 currentKey = key;
-                currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
             }
         }
@@ -107,22 +105,25 @@ public class AdminsStaffService implements StaffServiceAPI {
         int newWeight = cfg.getInt("Admin.AdminRanks." + currentKey + ".weight");
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
 
-        if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
-            sender.sendPath(staff, "Messages.Errors.nullPlayer");
+        if (newPrefix == null || newWeight == 0 || newSalary == 0) {
+            sender.sendPath(admin, "Messages.Errors.upAdminLevelError");
             return;
         }
-
 
         Bukkit.getLogger().info("AdminUpCommand | COMMAND-SERVICE: /aup. Точка выхода 2 - Конечный результат + sendRepo: Ник: %admin. Префикс в базе: %prefix, зарплата: %salary"
                 .replace("%admin", admin.getName())
                 .replace("%prefix", newPrefix)
                 .replace("%salary", String.valueOf(newSalary))); // ТЕСТЕР
 
+        //TODO: Сделать мож ивент какой что ли, а то скучновато по сообщениям как то..
+        sender.sendPath(staff, "Messages.successfulUpStaff", "%admin", admin.getName());
+        sender.sendPath(admin, "Messages.successfulUpAdmin", "%staff", staff.getName());
+
         staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
     }
 
     @Override
-    public void downStatus(UUID staffId, UUID adminID) {
+    public void downStatus(UUID adminID, UUID staffId) {
         Player admin = Bukkit.getPlayer(adminID);
         Player staff = Bukkit.getPlayer(staffId);
 
@@ -141,7 +142,7 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         // Сделать ли триггер на слив через снятие?
         // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
-        if (weightBaseStaff > weightBase) {
+        if (weightBaseStaff < weightBase) {
             sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
             return;
         }
@@ -152,34 +153,22 @@ public class AdminsStaffService implements StaffServiceAPI {
                 .replace("%salary", String.valueOf(salaryBase))
         ); // ТЕСТЕР
 
-        String rankKey = null;
-        int rankWeight = 0;
-
         Bukkit.getLogger().info("AdminDownCommand | COMMAND-SERVICE: /adown. Точка выхода 0 - Пагинация."); // ТЕСТЕР
 
         if (admin == null) return;
-
-        for (String key : ranksSection.getKeys(false)) {
-            int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-            if (weightBase == cfgWeight) {
-                rankKey = key;
-                rankWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-                break;
-            }
-        }
-
-        if (rankKey == null) return;
         String currentKey = null;
 
-        int targetWeight = rankWeight - 1;
-        int currentWeight = 0;
+        int targetWeight = weightBase - 1;
+
+        Bukkit.getLogger().info("Target Weight" + targetWeight);
+        Bukkit.getLogger().info("Base Weight" + weightBase);
 
         Bukkit.getLogger().info("AdminDownCommand | COMMAND-SERVICE: /adown. Точка выхода 1 - Проверки и баня с конфигом."); // ТЕСТЕР
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-            if (cfgWeight == targetWeight) {
+            Bukkit.getLogger().info("CFG Weight" + cfgWeight);
+            if (targetWeight == cfgWeight) {
                 currentKey = key;
-                currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
             }
         }
@@ -192,11 +181,15 @@ public class AdminsStaffService implements StaffServiceAPI {
         int newWeight = cfg.getInt("Admin.AdminRanks." + currentKey + ".weight");
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
 
-        staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
         Bukkit.getLogger().info("AdminDownCommand | COMMAND-SERVICE: /adown. Точка выхода 2 - Конечный результат + sendRepo: Ник: %admin. Префикс в базе: %prefix, зарплата: %salary"
                 .replace("%admin", admin.getName())
                 .replace("%prefix", newPrefix)
                 .replace("%salary", String.valueOf(newSalary))); // ТЕСТЕР
+
+        //TODO: Сделать мож ивент какой что ли, а то скучновато по сообщениям как то..
+        sender.sendPath(staff, "Messages.successfulDownStaff", "%admin", admin.getName());
+        sender.sendPath(admin, "Messages.successfulDownAdmin", "%staff", staff.getName());
+        staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
     }
 
     @Override
@@ -226,7 +219,7 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void deleteAdmin(UUID staffID, UUID adminID, String reason) {
+    public void deleteAdmin(UUID adminID, UUID staffID, String reason) {
         Player staff = Bukkit.getPlayer(staffID);
 
         int weightBaseStaff = systemRepository.getAdminWeight(staffID);
@@ -234,7 +227,7 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         // Сделать ли триггер на слив через снятие?
         // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
-        if (weightBaseStaff > weightBaseAdmin) {
+        if (weightBaseStaff < weightBaseAdmin) {
             sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
             return;
         }
@@ -245,12 +238,15 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void adminBonusGive(UUID staffID, UUID adminID, int sum, String message) {
+    public void adminBonusGive(UUID adminID, UUID staffID, int sum, String message) {
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
         Bukkit.getLogger().info("AdminBonusCommand | COMMAND-SERVICE: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
 
-        if (!admin.hasPermission("e1admin.adm")) return;
+        if (!admin.hasPermission(cfg.getString("Permissions.admin"))) {
+            sender.sendPath(admin, "Messages.Errors.permissionError");
+            return;
+        }
 
         String action = cfg.getString("Admin.Bonus.giveBonus")
                 .replace("%admin", admin.getName())
@@ -262,7 +258,7 @@ public class AdminsStaffService implements StaffServiceAPI {
                 "%bonus", String.valueOf(sum));
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action);
-        staffRepository.giveBonusLog(staffID, adminID, sum, message);
+        staffRepository.giveBonusLog(adminID, staffID, sum, message);
 
         Bukkit.getLogger().info("AdminBonusCommand | COMMAND-SERVICE: /abonus. Точка выхода 2 - Исполнение."); // ТЕСТЕР
     }
@@ -272,18 +268,19 @@ public class AdminsStaffService implements StaffServiceAPI {
         Player staff = Bukkit.getPlayer(staffID);
         Bukkit.getLogger().info("AdminBonusAllCommand | COMMAND-SERVICE: /abonusall. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!p.hasPermission("e1admin.adm")) continue;
+        for (Player admin : Bukkit.getOnlinePlayers()) {
+            if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;
 
             String action = cfg.getString("Admin.Bonus.giveBonus")
-                    .replace("%admin", p.getName())
+                    .replace("%admin", admin.getName())
                     .replace("%bonus", String.valueOf(sum));
 
-            sender.sendPath(p, "Messages.adminBonus",
+            sender.sendPath(admin, "Messages.adminBonus",
                     "%message", message,
                     "%staff", staff.getName(),
                     "%bonus", String.valueOf(sum));
 
+            staffRepository.giveBonusLog(admin.getUniqueId(), staffID, sum, message);
             Bukkit.getLogger().info("AdminBonusAllCommand | COMMAND-SERVICE: /abonusall. Точка выхода 2 - Исполнение"); // ТЕСТЕР
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action);
         }

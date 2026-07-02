@@ -7,10 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
-import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
+import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
 
 public class AdminDownCommand implements CommandExecutor {
 
@@ -41,8 +41,9 @@ public class AdminDownCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(staff.hasPermission(cfg.getString("Permission.staff")))) {
-            sender.sendPath(staff, "Messages.Errors.staffPermissionError");
+        String permission = cfg.getString("Permissions.downadm");
+        if (!staff.hasPermission(permission)) {
+            sender.sendPath(staff, "Messages.Errors.permissionError");
             return false;
         }
 
@@ -65,16 +66,14 @@ public class AdminDownCommand implements CommandExecutor {
         }
 
         // Если weight равно 1 нельзя понизить
-        if (weight >= 1) {
+        if (weight <= 1) {
             sender.sendPath(staff, "Messages.Errors.downAdminLevelError");
             return false;
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("adown")) {
-            if (staff.hasPermission(cfg.getString("Permissions.downadmin"))) {
-                Bukkit.getLogger().info("AdminDownCommand | COMMAND: /adown. Команда прошла успешно.");
-                staffService.downStatus(staff.getUniqueId(), admin.getUniqueId());
-            }
+            Bukkit.getLogger().info("AdminDownCommand | COMMAND: /adown. Команда прошла успешно.");
+            staffService.downStatus(staff.getUniqueId(), admin.getUniqueId());
         }
 
         return true;

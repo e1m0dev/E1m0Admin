@@ -32,13 +32,12 @@ public class RewatchCommand implements CommandExecutor {
             return false;
         }
 
-        String permission = cfg.getString("Permissions.rewatch");
-
         if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
             sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
+        String permission = cfg.getString("Permissions.rewatch");
         if (admin.hasPermission(permission)) {
             Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleRewatch | Следящий режим"); // ТЕСТЕР
         } else {
@@ -49,6 +48,7 @@ public class RewatchCommand implements CommandExecutor {
         if (command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
             Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleReoff | Админ-режим"); // ТЕСТЕР
             service.handleReoff(admin.getUniqueId());
+            return true;
         }
 
         String user = strings[0];

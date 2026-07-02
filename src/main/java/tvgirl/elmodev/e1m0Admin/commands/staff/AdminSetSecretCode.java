@@ -38,35 +38,44 @@ public class AdminSetSecretCode implements CommandExecutor {
             return false;
         }
 
+        String permission = cfg.getString("Permissions.secretcode");
+        if (!staff.hasPermission(permission)) {
+            sender.sendPath(staff, "Messages.Errors.permissionError");
+            return false;
+        }
+
+        if (strings.length < 2) {
+            sender.sendPath(staff, "Messages.Errors.lengthError");
+            return false;
+        }
+
+        Player admin = Bukkit.getPlayer(strings[0]);
+        String strCode = strings[1];
+
+        if (admin == null) {
+            sender.sendPath(staff, "Messages.Errors.nullPlayer");
+            return false;
+        }
+
+        if (strCode.length() < 4) {
+            sender.sendPath(staff, "Messages.Errors.setAdminCodeIsWrong");
+            return false;
+        }
+
+        if (strCode.length() > 4) {
+            sender.sendPath(staff, "Messages.Errors.setAdminCodeWrong");
+            return false;
+        }
+
+        // | /asecret Albert 7777
         if (command.getName().toLowerCase().equalsIgnoreCase("asecret")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-
-            if (admin == null) {
-                sender.sendPath(staff, "Messages.Errors.nullPlayer");
-                return false;
-            }
-
-            String strCode = strings[1];
-
-            if (strCode.length() < 4) {
-                sender.sendPath(staff, "Messages.Errors.setAdminCodeIsWrong");
-                return false;
-            }
-
-            if (strCode.length() > 4) {
-                sender.sendPath(staff, "Messages.Errors.setAdminCodeWrong");
-                return false;
-            }
-
             int code = Integer.parseInt(strCode);
-            if (staff.hasPermission(cfg.getString("Permissions.asecret"))) {
-                Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND: /asecret. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
-                        .replace("%staff", staff.getName())
-                        .replace("%admin", admin.getName())
-                        .replace("%code", String.valueOf(code))); // ТЕСТЕР
+            Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND: /asecret. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
+                    .replace("%staff", staff.getName())
+                    .replace("%admin", admin.getName())
+                    .replace("%code", String.valueOf(code))); // ТЕСТЕР
 
-                staffService.setSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
-            }
+            staffService.setSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
         }
 
         return true;

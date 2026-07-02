@@ -16,7 +16,6 @@ import tvgirl.elmodev.e1m0Admin.state.session.AdminSession;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,7 +26,7 @@ public class AdminSystemService implements SystemServiceAPI {
     private final AdminStaffRepository staffRepository;
     private final AdminSessionManager sessionManager;
 
-    private final Map<UUID, UUID> reportPlayer;
+    private final Map<UUID, Report> playerReportCache;
 
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
@@ -35,12 +34,12 @@ public class AdminSystemService implements SystemServiceAPI {
 
     private E1m0Color c = new E1m0Color();
 
-    public AdminSystemService(ReportSystemRepository reportRepository, AdminSessionManager sessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, Map<UUID, UUID> reportPlayer, FileConfiguration cfg, E1m0Sender sender, E1m0Admin plugin) {
+    public AdminSystemService(ReportSystemRepository reportRepository, AdminSessionManager sessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, Map<UUID, Report> playerReportCache, FileConfiguration cfg, E1m0Sender sender, E1m0Admin plugin) {
         this.reportRepository = reportRepository;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
         this.sessionManager = sessionManager;
-        this.reportPlayer = reportPlayer;
+        this.playerReportCache = playerReportCache;
         this.sender = sender;
         this.plugin = plugin;
         this.cfg = cfg;
@@ -149,10 +148,8 @@ public class AdminSystemService implements SystemServiceAPI {
                 "%content", report.getReport(),
                 "%admin", admin.getName());
 
-
-
-        reportRepository.updateReport(newReport);
-        reportPlayer.remove(report.getPlayerID());
+        reportRepository.gameReportSend(newReport);
+        playerReportCache.remove(report.getPlayerID());
         Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Репорт выполнен! " + reportID); // ТЕСТЕР
     }
 }

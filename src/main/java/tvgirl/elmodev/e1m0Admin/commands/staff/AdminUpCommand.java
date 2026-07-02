@@ -33,8 +33,9 @@ public class AdminUpCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(staff.hasPermission(cfg.getString("Permission.staff")))) {
-            sender.sendPath(staff, "Messages.Errors.staffPermissionError");
+        String permission = cfg.getString("Permissions.upadm");
+        if (!staff.hasPermission(permission)) {
+            sender.sendPath(staff, "Messages.Errors.permissionError");
             return false;
         }
 
@@ -55,10 +56,8 @@ public class AdminUpCommand implements CommandExecutor {
                 return false;
             }
 
-            if (staff.hasPermission(cfg.getString("Permissions.adminup"))) {
-                Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aup. Администратор НЕ поставлен, ошибка weight"); // ТЕСТЕР
-                staffService.upStatus(admin.getUniqueId(), staff.getUniqueId());
-            }
+            Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aup. Команда прошла!"); // ТЕСТЕР
+            staffService.upStatus(admin.getUniqueId(), staff.getUniqueId());
         }
 
         return true;

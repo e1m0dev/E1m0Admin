@@ -1,5 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.repository.gui;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jdbi.v3.core.Jdbi;
 import tvgirl.elmodev.e1m0Admin.api.repo.gui.ReportSystemRepositoryAPI;
 import tvgirl.elmodev.e1m0Admin.dao.ReportDAO;
@@ -14,6 +16,11 @@ public class ReportSystemRepository implements ReportSystemRepositoryAPI {
 
     public ReportSystemRepository(Jdbi jdbi) {
         this.reportDAO = jdbi.onDemand(ReportDAO.class);
+    }
+
+    @Override
+    public void gameReportSend(Report report) {
+        reportDAO.sendReport(report.getUuid().toString(), report.getAdminID().toString(), report.getPlayerID().toString(), report.getAdminNick(), report.getPlayerNick(), report.getReport(), report.getResponse(), report.getStatus());
     }
 
     @Override

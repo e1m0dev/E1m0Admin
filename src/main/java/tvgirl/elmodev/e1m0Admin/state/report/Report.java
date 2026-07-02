@@ -25,13 +25,6 @@ public class Report {
         this.createdAt = createdAt;
     }
 
-    public void answer(UUID adminID, String adminNick, String response, String status) {
-        this.adminID = adminID;
-        this.adminNick = adminNick;
-        this.response = response;
-        this.status = status;
-    }
-
     public UUID getUuid() {
         return uuid;
     }

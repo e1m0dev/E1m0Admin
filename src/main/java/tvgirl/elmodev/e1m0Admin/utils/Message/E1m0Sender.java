@@ -39,16 +39,16 @@ public class E1m0Sender implements SenderAPI {
 
     @Override
     public void sendPath(@NotNull Player sendUser, @NotNull String path, @Nullable String... replacements) {
-        String text = PlaceholderAPI.setPlaceholders(sendUser, path);
+        String cfgMessage = cfg.getString(path);
+        String text = PlaceholderAPI.setPlaceholders(sendUser, cfgMessage);
 
         if (replacements != null) {
             for (int i = 0; i < replacements.length; i += 2) {
-                path = path.replace(replacements[i], replacements[i + 1]);
+                cfgMessage = cfgMessage.replace(replacements[i], replacements[i + 1]);
             }
         }
 
         String prefix = cfg.getString("Settings.prefixEnable");
-        String cfgMessage = cfg.getString(path);
 
         if (cfg.getBoolean("Settings.prefixEnable")) {
             sendUser.sendMessage(color.parse(prefix + " " + cfgMessage));

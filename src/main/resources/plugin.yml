@@ -14,7 +14,7 @@ commands:
   # | ADMIN
   rep:
     description: "Команда ответа на репорт"
-    aliases: [ rep ]
+    aliases: [ arep, reps ]
     usage: "/arep Спешу к Вам на помощь!"
   ainv:
     description: "Команда сокрытия администратора"
@@ -29,12 +29,12 @@ commands:
     aliases: [ roff, arewatchoff ]
     usage: "/areoff"
 
-  # | ADMIN
   aaccess:
     description: "Войти в систему"
     aliases: [ adminaccess, acc ]
     usage: "/aaccess, или /acc"
 
+  # | PLAYER
   report:
     description: "Отправить жалобу"
     usage: "/report E1m0 Нарушает правила SOLID!"
@@ -89,3 +89,7 @@ commands:
   csetsecret:
     description: "Поменять код администратора | Удаленно ❗"
     usage: "/csetsecret E1m0 1"
+
+  # | CONTROLLERS
+  arepaccept:
+    description: "СИСТЕМА | ПРИЕМКА FAST REPORT"

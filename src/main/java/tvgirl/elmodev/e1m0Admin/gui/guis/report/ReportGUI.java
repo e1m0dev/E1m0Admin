@@ -19,10 +19,14 @@ import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ReportGUI implements ReportGuiAPI {
+
+    private final Map<UUID, Report> playerReportCache;
 
     private final ReportSystemService reportService;
     private final FileConfiguration cfg;
@@ -31,7 +35,8 @@ public class ReportGUI implements ReportGuiAPI {
     private final NamespacedKey reportIdKey;
     private final NamespacedKey actionKey;
 
-    public ReportGUI(NamespacedKey reportIdKey, NamespacedKey actionKey, ReportSystemService reportService, FileConfiguration cfg, E1m0Admin plugin) {
+    public ReportGUI(Map<UUID, Report> playerReportCache, NamespacedKey reportIdKey, NamespacedKey actionKey, ReportSystemService reportService, FileConfiguration cfg, E1m0Admin plugin) {
+        this.playerReportCache = playerReportCache;
         this.reportService = reportService;
         this.reportIdKey = reportIdKey;
         this.actionKey = actionKey;
@@ -42,6 +47,7 @@ public class ReportGUI implements ReportGuiAPI {
     @Override
     public void openReportGUI(UUID adminID, String response) {
         Player adm = Bukkit.getPlayer(adminID);
+        List<Report> reportList = new ArrayList<>();
         ReportHolder holder = new ReportHolder("report_holder", adm, response);
 
         ConfigurationSection reportGui = cfg.getConfigurationSection("Admin.Report.GUI.ReportGui.items");
@@ -49,11 +55,16 @@ public class ReportGUI implements ReportGuiAPI {
 
         // ⌚ | Репорты
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            List<Report> reportList = reportService.getReports();
+            for (Map.Entry<UUID, Report> report : playerReportCache.entrySet()) reportList.add(report.getValue());
 
             Bukkit.getScheduler().runTask(plugin, () -> {
+                int slot = 0;
+
+                if (slot >= 49) {
+                    return;
+                }
+
                 for(Report report : reportList) {
-                    int slot = 0;
 
                     // Сам репорт
                     List<String> preLore = cfg.getStringList("Admin.Report.GUI.ReportGUI.ReportItem.FORM"); // Stream

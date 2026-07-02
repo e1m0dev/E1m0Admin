@@ -37,7 +37,6 @@ public class AccessCommand implements CommandExecutor {
         }
 
         String permission = cfg.getString("Permissions.admin");
-
         if (!admin.hasPermission(permission)) {
             sender.sendPath(admin, "Messages.Errors.permissionError");
             return false;

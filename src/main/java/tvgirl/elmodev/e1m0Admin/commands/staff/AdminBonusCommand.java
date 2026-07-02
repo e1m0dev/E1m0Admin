@@ -38,6 +38,13 @@ public class AdminBonusCommand implements CommandExecutor {
             return false;
         }
 
+        String permission = cfg.getString("Permissions.adminbonus");
+        if (!staff.hasPermission(permission)) {
+            sender.sendPath(staff, "Messages.Errors.permissionError");
+            return false;
+        }
+
+        // abonus Albert 777 Работай.
         if (command.getName().toLowerCase().equalsIgnoreCase("abonus")) {
             if(strings.length < 3) {
                 sender.sendPath(staff, "Messages.Errors.lengthError");
@@ -53,10 +60,8 @@ public class AdminBonusCommand implements CommandExecutor {
                 return false;
             }
 
-            if (staff.hasPermission(cfg.getString("Permissions.adminbonus"))) {
-                Bukkit.getLogger().info("AdminBonusCommand | COMMAND: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
-                staffService.adminBonusGive(staff.getUniqueId(), admin.getUniqueId(), sum, message);
-            }
+            Bukkit.getLogger().info("AdminBonusCommand | COMMAND: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
+            staffService.adminBonusGive(admin.getUniqueId(), staff.getUniqueId(), sum, message);
         }
 
         return true;

@@ -27,7 +27,7 @@ public interface SecretCodeDAO {
 
     @SqlUpdate("""
         INSERT INTO e1admin_code
-        (uuid, adminNick, staffNick code, regIP)
+                (uuid, adminNick, staffNick, code, regIP)
         VALUES
                 (:uuid, :adminNick, :staffNick, :code, :regIP)
     """)

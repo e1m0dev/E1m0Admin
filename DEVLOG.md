@@ -528,5 +528,179 @@ PICK-CHECK COMMANDS:
 
         /ainv | Отработала, исправлена | Прошла тестеры: ➕
 
+Commit 1.9-DEV | Adaptivity report cache system && fixes, testes, reworks upd..
+
+E1m0:
+
+    ❗ ВАЖНО | E1m0: Я - начинаю создавать адаптивный кэш внутри системы, репорты = временное состояние игрока на данную сессию. Вот и получается что если сервер внезапно взорвется - состояние потеряно, а в базе данных все еще статус "Не обновлено" и вот тебе потеря информации и memory leak в архитектуре. В общем, не очень хорошее дело, по этому мне придется помучатся сейчас и проверить огромную систему так еще и переписав кэширование как минимум четырех сервисов и репо лиж бы у клиента ничего не упало.. Этот метод гараздо более надежный чем UUID UUID, здесь, база - как сам факт игрового ответа администратора и полноценного закрытого репорта. Не скажу что это прямо архитектурная ошибка, скорее моя параноя, и прихоть, потому что я это создаю и мне нести ответственность и смотреть в глаза клиентам когда я буду выпускать это с UUID UUID, по этому лучше перестраховатся. 
+
+💚 playerReportCache - Теперь первостепенна отвечает за новую архитектурную цепь кэша.
+💛 playerReportCache -> playerReportUUIDsCache, теперь становится второстепенным в виде нового обновления строки
+кэширования.
+❤️ playerReportUUIDsCache -> От системы решено полностью отказатся, в угоду новой быстрой и надежной системе
+playerReportCache <UUID, Report>
+
+API:
+❤️ ReportSystemServiceAPI | Удален метод List<Report> getReports(); Причина: Теперь работа с базой для репортов и меню -
+мне не нужна, если хочу добиться для клиентов системы "Запустил и отпустил", первый шаг на пути к СБД и оптимизации =
+кэширование.
+
+❤️ GameRepositoryAPI && AdminGameRepository | Из него был удален метод gameReportSend и был перемещен:
+💚 ReportSystemRepository | Был перемещен на свое законное место, я знаю почему я так сделал, сейчас я не считаю репорт
+частью игрового процесса администратора, тогда - считал, но архитектурно лучше разделять принципиальные структуры.
+
+💛 GameRepositoryAPI | Мелкие правки по расположению принимающих конструкторов для метода, улучшение читаемости | Мета:
+gameReport -> gameReportSend.
+
+CFG:
+💚 config.yml | Новое сообщение в Messages/Errors/: reportSizeIsMax - Если репортов больше чем установлено на сервере ->
+вызывается ошибка.
+💚 config.yml | Новое сообщение в Messages/Errors/: reoffNullError - Если человек не за кем не следит - отключится он не
+может.
+
+💚 config.yml | Новое сообщение в Messages/: successfulUpStaff - Отвечает за сообщение стаффу после повышения.
+💚 config.yml | Новое сообщение в Messages/: successfulUpAdmin - Отвечает за сообщение админу после повышения.
+
+💚 config.yml | Новое сообщение в Messages/: successfulDownStaff - Отвечает за сообщение стаффу после понижения.
+💚 config.yml | Новое сообщение в Messages/: successfulDownAdmin - Отвечает за сообщение админу после понижения.
+
+💛 config.yml | Замена функции: reportInDataLimit -> reportMaxSize. Если раньше я брал данные из базы то сейчас я беру их
+из кэша, по этому новая логика - новая функция.
+
+Commands:
+PLAYER:
+
+        💚 PlayerReportCommand | Ревью модели блока Permissions.
+
+        💚 PlayerReportCommand | Была переписана на новую архитектуру кэширования playerReportCache
+            ❤️ PlayerReportCommand | Отказ от старой системы playerReportCache и переход на новую.
+
+        💚 PlayerReportCommand | Новое условие и сообщение в конфиг: if(reportList.size() >= 49). Расшифровка: "Если репортов больше или равно 49 -> "
+
+ADMINS:
+
+        💚 RewatchCommand | Мелкое исправление, ревью уже есть с комита 1.8-DEV;
+        💚 AccessCommand | Мелкое исправление, ревью уже есть с комита 1.8-DEV;
+        🩷 InviseCommand | Ревью модели блока Permissions;
+        🩷 ReportCommand | Ревью модели блока Permissions;
+
+        🩷 AdminSetSecretCode | Ревью кода, вынесение логических инвариантов вверх, и добавление нового блока проверки str.length, забыл про него но как взглянул - сразу добавил.
+
+        💜 AdminSetSecretCode | Нашел баг с правами, которых даже не существует: "Permissions.asecret" -> "Permissions.secretcode", это произошло скорее всего из-за табуляции в конфиге, потому что я делаю все красиво и упорядоченно.
+        💜 AdminDownCommand   | Исправлен логический затык, логичсеское условие: >=. Было инвертировано: <=.
+        💜 AdminDelCommand    | Удалены остатки permissions logic check, исправлен затык.
+
+STAFF:
+
+        💚 AdminDeleteCommand | Мелкое исправление, вместо печати сделал отдельный permissions для улучшение функционала клиентов, ревью уже есть.
+        💚 AdminDownCommand   | Мелкое исправление, вместо печати сделал отдельный permissions для улучшение функционала клиентов, ревью уже есть.
+        💚 AdminSetCommand    | Мелкое исправление, вместо печати сделал отдельный permissions для улучшение функционала клиентов, ревью уже есть.
+
+        🩷 AdminBonusAllCommand | Ревью модели блока Permissions.
+        🩷 AdminSetSecretCode   | Ревью модели блока Permissions.
+        🩷 AdminBonusCommand    | Ревью модели блока Permissions.
+        🩷 ReportCommand        | Ревью модели блока Permissions.
+
+        💛 AdminBonusCommand    | Небольшая правка чередования зависимостей | Мета E1m0.
+
+State:
+❤️ Report | Была удалена система-конструктор answer. Причина: Новый переход на адаптивное кэшируемое системное состояние
+playerReportCache, и уже никому не нужен State, если из старого можно собрать полноценный новый который будет уже фактом
+а не "сборщиком состояния", это надежнее для репорта, а некогда половина его параметров = null как раньше.
+
+GUI:
+💚 ReportGUI | Переход на новую систему счисления не в базе данных а в кэше самого плагина: playerReportCache.
+
+Service:
+💚 AdminSystemService | Сервис по репорту: clickToReport -> переведен на систему <UUID, REPORT>: playerReportCache.
+Причина: Новый переход на адаптивное кэшируемое системное состояние playerReportCache.
+💚 AdminGameService | Сервис по репорту: fastReport -> переведен на систему <UUID, REPORT>: playerReportCache. Причина:
+Новый переход на адаптивное кэшируемое системное состояние playerReportCache.
+
+💚 AdminGameService | В методе handleReoff(UUID adminID), решил сделать проверку на rewatchTasksCache.containsKey(
+adminID) и добавил сообщение "Messages.Errors.reoffNullError".
+💚 AdminStaffService | В метод adminBonusAll - тоже решил добавить логирование в базе данных, очень хочется уже личную БД
+сервера H2 для пользователей чтобы им было легче, но в будущем обязательно сделаю.
+
+💚 AdminStaffService | Были добавлены новые сообщение successfulDownStaff, successfulDownAdmin | downStatus(UUID adminID,
+UUID staffId)
+💚 AdminStaffService | Были добавлены новые сообщение successfulUpStaff, successfulUpAdmin
+
+🧡 AdminGameService | Мелкие правки по расположению принимающих конструкторов для метода, улучшение читаемости | Мета:
+gameReport -> gameReportSend.
+
+🧡 AdminStaffService | Мелкие правки по расположению принимающих конструкторов для метода, улучшение читаемости | Мета:
+deleteAdmin(UUID staffID, UUID adminID, String reason) -> deleteAdmin(UUID adminID, UUID staffID, String reason)
+🧡 AdminStaffService | Мелкие правки по расположению принимающих конструкторов для метода, улучшение читаемости | Мета
+downStatus(UUID staffId, UUID adminID) -> downStatus(UUID adminID, UUID staffId)
+🧡 AdminStaffService | Мелкие правки по расположению принимающих конструкторов для метода, улучшение читаемости | Мета:
+adminBonusGive(UUID staffID, UUID adminID, int sum, String message) -> adminBonusGive(UUID adminID, UUID staffID, int
+sum, String message)
+
+❤️ ReportSystemService | Реализация List<Report> getReports() - была удалена. Причина: Теперь работа с базой для
+репортов и меню - мне не нужна, если хочу добиться для клиентов системы "Запустил и отпустил", первый шаг на пути к СБД
+и оптимизации = кэширование.
+
+💜💛🧡 AdminStaffService | Переделка условия. Причина: Адаптивность, читаемость: !admin.hasPermission("e1admin.adm") -> !
+admin.hasPermission(cfg.getString("Permissions.admin"))
+💚 AdminStaffService | Еще: Добавил сообщение permissionError в проверку !admin.hasPermission(cfg.getString("
+Permissions.admin")), всяко лучше чем return.
+
+💜💛🧡 AdminStaffService | Переделка условия. Причина: Адаптивность, читаемость: if (!p.hasPermission("e1admin.adm"))
+continue; -> if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;
+
+P.S: 💜 - Фикс бага, 💛 - Исправление самого метода в котором ведется работа, 🧡 - Переименование метода над которым
+ведется работа. Вот и получается: Фикс + Исправление + Переименование под мету = 💜💛🧡
+
+Repository:
+💚 ReportSystemRepository | Метод gameReportSend был переписан на новую архитектуру решений сразу из кэшированного
+репорта, здесь база - выступает как ФАКТ репорта, можно еше добавить ивент, но думаю будет лишним, хотя возможно в 2.0
+
+🧡 AdminStaffRepository | Мелкие правки по расположению принимающих конструкторов для метода, улучшение читаемости |
+Мета: giveBonusLog(UUID staffID, UUID adminID, int sum, String message) -> giveBonusLog(UUID adminID, UUID staffID, int
+sum, String message)
+
+Listener:
+💚 QuitListener | Добавляется новая проверка на выход: playerReportCache.containsKey(user.getUniqueId()). Расшифровка: "
+Если у человека есть репорт и он вышел из игры -> удалить его!"
+🧡 QuitListener | onAdminJoin -> onUserJoin | Потому что появляется новая проверка c новым кэшированием:
+playerReportCache.containsKey(user.getUniqueId())
+
+DAO:
+💜 SecretCoddeDAO | Поймал маленькую запятую в синтаксисе запроса JDBI.
+💜 BonusDAO | Оплошность.. e1admin_REPORT -> e1admin_bonus. Чет я не доглядел, надо будет откат глянуть, ставлю на то что
+делал все остальные DAO и забыл о bonus.
+
+Plugin:
+💜 plugin.yml | Мелкие правки, исправил arep (Админа) -> report, скорее всего просто заплутал в конфигурации когда
+связывал команды, так же сделал нормальную табуляцию комментариев для самого же себя и других разработчиков
+💜 plugin.yml | Добавил контроллер arepaccept для системы чтобы консоль сендер на всякий не ругался.
+
+💜 Исправил arep -> rep. Команда arep - все еще существует просто я ее сократил.
+
+TabCompleter:
+💚 MainTabCompleter | Новые aliases в комплитер.
+
+💛 MainTabCompleter | Вместо "Player?" в abonus, добавил список игроков, когда перестраивал логику, делал все на цепь, а
+не удобство, исправил.
+
+Решенные задачи в процессе:
+💜 Добавил Vault на тест сервер для eco, не забывать, что к нему нужен адаптер по типу: Essentials, мне не нравится
+добавлять два огромных плагина один из которых умер с концами во времена Bukkit, написать свой?..
+
+E1m0: 🧑‍💻 "Новые идеи для TODO list 2.0 | -> DEVLOG.md"
+
+PICK-CHECK COMMANDS:
+ADMIN:
+
+        /asecret Alberto 7777 | Отработала, исправлена | Прошла тестеры: ➕
+
+        /abonus Alberto 777 Работай | Отработала, исправлена | Прошла тестеры: ➕
+        /abonusall 777 Работаем | Отработала, исправлена | Прошла тестеры: ➕
+
+        /adown Alberto | Отработала, исправлена | Прошла тестеры: ➕
+        /adel Alberto | Отработала, исправлена | Прошла тестеры: ➕
+        /aup Alberto | Отработала, исправлена | Прошла тестеры: ➕
+
 2.0 Admin Optional && Player Structure:
 Сделать поддержку СБД

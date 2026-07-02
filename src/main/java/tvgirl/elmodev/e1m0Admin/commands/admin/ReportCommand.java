@@ -45,6 +45,12 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
+        String permission = cfg.getString("Permissions.arep");
+        if (!admin.hasPermission(permission)) {
+            sender.sendPath(admin, "Messages.Errors.permissionError");
+            return false;
+        }
+
         // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
         if(command.getName().toLowerCase().equalsIgnoreCase("arep")) {
             String response = String.join(" ", strings[0]);

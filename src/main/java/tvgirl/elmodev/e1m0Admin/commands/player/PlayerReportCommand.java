@@ -11,6 +11,8 @@ import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,13 +21,13 @@ public class PlayerReportCommand implements CommandExecutor {
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
     private final AdminGameService service;
-    private final Map<UUID, UUID> reportPlayers;
+    private final Map<UUID, Report> playerReportCache;
 
-    public PlayerReportCommand(E1m0Sender sender, FileConfiguration cfg, AdminGameService service, Map<UUID, UUID> reportPlayers) {
+    public PlayerReportCommand(E1m0Sender sender, FileConfiguration cfg, AdminGameService service, Map<UUID, Report> playerReportCache) {
         this.cfg = cfg;
         this.sender = sender;
         this.service = service;
-        this.reportPlayers = reportPlayers;
+        this.playerReportCache = playerReportCache;
     }
 
     @Override
@@ -35,19 +37,42 @@ public class PlayerReportCommand implements CommandExecutor {
             return false;
         }
 
+        List<Report> reportList = new ArrayList<>();
+        Bukkit.getLogger().info("Точка 1"); // ТЕСТЕР
+
         if(strings.length < 2) {
             sender.sendPath(player, "Messages.Errors.lengthError");
             return false;
         }
 
-        if (reportPlayers.containsKey(player.getUniqueId())) {
+        Bukkit.getLogger().info("Точка 2"); // ТЕСТЕР
+
+        if (playerReportCache.containsKey(player.getUniqueId())) {
             sender.sendPath(player, "Messages.Errors.playerHaveReport");
             return false;
         }
 
+        for (Map.Entry<UUID, Report> report : playerReportCache.entrySet()) reportList.add(report.getValue());
+
+        if (reportList != null) {
+            if (reportList.size() >= cfg.getInt("Settings.reportMaxSize")) {
+                sender.sendPath(player, "Messages.Errors.reportSizeIsMax");
+                return false;
+            }
+        }
+
+        Bukkit.getLogger().info("Точка 3"); // ТЕСТЕР
+
+        //TODO: Сделать проверку на 50 репортов, потому что пока что - одна страница.
+
         if(command.getName().toLowerCase().equalsIgnoreCase("report")) {
             int minLength = cfg.getInt("Admin.Report.minReportLength");
             String reportMessage = String.join(" ", strings);
+
+            Bukkit.getLogger().info("RepMessage: " + reportMessage);
+            Bukkit.getLogger().info("Минималка: " + minLength);
+
+            Bukkit.getLogger().info("Точка 4"); // ТЕСТЕР
 
             if(reportMessage.length() < minLength) {
                 sender.sendPath(player, cfg.getString("Messages.Errors.reportLengthError!"),
@@ -56,8 +81,9 @@ public class PlayerReportCommand implements CommandExecutor {
                 return false;
             }
 
-            UUID randomID = UUID.randomUUID();
+            Bukkit.getLogger().info("Точка 5"); // ТЕСТЕР
 
+            UUID randomID = UUID.randomUUID();
             Report report = new Report(
                     randomID,
                     null,
@@ -65,15 +91,18 @@ public class PlayerReportCommand implements CommandExecutor {
                     null,
                     player.getName(),
                     reportMessage,
-                    "Null..",
+                    null,
                     cfg.getString("Admin.Report.status_send"),
                     System.currentTimeMillis()
             );
 
+            Bukkit.getLogger().info("Точка 6"); // ТЕСТЕР
+
+            Bukkit.getLogger().info("RepMessage: " + reportMessage);
             Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /report была введена и пропущена. PlayerID: " + player.getUniqueId() + "PlayerName: " + player.getName() + "Сообщение: " + reportMessage); // ТЕСТЕР
 
             service.sendReport(report);
-            reportPlayers.put(player.getUniqueId(), randomID);
+            playerReportCache.put(player.getUniqueId(), report);
         }
 
         return true;

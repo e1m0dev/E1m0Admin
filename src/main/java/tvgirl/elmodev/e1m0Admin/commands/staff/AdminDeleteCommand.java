@@ -38,8 +38,9 @@ public class AdminDeleteCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(staff.hasPermission(cfg.getString("Permission.staff")))) {
-            sender.sendPath(staff, "Messages.Errors.staffPermissionError");
+        String permission = cfg.getString("Permissions.deladm");
+        if (!staff.hasPermission(permission)) {
+            sender.sendPath(staff, "Messages.Errors.permissionError");
             return false;
         }
 
@@ -50,17 +51,15 @@ public class AdminDeleteCommand implements CommandExecutor {
 
         if (command.getName().toLowerCase().equalsIgnoreCase("adel")) {
             Player admin = Bukkit.getPlayer(strings[0]);
-            String reason = strings[1];
+            String reason = String.join(" ", strings[1]);
 
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");
                 return false;
             }
 
-            if (staff.hasPermission(cfg.getString("Permissions.deladmin"))) {
-                Bukkit.getLogger().info("AdminSetCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
-                staffService.deleteAdmin(staff.getUniqueId(), admin.getUniqueId(), reason);
-            }
+            Bukkit.getLogger().info("AdminSetCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
+            staffService.deleteAdmin(admin.getUniqueId(), staff.getUniqueId(), reason);
         }
 
         return true;
