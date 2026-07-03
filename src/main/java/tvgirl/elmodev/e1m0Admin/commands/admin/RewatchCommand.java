@@ -27,40 +27,44 @@ public class RewatchCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        /* GLOBAL */
+
         if (!(commandSender instanceof Player admin)) {
             commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
             return false;
         }
 
-        if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
-            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
+        if (!checkPermission) {
+            sender.sendPath(admin, "Messages.Errors.secretCodeHasInputted");
             return false;
         }
 
         String permission = cfg.getString("Permissions.rewatch");
-        if (admin.hasPermission(permission)) {
-            Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleRewatch | Следящий режим"); // ТЕСТЕР
-        } else {
-            Bukkit.getLogger().info("RewatchCommand | У мужлан нет прав"); // ТЕСТЕР
+        if (!admin.hasPermission(permission)) {
+            sender.sendPath(admin, "Messages.Errors.permissionError");
+            return false;
         }
 
-        // /reoff
+        /* REOFF */
         if (command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
             Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleReoff | Админ-режим"); // ТЕСТЕР
             service.handleReoff(admin.getUniqueId());
             return true;
         }
 
-        String user = strings[0];
-
-        Player player = Bukkit.getPlayer(user);
-        if (player == null) {
-            sender.sendPath(admin, "Messages.Errors.nullPlayer");
+        if (strings.length != 1) {
+            sender.sendPath(admin, "Messages.Errors.lengthError");
             return false;
         }
 
-        if (strings.length < 1) {
-            sender.sendPath(admin, "Messages.Errors.lengthError");
+        /* REWATCH */
+        String user = strings[0];
+        Player player = Bukkit.getPlayer(user);
+
+        if (player == null) {
+            sender.sendPath(admin, "Messages.Errors.nullPlayer");
             return false;
         }
 

@@ -5,12 +5,13 @@ import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import java.util.UUID;
 
 public interface GameServiceAPI {
-    void handleInvisibility(UUID adminID);
+    void handleInvisibility(UUID adminID); // | Инвиз
 
-    void handleRewatch(UUID adminID, UUID playerID);
+    void handleRewatch(UUID adminID, UUID playerID); // | Реватч
 
-    void handleReoff(UUID adminID);
+    void handleReoff(UUID adminID); // | Отключится от реватча
 
-    void sendReport(Report report);
-    void fastReport(UUID adminID, Report report);
+    void sendReport(Report report); // | Отправить репорт
+
+    void fastReport(UUID adminID, Report report); // Быстро закрыть репорт
 }

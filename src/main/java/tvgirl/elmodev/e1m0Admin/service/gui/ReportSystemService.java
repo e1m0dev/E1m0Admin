@@ -29,30 +29,62 @@ public class ReportSystemService implements ReportSystemServiceAPI {
 
     public void clickToReport(UUID adminID, UUID reportID, String response) {
         Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Обработка репорта ID: " + reportID); // ТЕСТЕР
-        Report report = reportRepository.getReport(reportID);
 
-        Player admin = Bukkit.getPlayer(adminID);
-        Player player = Bukkit.getPlayer(report.getPlayerID());
+        for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
+            Bukkit.getLogger().warning("ReportKey " + reportKey.getValue().getUuid());
+            Bukkit.getLogger().warning("ReportID " + reportID);
 
-        Report newReport = new Report(
-                report.getUuid(),
-                adminID,
-                report.getPlayerID(),
-                admin.getName(),
-                player.getName(),
-                report.getReport(),
-                response,
-                report.getStatus(),
-                report.getCreatedAt()
-        );
+            boolean f = reportID.equals(reportKey);
 
-        sender.sendPath(admin, cfg.getString("Messages.reportTake")
-                .replace("%content", report.getReport())
-                .replace("%player", report.getPlayerNick()));
+            Bukkit.getLogger().warning("Boolean: " + f);
 
-        sender.sendString(player, response);
+            if (reportKey.getValue().getUuid().equals(reportID)) {
 
-        reportRepository.gameReportSend(newReport);
-        playerReportCache.remove(report.getPlayerID());
+                Report report = reportKey.getValue();
+
+                Player admin = Bukkit.getPlayer(adminID);
+                Player player = Bukkit.getPlayer(report.getPlayerID());
+
+                Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Обработчик принял условие и нашел бакит!"); // ТЕСТЕР
+
+                Report newReport = new Report(
+                        report.getUuid(),
+                        adminID,
+                        report.getPlayerID(),
+                        admin.getName(),
+                        player.getName(),
+                        report.getReport(),
+                        response,
+                        report.getStatus(),
+                        report.getCreatedAt()
+                );
+
+                sender.sendPath(admin, "Messages.reportTake",
+                        "%content", report.getReport(),
+                        "%player", report.getPlayerNick());
+
+                sender.sendPath(player, "Messages.reportAdminResponse",
+                        "%admin", admin.getName(),
+                        "%response", response);
+
+                Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Ушел +repo"); // ТЕСТЕР
+
+                admin.closeInventory();
+                reportRepository.gameReportSend(newReport);
+                playerReportCache.remove(report.getPlayerID());
+            } else {
+                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!");
+
+                Player admin = Bukkit.getPlayer(adminID);
+                admin.closeInventory();
+
+                for (Map.Entry<UUID, Report> reportKeyOff : playerReportCache.entrySet()) {
+                    if (reportKey.getValue().getUuid() == reportID) {
+                        Report report = reportKey.getValue();
+                        playerReportCache.remove(report.getPlayerID());
+                    }
+                }
+            }
+        }
     }
 }

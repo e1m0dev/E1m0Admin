@@ -39,23 +39,24 @@ public class AdminUpCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(permissionManager.checkSecretCodeAccess(staff.getUniqueId()))) {
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(staff.getUniqueId());
+        if (!checkPermission) {
             sender.sendPath(staff, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
-        if(strings.length < 1) {
+        if (strings.length != 1) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;
         }
 
-        if (command.getName().toLowerCase().equalsIgnoreCase("aup")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-            if(admin == null) {
-                sender.sendPath(staff, "Messages.Errors.nullPlayer");
-                return false;
-            }
+        Player admin = Bukkit.getPlayer(strings[0]);
+        if (admin == null) {
+            sender.sendPath(staff, "Messages.Errors.nullPlayer");
+            return false;
+        }
 
+        if (command.getName().toLowerCase().equalsIgnoreCase("aup")) {
             Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aup. Команда прошла!"); // ТЕСТЕР
             staffService.upStatus(admin.getUniqueId(), staff.getUniqueId());
         }

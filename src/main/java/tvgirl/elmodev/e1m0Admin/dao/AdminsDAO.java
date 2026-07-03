@@ -74,9 +74,11 @@ public interface AdminsDAO {
     );
 
     @SqlQuery("""
-                SELECT uuid, nick, weight, salary, prefix, ip
+                SELECT 
+                    uuid, nick, weight, salary, prefix, ip
         FROM e1admin_admins
-        WHERE uuid = :uuid
+                WHERE 
+                    uuid = :uuid
     """)
     Admin findByUuid(@Bind("uuid") String uuid);
 }

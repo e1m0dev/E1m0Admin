@@ -6,15 +6,13 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeState;
 
-import java.util.UUID;
-
 @RegisterConstructorMapper(SecretCodeState.class)
 public interface SecretCodeDAO {
 
     /* SecretCode | 🧑‍🔬 */
     @SqlUpdate("""
         INSERT INTO e1admin_code
-        (uuid, adminNick, code, regIP)
+                        (uuid, adminNick, code, regIP)
         VALUES
                 (:uuid, :adminNick, :code, :regIP)
     """)
@@ -37,6 +35,13 @@ public interface SecretCodeDAO {
             @Bind("staffNick") String snick,
             @Bind("code") int code,
             @Bind("regIP") String IP
+    );
+
+    @SqlUpdate("""
+                DELETE FROM e1admin_code WHERE uuid = :adminID
+            """)
+    void delAdminSecret(
+            @Bind("adminID") String adminID
     );
 
     @SqlQuery("""

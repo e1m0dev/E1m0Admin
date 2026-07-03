@@ -122,34 +122,49 @@ public class AdminSystemService implements SystemServiceAPI {
     @Override
     public void handleReportAccept(UUID adminID, UUID reportID) {
         Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Обработка репорта ID: " + reportID); // ТЕСТЕР
-        Report report = reportRepository.getReport(reportID);
 
-        Player admin = Bukkit.getPlayer(adminID);
-        Player player = Bukkit.getPlayer(report.getPlayerID());
-        String response = cfg.getString("Admin.Report.fastTakeReportMessage");
+        for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
+            if (reportKey.getValue().getUuid() == reportID) {
 
-        Report newReport = new Report(
-                report.getUuid(),
-                adminID,
-                report.getPlayerID(),
-                admin.getName(),
-                player.getName(),
-                report.getReport(),
-                response,
-                report.getStatus(),
-                report.getCreatedAt()
-        );
+                Report report = reportKey.getValue();
 
-        sender.sendPath(admin, "Messages.reportTake",
-                "%content", report.getReport(),
-                "%player", report.getPlayerNick());
+                Player admin = Bukkit.getPlayer(adminID);
+                Player player = Bukkit.getPlayer(report.getPlayerID());
+                String response = cfg.getString("Admin.Report.fastTakeReportMessage");
 
-        sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast"),
-                "%content", report.getReport(),
-                "%admin", admin.getName());
+                Report newReport = new Report(
+                        report.getUuid(),
+                        adminID,
+                        report.getPlayerID(),
+                        admin.getName(),
+                        player.getName(),
+                        report.getReport(),
+                        response,
+                        report.getStatus(),
+                        report.getCreatedAt()
+                );
 
-        reportRepository.gameReportSend(newReport);
-        playerReportCache.remove(report.getPlayerID());
-        Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Репорт выполнен! " + reportID); // ТЕСТЕР
+                sender.sendPath(admin, "Messages.reportTake",
+                        "%content", report.getReport(),
+                        "%player", report.getPlayerNick());
+
+                sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast"),
+                        "%content", report.getReport(),
+                        "%admin", admin.getName());
+
+                reportRepository.gameReportSend(newReport);
+                playerReportCache.remove(report.getPlayerID());
+                Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Репорт выполнен! " + reportID); // ТЕСТЕР
+            } else {
+                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!");
+
+                for (Map.Entry<UUID, Report> reportKeyOff : playerReportCache.entrySet()) {
+                    if (reportKey.getValue().getUuid() == reportID) {
+                        Report report = reportKey.getValue();
+                        playerReportCache.remove(report.getPlayerID());
+                    }
+                }
+            }
+        }
     }
 }

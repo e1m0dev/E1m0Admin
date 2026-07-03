@@ -15,7 +15,7 @@ Settings:
   world: "world"       # Мир       | В папке с Вашим сервером, у Вас есть в server.properties название Вашего мира.
 
   Dev:
-    rewatchTick: 5 # Слежка |❗ Опасная настройка, только для знающих людей с уровнем допуска DEV Рекомендуемое значение: 10+.
+    rewatchTick: 1 # Слежка |❗ Опасная настройка, только для знающих людей с уровнем допуска DEV Рекомендуемое значение: 10+.
     # ❓- Сколько тиков будет длиться один кадр слежки? Меньше тиков = больше плавности == БОЛЬШЕ нагрузка на сервер!
     rewatchVector: 1 # Слежка | На сколько высоко будет камера у администратора?
 
@@ -202,9 +202,18 @@ Admin:
         NAME: "&cМеню репортов"
         SIZE: 54
 
+        items:
+          close:
+            slot: 49
+            name: "&cЗакрыть."
+            item: "BARRIER"
+            lore:
+              - "Нажмите чтобы закрыть."
+
       # Репортики | Какой item в меню у ReportGUI? Он отдельно, потому что это не статический обьект + не постоянная форма, если объяснять разработчику: Я не могу отдавать в статику не стабильный Mutable state.
       ReportItem:
-        ITEM: player_head
+        NAME: "%content"
+        ITEM: PLAYER_HEAD
         FORM: # Форма как будет выгляеть репорт при наведении | Или же - его лор.
           - "Репорт: %content"
           - "Статус: %status"
@@ -221,11 +230,14 @@ Messages:
   secretCodeAccess: "Вы успешно авторизовались!"
 
   reportTake: "Вы успешно взяли репорт игрока: %player. Содержимое: %content"
-  reportMessagePlayerFast: "Администратор %admin - успешно взял ваш репорт в работу!"
+  reportMessagePlayerFast: "Администратор %admin — успешно взял ваш репорт в работу!"
 
   adminBonusAll: "&7Администратор %staff выдал всем бонус: %bonus $!"
   adminBonus: "&7Администратор %staff выдал Вам бонус: %bonus $! Сообщение: %message"
   adminPay: "&7Вы получили админ зарплату в виде: %salary $!"
+
+  successfulSetAdmin: "Вы были успешно назначены на пост администратора %level уровня, администратором %staff"
+  successfulSetStaff: "%admin был успешно назначены на пост администратора %level уровня"
 
   upAdmin: "Вас успешно повысил администратор %staff"
   successfulUpStaff: "Вы успешно повысили администратора %admin"
@@ -236,6 +248,11 @@ Messages:
 
   changeCodeAdmin: "❗ Внимание! Вам сменили игровой код администратора, тот кто сменил: %staff. Код: %code"
   changeCodeStaff: "❗ Внимание! ВЫ сменили игровой код администратора %admin. Его новый код: %code!"
+
+  reportAdminResponse: "Вам ответил администратор %admin, с ответом: %response"
+
+  deleteAdminByStaff: "Вы были сняты администратором %staff!"
+  successfulDeleteAdmin: "Вы успешно сняли администратора %admin!"
 
   Errors:
     nullPlayer: "Такого игрока не существует..."
@@ -253,23 +270,26 @@ Messages:
     # STAFF
     staffPermissionError: "У вас нет печати старшего администратора!"
 
-    setAdminWeightIsNull: "&cВыдаваемый ранг —— должен быть больше 0!"
-    setAdminWeightNotFound: "&cВведенный ранг —— НЕ найден.."
+    setAdminWeightIsNull: "&cВыдаваемый ранг — должен быть больше 0!"
+    setAdminWeightNotFound: "&cВведенный ранг — НЕ найден.."
 
     downAdminLevelError: "Администратор уже находится на минимальном уровне!"
-    downAdminWeightError: "Вы - не можете понизить данного администратора!"
+    downAdminWeightError: "Вы — не можете понизить данного администратора!"
 
-    deleteAdminWeightError: "Вы - не можете уволить данного администратора!"
+    deleteAdminWeightError: "Вы — не можете уволить данного администратора!"
 
-    upAdminWeightError: "Вы - не можете повысить данного администратора!"
+    upAdminWeightError: "Вы — не можете повысить данного администратора!"
     upAdminLevelError: "Администратор уже находится на максимальном уровне!"
     upAdminSelfError: "Вы не можете повысить себя!"
 
+    secretCodeHasInputted: "Вы уже вводили секретный пин!"
     setAdminCodeIsWrong: "Вы не правильно ввели новый код для администратора, пример кода: 7777"
 
     reoffNullError: "Вы не за кем не следите и не можете отключится!"
 
     playerHaveReport: "У вас уже есть репорт!"
+    noReportsInMemory: "Доступных репортов сейчас нет!"
+    adminSendReportToAdmins: "Вы же администратор.. Как можно отправлять репорты самому себе?"
 
   # Когда буду выпускать.
   #  type: postgresql

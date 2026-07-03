@@ -98,7 +98,8 @@ public class AdminsStaffService implements StaffServiceAPI {
         }
 
         if (currentKey == null) {
-            sender.sendPath(admin, "Messages.Errors.upAdminLevelError");
+            sender.sendPath(staff, "Messages.Errors.upAdminLevelError");
+            return;
         }
 
         String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
@@ -193,12 +194,13 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void setAdmin(UUID staffID, UUID adminID, int weight) {
+    public void setAdmin(UUID adminID, UUID staffID, int weight) {
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
         Player admin = Bukkit.getPlayer(adminID);
         Player staff = Bukkit.getPlayer(staffID);
 
         if (systemRepository.checkAdminInBase(adminID)) {
+            sender.sendPath(staff, "Messages.Errors.isAdminContainsData");
             Bukkit.getLogger().warning("Человек уже есть в базе данных!");
             return;
         }
@@ -210,6 +212,18 @@ public class AdminsStaffService implements StaffServiceAPI {
 
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
                 Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aset. Администратор поставлен, + sendRepo"); // ТЕСТЕР
+
+                sender.sendPath(admin, "Messages.successfulSetAdmin",
+                        "%level", String.valueOf(weight),
+                        "%staff", staff.getName()
+                );
+
+
+                sender.sendPath(admin, "Messages.successfulSetStaff",
+                        "%level", String.valueOf(weight),
+                        "%admin", admin.getName()
+                );
+
                 return;
             } else {
                 sender.sendPath(staff, "Messages.Errors.setAdminWeightNotFound");
@@ -221,6 +235,7 @@ public class AdminsStaffService implements StaffServiceAPI {
     @Override
     public void deleteAdmin(UUID adminID, UUID staffID, String reason) {
         Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
 
         int weightBaseStaff = systemRepository.getAdminWeight(staffID);
         int weightBaseAdmin = systemRepository.getAdminWeight(adminID);
@@ -232,8 +247,18 @@ public class AdminsStaffService implements StaffServiceAPI {
             return;
         }
 
+        sender.sendPath(staff, "Messages.successfulDeleteAdmin",
+                "%admin", admin.getName());
+
+        sender.sendPath(admin, "Messages.deleteAdminByStaff",
+                "%staff", staff.getName());
+
+
+        // TODO: Лучше - Вывести в Event.
         staffRepository.deleteAdminStatus(adminID);
+        secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.deleteAdminStatusLog(staffID, adminID, reason);
+
         Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /adel. Команда прошла sendRepo.");
     }
 
@@ -244,7 +269,6 @@ public class AdminsStaffService implements StaffServiceAPI {
         Bukkit.getLogger().info("AdminBonusCommand | COMMAND-SERVICE: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
 
         if (!admin.hasPermission(cfg.getString("Permissions.admin"))) {
-            sender.sendPath(admin, "Messages.Errors.permissionError");
             return;
         }
 

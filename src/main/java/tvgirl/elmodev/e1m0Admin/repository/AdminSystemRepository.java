@@ -30,7 +30,7 @@ public class AdminSystemRepository implements SystemRepositoryAPI {
         Admin admin = adminDao.findByUuid(adminID.toString());
 
         if (admin == null) {
-            Bukkit.getLogger().warning("❗ | Администратора с UUID: %uuid - не существует"
+            Bukkit.getLogger().warning("❗ | Администратора с UUID: %uuid - не существует! Проверьте его права!"
                     .replace("uuid", adminID.toString()));
 
             return -1;
@@ -45,7 +45,7 @@ public class AdminSystemRepository implements SystemRepositoryAPI {
         Admin admin = adminDao.findByUuid(adminID.toString());
 
         if (admin == null) {
-            Bukkit.getLogger().warning("❗ | Администратора с UUID: %uuid - не существует"
+            Bukkit.getLogger().warning("❗ | Администратора с UUID: %uuid - не существует! Проверьте его права!"
                     .replace("uuid", adminID.toString()));
 
 
@@ -61,7 +61,7 @@ public class AdminSystemRepository implements SystemRepositoryAPI {
         Admin admin = adminDao.findByUuid(adminID.toString());
 
         if (admin == null) {
-            Bukkit.getLogger().warning("❗ | Администратора с UUID: %uuid - не существует"
+            Bukkit.getLogger().warning("❗ | Администратора с UUID: %uuid - не существует! Проверьте его права!"
                     .replace("uuid", adminID.toString()));
 
             return "NULL";

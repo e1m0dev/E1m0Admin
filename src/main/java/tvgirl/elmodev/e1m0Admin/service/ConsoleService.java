@@ -29,7 +29,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         this.sender = sender;
     }
 
-
     @Override
     public void setSecretConsole(UUID adminID, UUID consoleID, int code) {
         Player admin = Bukkit.getPlayer(adminID);
@@ -222,6 +221,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         Player admin = Bukkit.getPlayer(adminID);
 
         staffRepository.deleteAdminStatus(adminID);
+        secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
         Bukkit.getLogger().info("ConsoleDelAdminCommand | COMMAND-SERVICE: /cdel. Команда прошла sendRepo.");
     }

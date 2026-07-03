@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public interface ReportGuiAPI {
 
-    void openReportGUI(UUID admin, String msg);
+    void openReportGUI(UUID admin, String msg); // | Открывает репорт меню сразу с ответом администратора.
 
 }

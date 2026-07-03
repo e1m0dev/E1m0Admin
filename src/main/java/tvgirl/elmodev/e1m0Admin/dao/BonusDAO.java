@@ -13,7 +13,7 @@ public interface BonusDAO {
     @SqlUpdate("""
                 INSERT INTO e1admin_bonus
         (uuid, staffID, adminID, staffNick, adminNick, sum, message)
-        VALUES
+                        VALUES
         (:uuid, :staffID, :adminID, :staffNick, :adminNick, :sum, :message)
     """)
     void insert(

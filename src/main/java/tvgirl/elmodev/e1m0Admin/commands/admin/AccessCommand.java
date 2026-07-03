@@ -36,6 +36,12 @@ public class AccessCommand implements CommandExecutor {
             return false;
         }
 
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
+        if (checkPermission) {
+            sender.sendPath(admin, "Messages.Errors.secretCodeHasInputted");
+            return false;
+        }
+
         String permission = cfg.getString("Permissions.admin");
         if (!admin.hasPermission(permission)) {
             sender.sendPath(admin, "Messages.Errors.permissionError");
@@ -43,7 +49,6 @@ public class AccessCommand implements CommandExecutor {
         }
 
         if(command.getName().toLowerCase().equalsIgnoreCase("aaccess")) {
-            Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess прошла регистрацию."); // ТЕСТЕР
             Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess была введена и пропущена."); // ТЕСТЕР
             secretCodeGui.openPINGui(admin.getUniqueId());
         }

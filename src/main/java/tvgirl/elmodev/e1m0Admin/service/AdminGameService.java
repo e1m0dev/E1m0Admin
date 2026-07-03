@@ -139,10 +139,39 @@ public class AdminGameService implements GameServiceAPI {
         for(Player adm : Bukkit.getOnlinePlayers()) {
             if(adm.hasPermission(cfg.getString("Permissions.admin"))) {
                 // Если в репорте есть контрольные слова – то он выделяется
+
+                Bukkit.getLogger().info("Точка 2 REPORT"); // ТЕСТЕР
+
+                if (cfg.getBoolean("Server.donateReport") && p.hasPermission(cfg.getString("Admin.Report.DonateReport.permission"))) {
+                    // 🤑 | Если это сообщение донатное:
+                    adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.DonateReport.sound")), 1.0f, 1.0f);
+
+
+                    String argContent = report.getReport();
+                    String argPlayer = report.getPlayerNick();
+                    sender.sendPath(adm, "Admin.Report.DonateReport.donateMessage",
+                            "%content", argContent,
+                            "%player", argPlayer);
+
+                    Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 5. Выборка: Донатное."); // ТЕСТЕР
+                } else {
+                    // ⌚ | Если это сообщение обычное:
+                    if (cfg.getBoolean("Server.newReport")) {
+                        adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.NewReport.sound")), 1.0f, 1.0f);
+
+                        String argContent = report.getReport();
+                        String argPlayer = report.getPlayerNick();
+
+                        sender.sendPath(adm, "Admin.Report.NewReport.reportMessage",
+                                "%content", argContent,
+                                "%player", argPlayer);
+
+                        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 6. Выборка: Обычное."); // ТЕСТЕР
+                    }
+                }
+
+                // EMERGENCY
                 if(!cfg.getBoolean("Server.emergencyRep")) return;
-
-                Bukkit.getLogger().info("Точка 2 EMERGENCY"); // ТЕСТЕР
-
                 for(String s : emergencySwords) {
                     String sword = s.toLowerCase();
                     Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 3. Выборка"); // ТЕСТЕР
@@ -152,28 +181,8 @@ public class AdminGameService implements GameServiceAPI {
                         if (cfg.getBoolean("Server.emergencyRep")) {
                             // 🚨 | Если это сообщение срочное:
                             fastReport(adm.getUniqueId(), report);
-                            adm.playSound(p, Sound.valueOf(cfg.getString("Admin.Report.EmergencyReport.sound")), 1.0f, 1.0f);
+                            adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.EmergencyReport.sound")), 1.0f, 1.0f);
                             Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 4. Выборка: Срочное."); // ТЕСТЕР
-                        }
-                    } else if(cfg.getBoolean("Server.donateReport") && p.hasPermission(cfg.getString("Admin.Report.DonateReport.permission"))) {
-                            // 🤑 | Если это сообщение донатное:
-                        adm.playSound(p, Sound.valueOf(cfg.getString("Admin.Report.DonateReport.sound")), 1.0f, 1.0f);
-
-                        sender.sendPath(adm, cfg.getString("Admin.Report.DonateReport.donateMessage")
-                                .replace("%content", report.getReport())
-                                .replace("%player", report.getPlayerNick()));
-
-                        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 5. Выборка: Донатное."); // ТЕСТЕР
-                    } else {
-                            // ⌚ | Если это сообщение обычное:
-                        if (cfg.getBoolean("Server.newReport")) {
-                            adm.playSound(p, Sound.valueOf(cfg.getString("Admin.Report.NewReport.sound")), 1.0f, 1.0f);
-
-                            sender.sendPath(adm, cfg.getString("Admin.Report.NewReport.reportMessage")
-                                    .replace("%content", report.getReport())
-                                    .replace("%player", report.getPlayerNick()));
-
-                            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 6. Выборка: Обычное."); // ТЕСТЕР
                         }
                     }
                 }

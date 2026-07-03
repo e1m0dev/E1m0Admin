@@ -33,8 +33,8 @@ public class AdminSetCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(permissionManager.checkSecretCodeAccess(staff.getUniqueId()))) {
-            Bukkit.getLogger().info("AdminSetCommand | COMMAND: /aset. Ошибка: code"); // ТЕСТЕР
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(staff.getUniqueId());
+        if (!checkPermission) {
             sender.sendPath(staff, "Messages.Errors.secretCodeNotInput");
             return false;
         }
@@ -45,7 +45,7 @@ public class AdminSetCommand implements CommandExecutor {
             return false;
         }
 
-        if(strings.length < 2) {
+        if (strings.length != 2) {
             Bukkit.getLogger().info("AdminSetCommand | COMMAND: /aset. Ошибка: lenght"); // ТЕСТЕР
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;
@@ -67,7 +67,7 @@ public class AdminSetCommand implements CommandExecutor {
             }
 
             Bukkit.getLogger().info("AdminSetCommand | COMMAND: /aset. Команда прошла успешно, ушла в обработчик."); // ТЕСТЕР
-            staffService.setAdmin(staff.getUniqueId(), admin.getUniqueId(), weight);
+            staffService.setAdmin(admin.getUniqueId(), staff.getUniqueId(), weight);
         }
 
         return true;

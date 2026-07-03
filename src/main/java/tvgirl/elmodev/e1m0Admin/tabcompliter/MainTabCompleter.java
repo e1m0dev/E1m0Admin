@@ -28,12 +28,23 @@ public class MainTabCompleter implements TabCompleter {
         if (sender.hasPermission(cfg.getString("Permissions.admin"))) {
             switch (command.getName().toLowerCase()) {
 
+                case "rep":
+                case "reps":
+                case "arep":
+                    if (strings.length == 1) {
+                        tab.add("Answer?");
+                    }
+
+                    break;
+
                 case "report":
                     if (strings.length == 1) {
                         getOnlinePlayers(tab);
                     } else if (strings.length == 2) {
                         tab.add("Reason?");
                     }
+
+                    break;
 
                 case "abonus":
                     if (strings.length == 1) {
@@ -59,17 +70,12 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
-                case "arep":
-                    if (strings.length == 1) {
-                        tab.add("Answer?");
-                    }
-
                 case "adel":
                 case "cdel":
                     if (strings.length == 1) {
                         getOnlinePlayers(tab);
                     } else if (strings.length == 2) {
-                        tab.add("Reason?");
+                        tab.add("Reason del?");
                     }
 
                     break;

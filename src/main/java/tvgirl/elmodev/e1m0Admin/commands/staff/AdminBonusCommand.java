@@ -11,6 +11,8 @@ import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
+import java.util.Arrays;
+
 public class AdminBonusCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
@@ -33,6 +35,11 @@ public class AdminBonusCommand implements CommandExecutor {
             return false;
         }
 
+        if (strings.length < 3) {
+            sender.sendPath(staff, "Messages.Errors.lengthError");
+            return false;
+        }
+
         if (!(permissionManager.checkSecretCodeAccess(staff.getUniqueId()))) {
             sender.sendPath(staff, "Messages.Errors.secretCodeNotInput");
             return false;
@@ -44,16 +51,13 @@ public class AdminBonusCommand implements CommandExecutor {
             return false;
         }
 
-        // abonus Albert 777 Работай.
+        // abonus Albert 777 Работаем на реп.
         if (command.getName().toLowerCase().equalsIgnoreCase("abonus")) {
-            if(strings.length < 3) {
-                sender.sendPath(staff, "Messages.Errors.lengthError");
-                return false;
-            }
 
+            String[] messageArray = Arrays.copyOfRange(strings, 2, strings.length);
+            String message = String.join(" ", messageArray);
             Player admin = Bukkit.getPlayer(strings[0]);
             int sum = Integer.parseInt(strings[1]);
-            String message = String.join(" ", strings[2]);
 
             if(admin == null) {
                 sender.sendPath(staff, "Messages.Errors.nullPlayer");

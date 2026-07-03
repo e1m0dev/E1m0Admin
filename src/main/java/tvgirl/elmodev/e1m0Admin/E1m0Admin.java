@@ -173,7 +173,7 @@ public final class E1m0Admin extends JavaPlugin {
 
         // 🌐 | GUI
         secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
-        reportGui = new ReportGUI(playerReportCache, reportKey, reportActions, reportService, getConfig(), this);
+        reportGui = new ReportGUI(playerReportCache, reportKey, reportActions, reportService, getConfig(), this, sender);
 
         // 🗣️ | Listeners
         lManager.registerEvents(new JoinListener(getConfig(), sessionManager), this);
@@ -188,8 +188,9 @@ public final class E1m0Admin extends JavaPlugin {
 
         // 🤖 | Commands
         // - | Admin
-        getCommand("rep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
         getCommand("aaccess").setExecutor(new AccessCommand(sender, getConfig(), gameService, secretCodeGui, permissionManager));
+        getCommand("arep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
+        getCommand("rep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
         getCommand("ainv").setExecutor(new InvisibilityCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("reoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("re").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
@@ -218,6 +219,7 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("rec").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("rep").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("arep").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("ainv").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("recon").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("reoff").setTabCompleter(new MainTabCompleter(getConfig()));

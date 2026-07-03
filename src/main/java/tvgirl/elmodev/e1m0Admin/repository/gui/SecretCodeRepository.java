@@ -31,6 +31,12 @@ public class SecretCodeRepository implements SecretCodeRepositoryAPI {
     }
 
     @Override
+    public void systemDeleteAdmin(UUID adminID) {
+        Player adm = Bukkit.getPlayer(adminID);
+        secretDAO.delAdminSecret(adminID.toString());
+    }
+
+    @Override
     public int getSecretCode(UUID adminID) {
         return secretDAO.getCode(adminID.toString());
     }

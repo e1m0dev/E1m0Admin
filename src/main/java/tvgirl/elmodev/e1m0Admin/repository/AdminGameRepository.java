@@ -11,4 +11,6 @@ public class AdminGameRepository implements GameRepositoryAPI {
         this.jdbi = jdbi;
     }
 
+    // TODO: Заполнить бы чем то..
+
 }

@@ -28,7 +28,7 @@ public class ConsoleDelAdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
-        if (strings.length < 2) {
+        if (strings.length != 2) {
             commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
             return false;
         }
@@ -36,6 +36,11 @@ public class ConsoleDelAdminCommand implements CommandExecutor {
         if (command.getName().toLowerCase().equalsIgnoreCase("cdel")) {
             Player admin = Bukkit.getPlayer(strings[0]);
             String reason = strings[1];
+
+            if (reason.isEmpty()) {
+                commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
+                return false;
+            }
 
             if (admin == null) {
                 commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));

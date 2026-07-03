@@ -31,25 +31,25 @@ public class ConsoleSetAdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
-        if (strings.length < 2) {
+        if (strings.length != 2) {
             commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
             return false;
         }
 
+        Player admin = Bukkit.getPlayer(strings[0]);
+        int weight = Integer.parseInt(strings[1]);
+
+        if (weight <= 0) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.setAdminWeightIsNull"));
+            return false;
+        }
+
+        if (admin == null) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
+            return false;
+        }
+
         if (command.getName().toLowerCase().equalsIgnoreCase("csetadmin")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-            int weight = Integer.parseInt(strings[1]);
-
-            if (weight <= 0) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.setAdminWeightIsNull"));
-                return false;
-            }
-
-            if (admin == null) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
-                return false;
-            }
-
             Bukkit.getLogger().info("ConsoleSetAdminCommand | COMMAND: /csetadmin. Команда прошла успешно, ушла в обработчик.");
             consoleService.setAdminConsole(admin.getUniqueId(), consoleID, weight);
         }

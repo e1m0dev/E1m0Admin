@@ -3,13 +3,15 @@ package tvgirl.elmodev.e1m0Admin.api.service;
 import java.util.UUID;
 
 public interface StaffServiceAPI {
-    void upStatus(UUID staffID, UUID adminID);   // Поднять админ-уровень.
-    void downStatus(UUID staffID, UUID adminID); // Понизить админ-уровень.
+    void upStatus(UUID adminID, UUID staffID);   // Поднять админ-уровень.
 
-    void setAdmin(UUID staffID, UUID adminID, int weight);  // Поставить администратора.
-    void deleteAdmin(UUID staffID, UUID adminID, String reason); // Снять администратора.
+    void downStatus(UUID adminID, UUID staffID); // Понизить админ-уровень.
 
-    void adminBonusGive(UUID staffID, UUID id, int sum, String message); // Выдать админ-бонус администратору
+    void setAdmin(UUID adminID, UUID staffID, int weight);  // Поставить администратора.
+
+    void deleteAdmin(UUID adminID, UUID staffID, String reason); // Снять администратора.
+
+    void adminBonusGive(UUID adminID, UUID staffID, int sum, String message); // Выдать админ-бонус администратору
     void adminBonusAll(UUID staffID, int sum, String message); // Выдать админ-бонус администраторам
 
     void setSecretPassword(UUID adminID, UUID staffID, int code); // Сменить администратору код

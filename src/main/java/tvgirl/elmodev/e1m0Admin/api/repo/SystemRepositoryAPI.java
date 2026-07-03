@@ -3,12 +3,11 @@ package tvgirl.elmodev.e1m0Admin.api.repo;
 import java.util.UUID;
 
 public interface SystemRepositoryAPI {
-
     boolean checkAdminInBase(UUID adminID); // | Существует ли администратор вообще в базе данных?
 
-    int getAdminSalary(UUID adminID);
+    String getAdminPrefix(UUID adminID);  // | Какой префикс у администратора?
 
-    int getAdminWeight(UUID adminID);
+    int getAdminWeight(UUID adminID); // | Какой уровень у администратора?
 
-    String getAdminPrefix(UUID adminID);
+    int getAdminSalary(UUID adminID); // | Какая зарплата у администратора?
 }

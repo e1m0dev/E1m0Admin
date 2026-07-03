@@ -27,14 +27,20 @@ public class ConsoleUpAdminCommand implements CommandExecutor {
     // $cdel E1m0 1
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (strings.length != 1) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
+            return false;
+        }
+
+        Player admin = Bukkit.getPlayer(strings[0]);
+
+        if (admin == null) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
+            return false;
+        }
+
         if (command.getName().toLowerCase().equalsIgnoreCase("cup")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-
-            if (admin == null) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
-                return false;
-            }
-
             Bukkit.getLogger().info("ConsoleUpAdminCommand | COMMAND: /cup. Команда прошла успешно, ушла в обработчик.");
             consoleService.upAdminConsole(admin.getUniqueId(), consoleID);
         }

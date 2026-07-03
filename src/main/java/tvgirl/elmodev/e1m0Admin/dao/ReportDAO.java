@@ -2,12 +2,9 @@ package tvgirl.elmodev.e1m0Admin.dao;
 
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import tvgirl.elmodev.e1m0Admin.state.report.Report;
 
-import java.util.List;
-import java.util.UUID;
 
 @RegisterConstructorMapper(Report.class)
 public interface ReportDAO {
@@ -28,38 +25,5 @@ public interface ReportDAO {
             @Bind("report") String report,
             @Bind("response") String response,
             @Bind("status") String status
-    );
-
-    @SqlUpdate("""
-                UPDATE e1admin_reports SET adminID = :adminID, adminNick = :adminNick, response = :response, status = :status
-                WHERE uuid = :uuid
-    """)
-    void updateReport(
-            @Bind("uuid") String uuid,
-            @Bind("adminID") String adminID,
-            @Bind("adminNick") String adminNick,
-            @Bind("response") String response,
-            @Bind("status") String status
-    );
-
-    @SqlQuery("""
-                SELECT uuid, adminID, playerID, adminNick, playerNick, report, response, status
-        FROM e1admin_reports
-        WHERE :status
-        LIMIT :limit
-    """)
-    List<Report> getReportList(
-            @Bind("status") String status,
-            @Bind("limit") int limit
-    );
-
-    // Контроллер
-    @SqlQuery("""
-        SELECT uuid, adminID, playerID, adminNick, playerNick, report, response, status, createdAt
-        FROM e1admin_reports
-                WHERE uuid = :uuid
-    """)
-    Report getReport(
-            @Bind("uuid") String uuid
     );
 }

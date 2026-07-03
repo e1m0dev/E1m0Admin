@@ -27,14 +27,20 @@ public class ConsoleDownAdminCommand implements CommandExecutor {
     // $cdel E1m0 1
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (strings.length != 1) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
+            return false;
+        }
+
+        Player admin = Bukkit.getPlayer(strings[0]);
+
+        if (admin == null) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
+            return false;
+        }
+
         if (command.getName().toLowerCase().equalsIgnoreCase("cdown")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-
-            if (admin == null) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
-                return false;
-            }
-
             Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND: /cdown. Команда прошла успешно, ушла в обработчик.");
             consoleService.downAdminConsole(admin.getUniqueId(), consoleID);
         }

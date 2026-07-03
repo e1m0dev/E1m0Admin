@@ -35,13 +35,15 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
-            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
+        if (strings.length != 1) {
+            Bukkit.getLogger().info("AccessCommand | ТОЧКА ЗАШЛА В ЧЕКЕР STR!"); // ТЕСТЕР
+            sender.sendPath(admin, "Messages.Errors.lengthError");
             return false;
         }
 
-        if (strings.length > 2) {
-            sender.sendPath(admin, "Messages.Errors.lengthError");
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
+        if (!checkPermission) {
+            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
@@ -51,15 +53,13 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
-        // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
-        if(command.getName().toLowerCase().equalsIgnoreCase("arep")) {
-            String response = String.join(" ", strings[0]);
+        Bukkit.getLogger().info("AccessCommand | ТОЧКА ПРОШЛА ВСЕ ПРОВЕРКИ!"); // ТЕСТЕР
 
-            if (admin.hasPermission(cfg.getString("Permissions.arep"))) {
-                reportGUI.openReportGUI(admin.getUniqueId(), response);
-                Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /arep была введена и пропущена. Сообщение от администратора: " + response); // ТЕСТЕР
-            }
-        }
+        // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
+        String response = String.join(" ", strings);
+
+        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /arep была введена и пропущена. Сообщение от администратора: " + response); // ТЕСТЕР
+        reportGUI.openReportGUI(admin.getUniqueId(), response);
 
         return true;
     }

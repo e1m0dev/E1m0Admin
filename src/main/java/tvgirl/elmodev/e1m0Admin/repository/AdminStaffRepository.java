@@ -20,6 +20,7 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     @Override
     public void setAdminStatus(UUID id, String nick, int weight, int salary, String prefix, String IP) {
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+
         adminDao.insert(id.toString(), nick, weight, salary, prefix, IP);
     }
 
@@ -27,6 +28,7 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     public void deleteAdminStatus(UUID adminID) {
         Bukkit.getLogger().info("AdminsDAO | Администратор удален.");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
+
         adminDao.delAdmin(adminID.toString());
     }
 
@@ -36,8 +38,8 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
         String uuid = UUID.randomUUID().toString();
-        Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
 
         adminDao.delAdminLogInsert(uuid, admin.getName(), staff.getName(), reason);
     }
@@ -47,8 +49,8 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
         Bukkit.getLogger().info("AdminsDAO | Администратор удален и отпечатан лог");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
-        String uuid = UUID.randomUUID().toString();
         Player admin = Bukkit.getPlayer(adminID);
+        String uuid = UUID.randomUUID().toString();
 
         adminDao.delAdminLogInsert(uuid, admin.getName(), "CONSOLE", reason);
     }
@@ -74,8 +76,8 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
         Bukkit.getLogger().info("AdminsDAO | Администратор получил бонус.");
         BonusDAO bonusDAO = jdbi.onDemand(BonusDAO.class);
 
-        Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
 
         bonusDAO.insert(UUID.randomUUID().toString(), staffID.toString(), adminID.toString(), admin.getName(), staff.getName(), sum, message);
     }

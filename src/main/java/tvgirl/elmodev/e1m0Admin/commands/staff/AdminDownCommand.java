@@ -36,7 +36,8 @@ public class AdminDownCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(permissionManager.checkSecretCodeAccess(staff.getUniqueId()))) {
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(staff.getUniqueId());
+        if (!checkPermission) {
             sender.sendPath(staff, "Messages.Errors.secretCodeNotInput");
             return false;
         }
@@ -47,7 +48,7 @@ public class AdminDownCommand implements CommandExecutor {
             return false;
         }
 
-        if(strings.length < 1) {
+        if (strings.length != 1) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;
         }
@@ -73,7 +74,7 @@ public class AdminDownCommand implements CommandExecutor {
 
         if (command.getName().toLowerCase().equalsIgnoreCase("adown")) {
             Bukkit.getLogger().info("AdminDownCommand | COMMAND: /adown. Команда прошла успешно.");
-            staffService.downStatus(staff.getUniqueId(), admin.getUniqueId());
+            staffService.downStatus(admin.getUniqueId(), staff.getUniqueId());
         }
 
         return true;

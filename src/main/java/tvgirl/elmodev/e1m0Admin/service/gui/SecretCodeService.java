@@ -122,7 +122,6 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user));
             Bukkit.getLogger().info("SecretCodeService | Точка выхода: foursStepHandler: 💚 Прошел полностью.."); // ТЕСТЕР
 
-            // CHECK ВЕТКА
             SecretCodeState stateCheck = manager.getAdminByID(id);
             boolean f = stateCheck != null;
             Bukkit.getLogger().warning("Boolean: " + f);

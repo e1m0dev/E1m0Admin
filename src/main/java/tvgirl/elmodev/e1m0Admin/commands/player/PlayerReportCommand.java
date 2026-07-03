@@ -37,25 +37,42 @@ public class PlayerReportCommand implements CommandExecutor {
             return false;
         }
 
-        List<Report> reportList = new ArrayList<>();
-        Bukkit.getLogger().info("Точка 1"); // ТЕСТЕР
+        UUID randomID = UUID.randomUUID();
 
-        if(strings.length < 2) {
+        int minLength = cfg.getInt("Admin.Report.minReportLength");
+        int maxSize = cfg.getInt("Admin.Report.reportMaxSize");
+
+        if (strings.length != 2) {
             sender.sendPath(player, "Messages.Errors.lengthError");
+            return false;
+        }
+
+        String reportMessage = String.join(" ", strings);
+        List<Report> reportList = new ArrayList<>();
+
+        String permission = cfg.getString("Permissions.admin");
+        if (player.hasPermission(permission)) {
+            sender.sendPath(player, "Messages.Errors.adminSendReportToAdmins");
             return false;
         }
 
         Bukkit.getLogger().info("Точка 2"); // ТЕСТЕР
 
-        if (playerReportCache.containsKey(player.getUniqueId())) {
+        boolean containsInMemory = playerReportCache.containsKey(player.getUniqueId());
+        if (containsInMemory) {
             sender.sendPath(player, "Messages.Errors.playerHaveReport");
             return false;
         }
 
+        Bukkit.getLogger().info("Size: " + reportList.size());
+
         for (Map.Entry<UUID, Report> report : playerReportCache.entrySet()) reportList.add(report.getValue());
 
         if (reportList != null) {
-            if (reportList.size() >= cfg.getInt("Settings.reportMaxSize")) {
+            if (reportList.size() >= maxSize) {
+                Bukkit.getLogger().info(String.valueOf(reportList.size() >= maxSize));
+
+                Bukkit.getLogger().info("Size: " + reportList.size()); // ТЕСТЕР
                 sender.sendPath(player, "Messages.Errors.reportSizeIsMax");
                 return false;
             }
@@ -63,12 +80,7 @@ public class PlayerReportCommand implements CommandExecutor {
 
         Bukkit.getLogger().info("Точка 3"); // ТЕСТЕР
 
-        //TODO: Сделать проверку на 50 репортов, потому что пока что - одна страница.
-
         if(command.getName().toLowerCase().equalsIgnoreCase("report")) {
-            int minLength = cfg.getInt("Admin.Report.minReportLength");
-            String reportMessage = String.join(" ", strings);
-
             Bukkit.getLogger().info("RepMessage: " + reportMessage);
             Bukkit.getLogger().info("Минималка: " + minLength);
 
@@ -83,7 +95,6 @@ public class PlayerReportCommand implements CommandExecutor {
 
             Bukkit.getLogger().info("Точка 5"); // ТЕСТЕР
 
-            UUID randomID = UUID.randomUUID();
             Report report = new Report(
                     randomID,
                     null,

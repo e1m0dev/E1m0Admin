@@ -11,6 +11,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
     import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
+    import java.util.Arrays;
+
     public class AdminBonusAllCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
@@ -33,7 +35,7 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             return false;
         }
 
-        if (strings.length != 2) {
+        if (strings.length < 3) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;
         }
@@ -49,11 +51,11 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             return false;
         }
 
+        String[] messageArray = Arrays.copyOfRange(strings, 1, strings.length);
+        String message = String.join(" ", messageArray);
+        int sum = Integer.parseInt(strings[0]);
+
         if (command.getName().toLowerCase().equalsIgnoreCase("abonusall")) {
-
-            int sum = Integer.parseInt(strings[0]);
-            String message = String.join(" ", strings[1]);
-
             Bukkit.getLogger().info("AdminBonusAllCommand | Точка входа COMMAND: /abonusall была введена и пропущена. Вызов обработчика: adminBonusAll"); // ТЕСТЕР
             staffService.adminBonusAll(staff.getUniqueId(), sum, message);
         }

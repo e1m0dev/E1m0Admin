@@ -1,6 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.gui.controller.report;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,6 +46,11 @@ public class ReportController implements Listener {
         ItemStack item = e.getCurrentItem();
         if (item == null || item.getType().isAir() || !item.hasItemMeta()) {
             return;
+        }
+
+        // TODO: Добавить функцию связи с конфигом а не просто через barrier
+        if (item.getType() == Material.BARRIER) {
+            e.getWhoClicked().closeInventory();
         }
 
         ItemMeta meta = item.getItemMeta();

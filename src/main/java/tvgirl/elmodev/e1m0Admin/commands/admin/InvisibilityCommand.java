@@ -32,9 +32,9 @@ public class InvisibilityCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(permissionManager.checkSecretCodeAccess(admin.getUniqueId()))) {
-            Bukkit.getLogger().info("AccessCommand | ТОЧКА ЗАШЛА В ЧЕКЕР!"); // ТЕСТЕР
-            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput", "", "");
+        boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
+        if (!checkPermission) {
+            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
@@ -43,7 +43,6 @@ public class InvisibilityCommand implements CommandExecutor {
             sender.sendPath(admin, "Messages.Errors.permissionError");
             return false;
         }
-
 
         Bukkit.getLogger().info("InvisibilityCommand | ПРОШЛА РЕГИСТРАЦИЮ"); // ТЕСТЕР
 

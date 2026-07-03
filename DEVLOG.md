@@ -702,5 +702,216 @@ ADMIN:
         /adel Alberto | Отработала, исправлена | Прошла тестеры: ➕
         /aup Alberto | Отработала, исправлена | Прошла тестеры: ➕
 
+Commit 1.10 | pre-release check and review code for E1m0
+
+API:
+
+    Repository:
+        💚 ReportGuiAPI | Добавлены комментарии для большего понимания и использования.
+        💚 SecretCodeGuiAPI | Добавлены комментарии для большего понимания и использования.
+    
+        💚 ReportSystemRepositoryAPI | Добавлены комментарии для большего понимания и использования.
+        💚 SecretCodeRepositoryAPI | Добавлены комментарии для большего понимания и использования, небольшая реконструкция внутреннего расположения.
+    
+        💚 GameRepositoryAPI | TODO..
+        💚 StaffRepositoryAPI | Добавлены комментарии для большего понимания и использования, небольшая реконструкция внутреннего расположения.
+
+    Service:
+        💚 ConsoleServiceAPI  |  Добавлены комментарии для большего понимания и использования.
+        💚 SystemServiceAPI   |   Добавлены комментарии для большего понимания и использования.
+        💚 StaffServiceAPI    |    Добавлены комментарии для большего понимания и использования.
+        💚 GameServiceAPI     |     Добавлены комментарии для большего понимания и использования.
+
+    Utils:
+        💚 PermissionsManagerAPI | Добавлены комментарии для большего понимания и использования.
+        💚  SenderAPI | Добавлены комментарии для большего понимания и использования.
+
+Service:
+
+    🩷 StaffServiceAPI | Ревью новой меты для порядка и красоты архитектуры: upStatus(UUID staffID, UUID adminID); -> upStatus(UUID adminID, UUID staffID);
+    🩷 StaffServiceAPI | Ревью новой меты для порядка и красоты архитектуры: downStatus(UUID staffID, UUID adminID); -> adminBonusGive(UUID adminID, UUID staffID, int sum, String message);
+    
+    🩷 StaffServiceAPI | Ревью новой меты для порядка и красоты архитектуры: setAdmin(UUID staffID, UUID adminID, int weight); -> setAdmin(UUID adminID, UUID staffID, int weight);
+    🩷 StaffServiceAPI | Ревью новой меты для порядка и красоты архитектуры: deleteAdmin(UUID staffID, UUID adminID, String reason); -> deleteAdmin(UUID adminID, UUID staffID, String reason);
+    
+    🩷 StaffServiceAPI | Ревью новой меты для порядка и красоты архитектуры: adminBonusGive(UUID staffID, UUID id, int sum, String message); -> adminBonusGive(UUID adminID, UUID staffID, int sum, String message);
+
+Repository:
+
+    💚 SecretCodeRepositoryAPI  | Новый метод systemDeleteAdmin(UUID adminID). Очень важная штука, буквально триггер для удаления информации с карты кодов.
+
+    🩷 StaffRepositoryAPI | Ревью новой меты для порядка и красоты архитектуры: deleteAdminStatusLog(UUID staffID, UUID adminID, String reason) -> deleteAdminStatusLog(UUID adminID, UUID staffID, String reason);
+    🩷 StaffRepositoryAPI | Ревью новой меты для порядка и красоты архитектуры: systemDeleteAdminStatusLog(UUID staffID, UUID adminID, String reason) -> systemDeleteAdminStatusLog(UUID adminID, UUID staffID, String reason);
+    
+    💛 AdminStaffRepository | Небольшие правки в расположении переменных, ну чисто моя прихоть по моей мете.
+
+    ❤️ ReportSystemRepositorAPI | List<Report> getReportList(String status, int limit) -> Был удален. Отказ в угоду хэширования state игрового состояния с коммита 1.9.
+    ❤️ ReportSystemRepositorAPI | updateReport(Report report) -> Был удален. Отказ в угоду хэширования state игрового состояния с коммита 1.9.
+    ❤️ ReportSystemRepositorAPI | Report getReport(UUID id) -> Был удален. Отказ в угоду хэширования state игрового состояния с коммита 1.9.
+
+CFG:
+💚 config.yml | Admin.Report.ReportGUI: В список предметов я вернул контроллер на закрытие меню, это заготовка для
+будущих страниц если понадобится, так же я добавил возможность ставить lore, name, и т.д
+
+💚 config.yml | Новое сообщение в Messages/Errors/: adminSendReportToAdmins - Отвечает за ошибку администратору который
+пытался отправить репорт..
+💚 config.yml | Новое сообщение в Messages/Errors/: secretCodeHasInputted - Отвечает за ошибку администратору который
+пытался ввести пин код по новой.
+
+💚 config.yml | Новое сообщение в Messages/: reportAdminResponse - Отвечает за отправку сообщения игроку о взятии репорта
+
+💚 config.yml | Новое сообщение в Messages/: successfulDeleteAdmin - Отвечает за отправку удачной транзакции и действия
+стафф администратору.
+💚 config.yml | Новое сообщение в Messages/: deleteAdminByStaff - Отвечает за отправку уведомления о снятии
+администратору..
+
+💚 config.yml | Новое сообщение в Messages/Errors: isAdminContainsData - Отвечает за отправку уведомления о ошибке, ведь
+администратор уже есть в базе данных
+💚 config.yml | Новое сообщение в Messages/: successfulSetAdmin - Отвечает за отправку удачной транзакции и действия
+стафф администратору.
+💚 config.yml | Новое сообщение в Messages/: successfulSetStaff - Отвечает за отправку уведомления о постановлении
+администратору..
+
+💛 config.yml | Исправление внутренностей upAdminWeightError, потому что у меня там два больших тире —— потому что
+выглядело красиво..
+💛 config.yml | Исправление внутренностей setAdminWeightNotFound, потому что у меня там два больших тире —— потому что
+выглядело красиво..
+💛 config.yml | Я заменил все маленькие тире на большие, потому что мне так вид нравится больше, в связи с прошлыми
+правками, так же как на айфоне :3
+
+💜 config.yml | ReportGui -> ReportGUI, был баг с многими такими строками взаимодействия
+💜 config.yml | Несколько багов были из-за НИЖНЕГО РЕГИСТРА в material.valueOf() это стоит запомнить ❗
+
+Commands:
+
+     — | ADMIN COMMANDS REVIEW:
+        🩷 AccessCommand       | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости;
+        🩷 ReportCommand       | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок;
+        🩷 RewatchCommand      | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок;
+        🩷 InvisibilityCommand | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости;
+
+     — | CONSOLE COMMANDS REVIEW:
+        🩷 ConsoleDownAdminCommand | Проверка кода, перенесение логических элементов из адаптера, добавлены новые проверки и переносы локалов.
+        🩷 ConsoleSetSecretCommand | Проверка кода, перенесение логических элементов из адаптера, добавлены новые проверки и переносы локалов.
+        🩷 ConsoleUpAdminCommand   | Проверка кода, перенесение логических элементов из адаптера, добавлены новые проверки и переносы локалов.
+        🩷 ConsoleDelAdminCommand  | Проверка кода, новое условие reason.isEmpty(), скан решений, добавлены новые проверки и переносы локалов.
+        🩷 ConsoleSetAdminCommand  | Проверка кода, перенесение логических элементов из адаптера, добавлены новые проверки и переносы локалов.
+
+     — | PLAYER COMMANDS REVIEW:
+        🩷 PlayerReportCommand  | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок;
+
+     — | STAFF COMMANDS REVIEW:
+        🩷 AdminSetSecretCode   | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+        🩷 AdminDeleteCommand   | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+        🩷 AdminDownCommand     | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+        🩷 AdminSetCommand      | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+        🩷 AdminUpCommand       | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+    
+        🩷 AdminBonusCommand    | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+        🩷 AdminBonusAllCommand | Ревью новой меты для порядка и красоты архитектуры: Добавлены вспомогательные локальные переменные, новые условия проверки для легкости читаемости, перестроена структура проверок и переменных;
+
+     — | SYSTEM COMMANDS REVIEW:
+        🩷 ReportAcceptController | Ревью новой меты для порядка и красоты архитектуры: Перестроена структура проверок и переменных;
+
+
+    — | "SUN CHECK":
+        💚 AdminBonusAllCommand | Исправил проблему со строками Array.
+        💚 AdminBonusCommand | Исправил проблему со строками Array.
+    
+        💚 AccessCommand     | Добавлена новая проверка на админ-доступ, вместе с новым сообщением secretCodeHasInputted.
+    
+        💜 ReportCommand     | Исправлено логическое состояние проверки условия args, оно было ивертировано.
+            ❤️ ReportCommand | Была убрана старая проверка permissions (Legacy Garbage | Старый мусор.)
+            💛 ReportCommand | Исправлен баг со строками в response.
+            💚 ReportCommand | Были добавлены тестеры для отладки.
+        
+        💚 PlayerReportCommand | Новая проверка, если отправитель админ -> отправляется новый Message: "Messages.Errors.adminSendReportToAdmins"
+        
+        💜 PlayerReportCommand | Исправил баг, который хотел поправить еще вчера. Баг был в пути к конфигу, потому что я заменял фукнции, отладил смотрю сравнивается 0 >= 0 - залатал.
+        💜 PlayerReportCommand | TODO: Сделать проверку на 50 репортов, потому что пока что - одна страница. | ➕ Выполнено, удалено.
+        
+        🧑‍💻 PlayerReportCommand | Для проверки /report отлаживаю и отслеживаю движения тестарами.
+
+Service:
+🩷 AdminsStaffService | Ревью новой меты для порядка и красоты архитектуры: setAdmin(UUID staffID, UUID adminID, int
+weight) -> setAdmin(UUID adminID, UUID staffID, int weight)
+
+💚 ReportSystemService | Для большего понимания, добавил сообщение "Messages.reportAdminResponse" с аргументами для
+игрока с ответом администратора.
+💚 AdminStaffService | Для более широкого "Спектра эмоций" для DelAdmin, и проецирования состояния на обе стороны были
+добавлены сообщения. Для Staff: "Messages.successfulDeleteAdmin", для админа - уже игрока: deleteAdminByStaff
+💚 AdminStaffService | Для более широкого "Спектра эмоций" для SetAdmin, и проецирования состояния на обе стороны были
+добавлены сообщения. Для Staff: "Messages.successfulSetStaff", для игрока - уже админа successfulSetAdmin
+💚 AdminStaffService | Для более широкого "Спектра эмоций" для setAdmin, и проецирования состояния ошибки для стаффа
+когда он пытается поставить администратора, который есть придумано условие и новое сообщение isAdminContainsData
+
+💚 AdminStaffService | Из secretCodeRepository был добавлен триггер метод systemDeleteAdmin который позволяет удалять
+информацию с карт SecretCode, permissions - сделаю потом когда будет обновление.
+💚 ConsoleService | Из secretCodeRepository был добавлен триггер метод systemDeleteAdmin который позволяет удалять
+информацию с карт SecretCode, permissions - сделаю потом когда будет обновление.
+
+💛 ReportSystemService | Почти полностью переработан блок релизации clickToReport, новые решения и переход со старой
+системы от базы.
+💛 AdminSystemService | Почти полностью переработан блок релизации handleReportAccept, новые решения и переход со старой
+системы от базы.
+
+💛 AdminGameService | Починил баг со звуками, которые были не у админов, а у игроков 🤣
+💛 AdminGameService | Поменял старую мету отправки сообщений когда словил NullPointerException, при конечном рефакторинге
+и ревью кода надо будет обязательно посмотреть на такие участки, мне бы вынести конечно репорт в его сервис а не
+GameService по старой мете..
+💛 AdminGameService | Сделал реворк системы логического сравнения, теперь все должно быть нормально, у меня было наверху
+условие: Если emergency off = цепь дальше не идет, и когда я об этом вспомнил я разделил одну цепь на два каскада и три
+разных условия два из которых (Default rep/Donate rep) связаны и находятся в одном каскаде. Теперь если что присылается
+сразу 3 сообщения, если это срочный репорт от донатера например что точно заметят администраторы.
+
+💜 ReportSystemService | Исправлен баг и убрано Legacy с сообщением "Messages.reportTake" в clickToReport.
+💜 AdminStaffService | Исправлен баг с отправкой сообщения upAdminLevelError не тому 🤣
+
+Repository:
+❤️ ReportSystemRepositor | Реализация List<Report> getReportList(String status, int limit) -> Был удален. Отказ в угоду
+хэширования state игрового состояния с коммита 1.9.
+❤️ ReportSystemRepositor | Реализация updateReport(Report report) -> Был удален. Отказ в угоду хэширования state
+игрового состояния с коммита 1.9.
+❤️ ReportSystemRepositor | Реализация Report getReport(UUID id) -> Был удален. Отказ в угоду хэширования state игрового
+состояния с коммита 1.9.
+
+DAO:
+💚 SecretCodeDAO | void delAdminSecret(UUID adminID) -> Новый метод для вырезания админ-кода при увольнении.
+
+❤️ ReportDAO | Транспортировка и запрос List<Report> getReportList(String status, int limit) -> Был удален. Отказ в
+угоду хэширования state игрового состояния с коммита 1.9.
+❤️ ReportDAO | Транспортировка и запрос updateReport(Report report) -> Был удален. Отказ в угоду хэширования state
+игрового состояния с коммита 1.9.
+❤️ ReportDAO | Транспортировка и запрос Report getReport(UUID id) -> Был удален. Отказ в угоду хэширования state
+игрового состояния с коммита 1.9.
+
+GUI:
+💚 ReportGUI | Была добавлена новая проверкаа на null, isEmpty: noReportsInMemory.
+
+💚 ReportGUI | Были добавлены E1m0Color && E1m0Sender, тоже заготовка на будущее.
+💚 ReportGUI | В список предметов я вернул контроллер на закрытие меню, это заготовка для будущих страниц если
+понадобится, так же я добавил возможность ставить lore, name, и т.д
+
+💜 ReportGUI | Словил NullPoint, оказалось дело в пути ReportGui != ReportGUI. Когда я проводил рефакторинг кажется,
+забыл поменять пути в некоторых старых методах, в новых все нормально.
+💜 ReportGUI | Так же исправлены баги с путями с itemSlot (Уже ревью система, но все равно пройтись надо будет)
+
+TabCompleter:
+💚 MainTabCompleter | Новые aliases в комплитер.
+
+💜 Поставил не достающий case "report": break.
+
+E1m0: 🧑‍💻 "Новые идеи для TODO list 2.0 | -> DEVLOG.md"
+
+PICK-CHECK COMMANDS:
+PLAYER:
+
+        /report Alberto Читер | Отработала, исправлена | Прошла тестеры: ➕
+
+ADMIN:
+
+        /rep Спешу к Вам на помощь | Отработала, исправлена | Прошла тестеры: ➕
+        ➕ Цепь: Command-GUI-Controller-Service-Repository-DAO-Database.
+
 2.0 Admin Optional && Player Structure:
 Сделать поддержку СБД

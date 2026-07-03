@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface ReportSystemServiceAPI {
 
-    void clickToReport(UUID adminID, UUID reportID, String response);
+    void clickToReport(UUID adminID, UUID reportID, String response); // | Обработка нажатия по репорту, вызов всех проверок и заполнение в базу.
 
 }

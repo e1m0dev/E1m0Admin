@@ -11,6 +11,8 @@ import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
+import java.util.Arrays;
+
 public class AdminDeleteCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
@@ -49,16 +51,18 @@ public class AdminDeleteCommand implements CommandExecutor {
             return false;
         }
 
+        Player admin = Bukkit.getPlayer(strings[0]);
+        String[] reasonArray = Arrays.copyOfRange(strings, 1, strings.length);
+
+        if (admin == null) {
+            sender.sendPath(staff, "Messages.Errors.nullPlayer");
+            return false;
+        }
+
+        String reason = String.join(" ", reasonArray);
+
         if (command.getName().toLowerCase().equalsIgnoreCase("adel")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-            String reason = String.join(" ", strings[1]);
-
-            if(admin == null) {
-                sender.sendPath(staff, "Messages.Errors.nullPlayer");
-                return false;
-            }
-
-            Bukkit.getLogger().info("AdminSetCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
+            Bukkit.getLogger().info("AdminDelCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
             staffService.deleteAdmin(admin.getUniqueId(), staff.getUniqueId(), reason);
         }
 

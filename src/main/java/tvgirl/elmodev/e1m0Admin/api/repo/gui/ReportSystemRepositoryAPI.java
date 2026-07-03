@@ -6,11 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ReportSystemRepositoryAPI {
-    void gameReportSend(Report report);
-
-    List<Report> getReportList(String status, int limit);
-
-    void updateReport(Report report);
-
-    Report getReport(UUID id);
+    void gameReportSend(Report report); // Ведение диалога с базой и отправка самого репорта в Базу Данных.
 }

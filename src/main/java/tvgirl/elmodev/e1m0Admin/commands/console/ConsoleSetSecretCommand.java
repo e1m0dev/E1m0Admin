@@ -27,33 +27,34 @@ public class ConsoleSetSecretCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
-        if (strings.length < 2) {
+        if (strings.length != 2) {
             commandSender.sendMessage(cfg.getString("Messages.Errors.lengthError"));
             return false;
         }
 
+        Player admin = Bukkit.getPlayer(strings[0]);
+
+        if (admin == null) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
+            return false;
+        }
+
+        String strCode = strings[1];
+
+        if (strCode.length() < 4) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.setAdminCodeWrong"));
+            return false;
+        }
+
+        if (strCode.length() > 4) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.setAdminCodeWrong"));
+            return false;
+        }
+
+        Integer code = Integer.parseInt(strCode);
+
+
         if (command.getName().toLowerCase().equalsIgnoreCase("csetsecret")) {
-            Player admin = Bukkit.getPlayer(strings[0]);
-
-            if (admin == null) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.nullPlayer"));
-                return false;
-            }
-
-            String strCode = strings[1];
-
-            if (strCode.length() < 4) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.setAdminCodeWrong"));
-                return false;
-            }
-
-            if (strCode.length() > 4) {
-                commandSender.sendMessage(cfg.getString("Messages.Errors.setAdminCodeWrong"));
-                return false;
-            }
-
-            Integer code = Integer.parseInt(strCode);
-
             Bukkit.getLogger().info("ConsoleSetAdminSecretCommand | COMMAND: /csetsecret. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
                     .replace("%staff", "CONSOLE")
                     .replace("%admin", admin.getName())

@@ -26,14 +26,14 @@ public class ReportAcceptController implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
-            return false;
-        }
-
         UUID id = UUID.fromString(strings[0]);
 
         if (id == null) {
+            return false;
+        }
+
+        if (!(commandSender instanceof Player admin)) {
+            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
             return false;
         }
 
