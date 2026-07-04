@@ -32,6 +32,11 @@ public class InvisibilityCommand implements CommandExecutor {
             return false;
         }
 
+        boolean isAllowed = cfg.getBoolean("Server.invisibility");
+        if (!isAllowed) {
+            return false;
+        }
+
         boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
         if (!checkPermission) {
             sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");

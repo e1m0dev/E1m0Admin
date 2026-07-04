@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.service;
 
+import com.google.common.base.Strings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -162,9 +163,17 @@ public class AdminGameService implements GameServiceAPI {
                         String argContent = report.getReport();
                         String argPlayer = report.getPlayerNick();
 
-                        sender.sendPath(adm, "Admin.Report.NewReport.reportMessage",
-                                "%content", argContent,
-                                "%player", argPlayer);
+                        List<String> messages = cfg.getStringList("Admin.Report.NewReport.reportMessage");
+
+                        // TODO: Сделать отдельный list sender в 2.0 для крутой полной настройки.
+                        for (String message : messages) {
+                            message = message
+                                    .replace("%content", argContent)
+                                    .replace("%player", argPlayer)
+                            ;
+
+                            sender.sendString(adm, message);
+                        }
 
                         Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 6. Выборка: Обычное."); // ТЕСТЕР
                     }

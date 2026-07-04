@@ -1,6 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.gui.guis.report;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -86,8 +87,8 @@ public class ReportGUI implements ReportGuiAPI {
             for (Report reps : reportList) {
                 Bukkit.getLogger().warning(reps.getReport());
             }
-            int slot = 0;
 
+            int slot = 0;
             Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Слот: " + slot); // ТЕСТЕР
 
             int maxSize = cfg.getInt("Admin.Report.reportMaxSize");
@@ -102,7 +103,7 @@ public class ReportGUI implements ReportGuiAPI {
                 Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: РепортID: " + report.getUuid()); // ТЕСТЕР
                 Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Репорт: " + report.getReport()); // ТЕСТЕР
 
-                List<String> preLore = cfg.getStringList("Admin.Report.GUI.ReportGUI.ReportItem.FORM"); // Stream
+                List<String> preLore = cfg.getStringList("Admin.Report.GUI.ReportItem.LORE"); // Stream
                 List<String> lore = preLore.stream()
                         .map(line -> line
                                 .replace("%content", report.getReport())
@@ -131,7 +132,7 @@ public class ReportGUI implements ReportGuiAPI {
             String finalItemName = PlainTextComponentSerializer.plainText().serialize(color.parse(itemName));
 
             meta.setDisplayName(finalItemName);
-            meta.setLore(lore); // Не красит цвета
+            meta.setLore(lore); //TODO: Не красит цвета, решить в 2.0
 
             item.setItemMeta(meta);
             inv.setItem(itemSlot, item);
@@ -144,6 +145,11 @@ public class ReportGUI implements ReportGuiAPI {
     // Допы
 
     private ItemStack createReportItem(Report report, List<String> lore) {
+
+        for (String slore : lore) {
+            Bukkit.getLogger().warning("SLORE2 : " + slore);
+        }
+
         String material = cfg.getString("Admin.Report.GUI.ReportItem.ITEM");
         ItemStack item = new ItemStack(Material.valueOf(material), 1);
 
@@ -160,9 +166,17 @@ public class ReportGUI implements ReportGuiAPI {
 
         String reportName = cfg.getString("Admin.Report.GUI.ReportItem.NAME");
 
+        LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+        List<Component> component = color.parse(lore);
+
+        // TODO: Мне это очень не нравится, поправить, сделать всего 1 парсер а не 200.
+        List<String> coloredLore = color.parse(lore).stream()
+                .map(legacy::serialize)
+                .toList();
+
         meta.setDisplayName(reportName
                 .replace("%content", report.getReport()));
-        meta.setLore(lore);
+        meta.setLore(coloredLore);
 
         item.setItemMeta(meta);
         return item;

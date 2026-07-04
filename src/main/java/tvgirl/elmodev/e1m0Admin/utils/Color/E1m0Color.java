@@ -3,6 +3,7 @@ package tvgirl.elmodev.e1m0Admin.utils.Color;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,5 +52,11 @@ public class E1m0Color {
                 .replace("&d", "<light_purple>")
                 .replace("&e", "<yellow>")
                 .replace("&f", "<white>");
+    }
+
+    public List<Component> parse(List<String> messages) {
+        return messages.stream()
+                .map(this::parse)
+                .toList();
     }
 }

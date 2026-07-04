@@ -11,10 +11,7 @@ import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.state.report.Report;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerReportCommand implements CommandExecutor {
 
@@ -37,18 +34,26 @@ public class PlayerReportCommand implements CommandExecutor {
             return false;
         }
 
+        boolean isAllowed = cfg.getBoolean("Server.report");
+        if (!isAllowed) {
+            return false;
+        }
+
         UUID randomID = UUID.randomUUID();
 
         int minLength = cfg.getInt("Admin.Report.minReportLength");
         int maxSize = cfg.getInt("Admin.Report.reportMaxSize");
 
-        if (strings.length != 2) {
+
+        if (strings.length < 2) {
             sender.sendPath(player, "Messages.Errors.lengthError");
             return false;
         }
 
-        String reportMessage = String.join(" ", strings);
+        String[] messageArray = Arrays.copyOfRange(strings, 1, strings.length);
+        String reportMessage = String.join(" ", messageArray);
         List<Report> reportList = new ArrayList<>();
+
 
         String permission = cfg.getString("Permissions.admin");
         if (player.hasPermission(permission)) {
@@ -84,10 +89,11 @@ public class PlayerReportCommand implements CommandExecutor {
             Bukkit.getLogger().info("RepMessage: " + reportMessage);
             Bukkit.getLogger().info("Минималка: " + minLength);
 
-            Bukkit.getLogger().info("Точка 4"); // ТЕСТЕР
+            Bukkit.getLogger().info("Точка len: " + reportMessage.length()); // ТЕСТЕР
+            Bukkit.getLogger().info("Точка minLength: " + minLength); // ТЕСТЕР
 
             if(reportMessage.length() < minLength) {
-                sender.sendPath(player, cfg.getString("Messages.Errors.reportLengthError!"),
+                sender.sendPath(player, "Messages.Errors.reportLengthError",
                         "%len", String.valueOf(minLength));
 
                 return false;
@@ -111,6 +117,9 @@ public class PlayerReportCommand implements CommandExecutor {
 
             Bukkit.getLogger().info("RepMessage: " + reportMessage);
             Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /report была введена и пропущена. PlayerID: " + player.getUniqueId() + "PlayerName: " + player.getName() + "Сообщение: " + reportMessage); // ТЕСТЕР
+
+            sender.sendPath(player, "Messages.reportSended",
+                    "%report", reportMessage);
 
             service.sendReport(report);
             playerReportCache.put(player.getUniqueId(), report);

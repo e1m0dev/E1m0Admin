@@ -47,12 +47,16 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-
         // Сделать ли триггер на слив через снятие?
-        // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
-        if (weightBaseStaff < weightBase) {
+        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        if (weightBaseStaff <= weightBase) {
             sender.sendPath(staff, "Messages.Errors.upAdminWeightError");
             return;
+        }
+
+        int newLevel = weightBase + 1;
+        if (newLevel > weightBaseStaff) {
+            sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
         }
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
@@ -142,10 +146,15 @@ public class AdminsStaffService implements StaffServiceAPI {
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
         // Сделать ли триггер на слив через снятие?
-        // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
-        if (weightBaseStaff < weightBase) {
+        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        if (weightBaseStaff <= weightBase) {
             sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
             return;
+        }
+
+        int newLevel = weightBase + 1;
+        if (newLevel > weightBaseStaff) {
+            sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
         }
 
         Bukkit.getLogger().info("AdminDownCommand | COMMAND-SERVICE: /cdown. Точка выхода -1 - Сбор информации. Нынешне: Префикс %prefix, Вес: %weight, Зарплата: %salary"
