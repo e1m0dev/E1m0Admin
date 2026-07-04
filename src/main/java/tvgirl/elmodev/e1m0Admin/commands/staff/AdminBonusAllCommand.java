@@ -35,6 +35,11 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
             return false;
         }
 
+        boolean isAllowed = cfg.getBoolean("Server.adminbonusall");
+        if (!isAllowed) {
+            return false;
+        }
+
         if (strings.length < 3) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;

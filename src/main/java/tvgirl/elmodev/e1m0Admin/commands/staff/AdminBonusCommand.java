@@ -35,6 +35,11 @@ public class AdminBonusCommand implements CommandExecutor {
             return false;
         }
 
+        boolean isAllowed = cfg.getBoolean("Server.adminbonus");
+        if (!isAllowed) {
+            return false;
+        }
+
         if (strings.length < 3) {
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;
