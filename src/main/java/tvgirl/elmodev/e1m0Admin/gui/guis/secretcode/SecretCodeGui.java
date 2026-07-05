@@ -46,8 +46,6 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
         createItemsInInventory(i);
         p.openInventory(i);
-
-        Bukkit.getLogger().info("SecretCodeGui | ОТКРЫТО ВТОРОЕ МЕНЮ"); // ТЕСТЕР
     }
 
     public void openThreeStepGUI(UUID id) {
@@ -56,8 +54,6 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
         createItemsInInventory(i);
         p.openInventory(i);
-
-        Bukkit.getLogger().info("SecretCodeGui | ОТКРЫТО ТРЕТЬЕ МЕНЮ"); // ТЕСТЕР
     }
 
     public void openFoursStepGUI(UUID id) {
@@ -66,8 +62,6 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
         createItemsInInventory(i);
         p.openInventory(i);
-
-        Bukkit.getLogger().info("SecretCodeGui | ОТКРЫТО ЧЕТВЕРТОЕ МЕНЮ"); // ТЕСТЕР
     }
 
     private void createItemsInInventory(Inventory i) {

@@ -61,7 +61,6 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
         int sum = Integer.parseInt(strings[0]);
 
         if (command.getName().toLowerCase().equalsIgnoreCase("abonusall")) {
-            Bukkit.getLogger().info("AdminBonusAllCommand | Точка входа COMMAND: /abonusall была введена и пропущена. Вызов обработчика: adminBonusAll"); // ТЕСТЕР
             staffService.adminBonusAll(staff.getUniqueId(), sum, message);
         }
 

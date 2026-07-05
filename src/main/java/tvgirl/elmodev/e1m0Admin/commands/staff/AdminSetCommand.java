@@ -46,7 +46,6 @@ public class AdminSetCommand implements CommandExecutor {
         }
 
         if (strings.length != 2) {
-            Bukkit.getLogger().info("AdminSetCommand | COMMAND: /aset. Ошибка: lenght"); // ТЕСТЕР
             sender.sendPath(staff, "Messages.Errors.lengthError");
             return false;
         }
@@ -56,7 +55,6 @@ public class AdminSetCommand implements CommandExecutor {
             int weight = Integer.parseInt(strings[1]);
 
             if(weight <= 0) {
-                Bukkit.getLogger().info("AdminSetCommand | COMMAND: /aset. Ошибка: weight <= 0"); // ТЕСТЕР
                 sender.sendPath(staff, "Messages.Errors.setAdminWeightIsNull");
                 return false;
             }
@@ -66,7 +64,6 @@ public class AdminSetCommand implements CommandExecutor {
                 return false;
             }
 
-            Bukkit.getLogger().info("AdminSetCommand | COMMAND: /aset. Команда прошла успешно, ушла в обработчик."); // ТЕСТЕР
             staffService.setAdmin(admin.getUniqueId(), staff.getUniqueId(), weight);
         }
 

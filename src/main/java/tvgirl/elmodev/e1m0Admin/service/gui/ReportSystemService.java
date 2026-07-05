@@ -28,7 +28,6 @@ public class ReportSystemService implements ReportSystemServiceAPI {
     }
 
     public void clickToReport(UUID adminID, UUID reportID, String response) {
-        Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Обработка репорта ID: " + reportID); // ТЕСТЕР
 
         for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
             Bukkit.getLogger().warning("ReportKey " + reportKey.getValue().getUuid());
@@ -45,7 +44,6 @@ public class ReportSystemService implements ReportSystemServiceAPI {
                 Player admin = Bukkit.getPlayer(adminID);
                 Player player = Bukkit.getPlayer(report.getPlayerID());
 
-                Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Обработчик принял условие и нашел бакит!"); // ТЕСТЕР
 
                 Report newReport = new Report(
                         report.getUuid(),
@@ -67,7 +65,6 @@ public class ReportSystemService implements ReportSystemServiceAPI {
                         "%admin", admin.getName(),
                         "%response", response);
 
-                Bukkit.getLogger().info("ReportController | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE: Ушел +repo"); // ТЕСТЕР
 
                 admin.closeInventory();
                 reportRepository.gameReportSend(newReport);

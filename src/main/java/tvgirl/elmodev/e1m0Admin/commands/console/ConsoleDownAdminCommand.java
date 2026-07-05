@@ -40,7 +40,6 @@ public class ConsoleDownAdminCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("cdown")) {
-            Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND: /cdown. Команда прошла успешно, ушла в обработчик.");
             consoleService.downAdminConsole(admin.getUniqueId(), consoleID);
         }
 

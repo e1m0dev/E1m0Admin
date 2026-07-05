@@ -121,7 +121,6 @@ public class AdminSystemService implements SystemServiceAPI {
 
     @Override
     public void handleReportAccept(UUID adminID, UUID reportID) {
-        Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Обработка репорта ID: " + reportID); // ТЕСТЕР
 
         for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
             if (reportKey.getValue().getUuid() == reportID) {
@@ -154,7 +153,6 @@ public class AdminSystemService implements SystemServiceAPI {
 
                 reportRepository.gameReportSend(newReport);
                 playerReportCache.remove(report.getPlayerID());
-                Bukkit.getLogger().info("ReportController | Точка входа GAME-COMMAND-SERVICE: Репорт выполнен! " + reportID); // ТЕСТЕР
             } else {
                 Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!");
 

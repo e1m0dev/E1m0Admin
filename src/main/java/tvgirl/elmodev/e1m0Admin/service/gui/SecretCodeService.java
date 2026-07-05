@@ -41,41 +41,34 @@ public class SecretCodeService implements SecretCodeServiceAPI {
     @Override
     public void oneStepHandler(UUID id, int i) {
         if (secretCode.containsKey(id)) return;
-        Bukkit.getLogger().info("SecretCodeService | Дошел"); // ТЕСТЕР
         SecretCodeState state = new SecretCodeState(id);
 
         state.setOne_step(i);
         secretCode.put(id, state);
-        Bukkit.getLogger().info("SecretCodeService | Точка входа twoStepHandler: " + i); // ТЕСТЕР
     }
 
     public void twoStepHandler(UUID id, int i) {
         if (!secretCode.containsKey(id)) {
-            Bukkit.getLogger().info("SecretCodeService | НЕ ПРОШЕЛ ЧЕРЕЗ SECRET CODE twoStepHandler"); // ТЕСТЕР
             return;
         }
 
         SecretCodeState state = secretCode.get(id);
 
         state.setTwo_step(i);
-        Bukkit.getLogger().info("SecretCodeService | Точка входа twoStepHandler: " + i); // ТЕСТЕР
     }
 
     public void threeStepHandler(UUID id, int i) {
         if (!secretCode.containsKey(id)) {
-            Bukkit.getLogger().info("SecretCodeService | НЕ ПРОШЕЛ ЧЕРЕЗ SECRET CODE threeStepHandler"); // ТЕСТЕР
             return;
         }
 
         SecretCodeState state = secretCode.get(id);
 
         state.setThree_step(i);
-        Bukkit.getLogger().info("SecretCodeService | Точка входа threeStepHandler: " + i); // ТЕСТЕР
     }
 
     public void foursStepHandler(UUID id, int i) {
         if (!secretCode.containsKey(id)) {
-            Bukkit.getLogger().info("SecretCodeService | НЕ ПРОШЕЛ ЧЕРЕЗ SECRET CODE foursStepHandler"); // ТЕСТЕР
             return;
         }
 
@@ -84,20 +77,12 @@ public class SecretCodeService implements SecretCodeServiceAPI {
         state.setFours_step(i);
         String code = String.valueOf(state.getOne_step()) + String.valueOf(state.getTwo_step()) + String.valueOf(state.getThree_step()) + String.valueOf(state.getFours_step());
 
-        Bukkit.getLogger().info("SecretCodeService | Финальный код: " + code); // ТЕСТЕР
-
         // НЕ ТРОГАЙ, НЕ ПРАВЬ, ЭТО НЕ ПОДТВЕРЖДЕННЫЙ АДМИН, НЕ ЗАБЫВАТЬ, Я УЖЕ ЭТО ИСПРАВЛЯЛ 3 РАЗА.
         //     Пример: Рекон от 25.06.26.
         Player user = Bukkit.getPlayer(id);
         int repoCode = secretCodeRepository.getSecretCode(id);
 
-        Bukkit.getLogger().info("SecretCodeService | Точка входа: repoCode: %repoCode"
-                .replace("%repoCode", String.valueOf(repoCode))); // ТЕСТЕР
-
-        Bukkit.getLogger().info("SecretCodeService | Точка выхода: code: %code"
-                .replace("%code", code)); // ТЕСТЕР
-
-        if (repoCode == Integer.parseInt(code)) { // ❗ | Опасная точка, перепроверить в тестерах. By: E1m0.
+        if (repoCode == Integer.parseInt(code)) {
             if(cfg.getBoolean("Admin.SecretCode.accessCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
@@ -114,13 +99,11 @@ public class SecretCodeService implements SecretCodeServiceAPI {
                 }
             }
 
-            Bukkit.getLogger().info("SecretCodeService | Точка выхода: Code-Actions: Прошло успешно, действия были применены."); // ТЕСТЕР
-
             // Вот тут - Админ имеет *ВЕС*, именно по этому действия уже с фактом системы, а не надуманным мной действием.
             user.closeInventory();
             manager.addAdminAccess(state);
             Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user));
-            Bukkit.getLogger().info("SecretCodeService | Точка выхода: foursStepHandler: 💚 Прошел полностью.."); // ТЕСТЕР
+
 
             SecretCodeState stateCheck = manager.getAdminByID(id);
             boolean f = stateCheck != null;
@@ -145,30 +128,15 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             secretCode.remove(id);
             user.closeInventory();
             Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(user.getPlayer(), "WRONG CODE"));
-            Bukkit.getLogger().info("SecretCodeService | Точка выхода: foursStepHandler: ❤️ НЕ прошел по коду..."); // ТЕСТЕР
         }
     }
 
     @Override
     public String getInputCode(UUID id) {
-        Bukkit.getLogger().warning("getInputCode | ДОШЕЛ!"); // ТЕСТЕР
         if (!secretCode.containsKey(id)) {
-            Bukkit.getLogger().warning("getInputCode | НЕ ПРОШЕЛ!"); // ТЕСТЕР
             return null;
         }
 
-        Bukkit.getLogger().warning("getInputCode | ПРОШЕЛ!"); // ТЕСТЕР
-
-        for (Map.Entry<UUID, SecretCodeState> s : secretCode.entrySet()) { // ТЕСТЕР
-            if (!s.getKey().equals(id)) continue;
-
-            Player p = Bukkit.getPlayer(s.getValue().getAdminID());
-            UUID pID = s.getKey();
-            Bukkit.getLogger().info("UUID: " + p.getUniqueId() + ". Name: " + p.getName()); // ТЕСТЕР
-            Bukkit.getLogger().info(String.valueOf(pID)); // ТЕСТЕР
-        }
-
-        Bukkit.getLogger().info("getInputCode | Прошел ЧЕРЕЗ МАПУ!"); // ТЕСТЕР
         SecretCodeState state = secretCode.get(id);
 
         String one = String.valueOf(state.getOne_step());
@@ -176,30 +144,22 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             return "*";
         }
 
-        Bukkit.getLogger().info("getInputCode | " + one); // ТЕСТЕР
-
         String two = String.valueOf(state.getTwo_step());
         if(two.equalsIgnoreCase("") || two == null) {
             return "*";
         }
-
-        Bukkit.getLogger().info("getInputCode | " + two); // ТЕСТЕР
 
         String three = String.valueOf(state.getThree_step());
         if(three.equalsIgnoreCase("") || three == null) {
             return "*";
         }
 
-        Bukkit.getLogger().info("getInputCode | " + three); // ТЕСТЕР
 
         String fours = String.valueOf(state.getFours_step());
         if(fours.equalsIgnoreCase("") || fours == null) {
             return "*";
         }
 
-        Bukkit.getLogger().info("getInputCode | " + fours); // ТЕСТЕР
-
-        Bukkit.getLogger().info("SecretCodeService | Точка входа getInputCode: " + one + two + three + fours); // ТЕСТЕР
         return one + two + three + fours;
     }
 }

@@ -38,7 +38,6 @@ public class ReportAcceptController implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("arepaccept")) {
-            Bukkit.getLogger().info("ReportAcceptController | Точка входа COMMAND: /arepaccept был взят в работу по ID: " + id); // ТЕСТЕР
             service.handleReportAccept(admin.getUniqueId(), id);
         }
 

@@ -966,5 +966,17 @@ Sender:
 💚 Новый метод парсинга parse(List<String> messages) для стринговых значений, очень поможет в будушем переходе на List
 архитектуру сообщений.
 
+Version 1.0 - Commit 1.12: api release, managers api && delete testers
+
+ALL:
+Commands, Service, Repo: Удалены все тестеры!
+
+API:
+❗💚 api/E1m0Admin | Был добавлен новый класс - E1m0Admin, это API связующее для сегодняшнего запроса на выпуск вместе с
+деплойным Git Actions.
+
+CORE:
+💛 README.txt: Были подправлены и уточнены несколько моментов
+
 2.0 Admin Optional && Player Structure:
 Сделать поддержку СБД

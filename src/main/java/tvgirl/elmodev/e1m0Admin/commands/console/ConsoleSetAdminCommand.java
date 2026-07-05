@@ -49,7 +49,6 @@ public class ConsoleSetAdminCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("csetadmin")) {
-            Bukkit.getLogger().info("ConsoleSetAdminCommand | COMMAND: /csetadmin. Команда прошла успешно, ушла в обработчик.");
             consoleService.setAdminConsole(admin.getUniqueId(), consoleID, weight);
         }
 

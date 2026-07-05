@@ -68,11 +68,6 @@ public class AdminSetSecretCode implements CommandExecutor {
 
         // | /asecret Albert 7777
         if (command.getName().toLowerCase().equalsIgnoreCase("asecret")) {
-            Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND: /asecret. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
-                    .replace("%staff", staff.getName())
-                    .replace("%admin", admin.getName())
-                    .replace("%code", String.valueOf(code))); // ТЕСТЕР
-
             staffService.setSecretPassword(admin.getUniqueId(), staff.getUniqueId(), code);
         }
 

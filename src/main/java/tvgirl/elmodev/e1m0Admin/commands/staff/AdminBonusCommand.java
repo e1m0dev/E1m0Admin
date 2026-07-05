@@ -69,7 +69,6 @@ public class AdminBonusCommand implements CommandExecutor {
                 return false;
             }
 
-            Bukkit.getLogger().info("AdminBonusCommand | COMMAND: /abonus. Точка выхода 1 - Делегация ответственности + Проверки."); // ТЕСТЕР
             staffService.adminBonusGive(admin.getUniqueId(), staff.getUniqueId(), sum, message);
         }
 

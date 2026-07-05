@@ -61,26 +61,21 @@ public class AdminGameService implements GameServiceAPI {
     @Override
     public void handleInvisibility(UUID adminID) {
         Player p = Bukkit.getPlayer(adminID);
-        Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND-SERVICE: /ainvise | Успешно прошел в команду."); // ТЕСТЕР
 
         if (!(inviseCache.contains(adminID))) {
             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, true));
             sender.sendPath(p, "Messages.inviseOn");
             inviseCache.add(adminID);
 
-            Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND-SERVICE: /ainvise | Был успешно включен. Статус бакета HashMap: Не найден."); // ТЕСТЕР
         } else {
             p.removePotionEffect(PotionEffectType.INVISIBILITY);
             sender.sendPath(p, "Messages.inviseOff");
             inviseCache.remove(adminID);
-
-            Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND-SERVICE: /ainvise | Был успешно выключен. Статус бакета HashMap: Найден"); // ТЕСТЕР
         }
     }
 
     @Override
     public void handleRewatch(UUID adminID, UUID playerID) {
-        Bukkit.getLogger().info("InvisibilityCommand | Команда в обработчике!"); // ТЕСТЕР
 
         if (rewatchTasksCache.containsKey(adminID)) {
             BukkitTask old = rewatchTasksCache.remove(adminID);
@@ -132,16 +127,12 @@ public class AdminGameService implements GameServiceAPI {
 
     @Override
     public void sendReport(@NotNull Report report) {
-        Bukkit.getLogger().info("Точка 1 SERVICE"); // ТЕСТЕР
         Player p = Bukkit.getPlayer(report.getPlayerID());
         List<String> emergencySwords = cfg.getStringList("Admin.Report.EmergencyReportSword");
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 1. Обьявление."); // ТЕСТЕР
 
         for(Player adm : Bukkit.getOnlinePlayers()) {
             if(adm.hasPermission(cfg.getString("Permissions.admin"))) {
                 // Если в репорте есть контрольные слова – то он выделяется
-
-                Bukkit.getLogger().info("Точка 2 REPORT"); // ТЕСТЕР
 
                 if (cfg.getBoolean("Server.donateReport") && p.hasPermission(cfg.getString("Admin.Report.DonateReport.permission"))) {
                     // 🤑 | Если это сообщение донатное:
@@ -154,7 +145,6 @@ public class AdminGameService implements GameServiceAPI {
                             "%content", argContent,
                             "%player", argPlayer);
 
-                    Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 5. Выборка: Донатное."); // ТЕСТЕР
                 } else {
                     // ⌚ | Если это сообщение обычное:
                     if (cfg.getBoolean("Server.newReport")) {
@@ -175,7 +165,6 @@ public class AdminGameService implements GameServiceAPI {
                             sender.sendString(adm, message);
                         }
 
-                        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 6. Выборка: Обычное."); // ТЕСТЕР
                     }
                 }
 
@@ -183,7 +172,6 @@ public class AdminGameService implements GameServiceAPI {
                 if(!cfg.getBoolean("Server.emergencyRep")) return;
                 for(String s : emergencySwords) {
                     String sword = s.toLowerCase();
-                    Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 3. Выборка"); // ТЕСТЕР
 
                     // TODO: Сделать ли кастом hover для всех?
                     if (report.getReport().toLowerCase().contains(sword)) {
@@ -191,7 +179,6 @@ public class AdminGameService implements GameServiceAPI {
                             // 🚨 | Если это сообщение срочное:
                             fastReport(adm.getUniqueId(), report);
                             adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.EmergencyReport.sound")), 1.0f, 1.0f);
-                            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-SERVICE: /report | Точка выхода: 4. Выборка: Срочное."); // ТЕСТЕР
                         }
                     }
                 }
@@ -201,7 +188,6 @@ public class AdminGameService implements GameServiceAPI {
 
     @Override
     public void fastReport(UUID adminID, Report report) {
-        Bukkit.getLogger().info("Точка 1 FAST REPORT"); // ТЕСТЕР
         List<String> emergencyList = cfg.getStringList("Admin.Report.EmergencyReport.emergencyMessage");
         List<String> hover = cfg.getStringList("Admin.Report.HoverReport");
         Player adm = Bukkit.getPlayer(adminID);

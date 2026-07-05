@@ -67,8 +67,6 @@ public class SecretCodeController implements Listener {
             return;
         }
 
-        Bukkit.getLogger().info("SecretCodeController | Точка входа COMMAND-GUI-CONTROLLER: Администратор нажал: " + num + " Этап: " + num); // ТЕСТЕР
-
         switch (holder.getName().toLowerCase()) {
             case "step_pin" -> {
                 Bukkit.getLogger().warning("STEP_PIN");

@@ -56,10 +56,6 @@ public class ReportGUI implements ReportGuiAPI {
 
     @Override
     public void openReportGUI(UUID adminID, String response) {
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: /arep была пропущена в инвентарь!"); // ТЕСТЕР
-
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Этап 0 - Пагинация."); // ТЕСТЕР
-
         Player adm = Bukkit.getPlayer(adminID);
         List<Report> reportList = new ArrayList<>();
         ReportHolder holder = new ReportHolder("report_holder", adm, response);
@@ -71,8 +67,6 @@ public class ReportGUI implements ReportGuiAPI {
         String finalNameMenu = PlainTextComponentSerializer.plainText().serialize(color.parse(nameMenu));
 
         Inventory inv = Bukkit.createInventory(holder, size, finalNameMenu);
-
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Этап 1 - Баня с кэш значениями."); // ТЕСТЕР
 
         // ⌚ | Репорты
         Bukkit.getScheduler().runTask(plugin, () -> {
@@ -89,19 +83,14 @@ public class ReportGUI implements ReportGuiAPI {
             }
 
             int slot = 0;
-            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Слот: " + slot); // ТЕСТЕР
 
             int maxSize = cfg.getInt("Admin.Report.reportMaxSize");
             if (slot >= maxSize) {
                 return;
             }
 
-            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Этап 2 - В пучине playerReportCache, прошла slot >= 49"); // ТЕСТЕР
-
             for (Report report : reportList) {
                 // Сам репорт
-                Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: РепортID: " + report.getUuid()); // ТЕСТЕР
-                Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Репорт: " + report.getReport()); // ТЕСТЕР
 
                 List<String> preLore = cfg.getStringList("Admin.Report.GUI.ReportItem.LORE"); // Stream
                 List<String> lore = preLore.stream()
@@ -112,19 +101,17 @@ public class ReportGUI implements ReportGuiAPI {
                                 .replace("%date", formatter(report)))
                         .toList();
 
-                Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Этап 3 - SetItem, слот: " + slot); // ТЕСТЕР
                 inv.setItem(slot, createReportItem(report, lore));
                 slot++;
             }
         });
 
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Этап 4 - Кнопки."); // ТЕСТЕР
         // ▶️ | Кнопки
         for(String s : reportGui.getKeys(false)) {
             ItemStack item = new ItemStack(Material.valueOf(cfg.getString("Admin.Report.GUI.ReportGUI.items." + s + ".item")));
             ItemMeta meta = item.getItemMeta();
 
-            // ❗ Ревью | Требуется горничная.
+            // ❗ Ревью | Требуется горничная, 2.0
             List<String> lore = cfg.getStringList("Admin.Report.GUI.ReportGUI.items." + s + ".lore"); // Stream
             String itemName = cfg.getString("Admin.Report.GUI.ReportGUI.items." + s + ".name");
             int itemSlot = cfg.getInt("Admin.Report.GUI.ReportGUI.items." + s + ".slot");
@@ -138,7 +125,6 @@ public class ReportGUI implements ReportGuiAPI {
             inv.setItem(itemSlot, item);
         }
 
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND-GUI: Этап 5 - Открытие инвентаря, adm: " + adm.getName()); // ТЕСТЕР
         adm.openInventory(inv);
     }
 

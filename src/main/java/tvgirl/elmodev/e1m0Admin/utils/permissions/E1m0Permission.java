@@ -25,7 +25,6 @@ public class E1m0Permission implements PermissionsManagerAPI {
 
     @Override
     public boolean checkSecretCodeAccess(UUID id) {
-        Bukkit.getLogger().info("checkSecretCodeAccess | Сейчас тут"); // ТЕСТЕР
         SecretCodeState state = codeManager.getAdminByID(id);
 
         if (state == null) {

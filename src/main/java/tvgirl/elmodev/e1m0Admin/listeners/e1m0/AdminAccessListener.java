@@ -30,7 +30,6 @@ public class AdminAccessListener implements Listener {
            ❗ Смотри логирование TODO.md, я просто не решил че это будет..
         */
 
-        Bukkit.getLogger().info("AdminAccessListener | Точка входа COMMAND-SERVICE-GUI-CONTROLLER-SERVICE-EVENT-LISTENER: Администратор зарегистрировался."); // ТЕСТЕР
         sender.sendPath(admin, "Messages.secretCodeAccess");
     }
 }

@@ -41,7 +41,6 @@ public class ConsoleUpAdminCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("cup")) {
-            Bukkit.getLogger().info("ConsoleUpAdminCommand | COMMAND: /cup. Команда прошла успешно, ушла в обработчик.");
             consoleService.upAdminConsole(admin.getUniqueId(), consoleID);
         }
 

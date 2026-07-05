@@ -54,7 +54,6 @@ public class RewatchCommand implements CommandExecutor {
 
         /* REOFF */
         if (command.getName().toLowerCase().equalsIgnoreCase("reoff")) {
-            Bukkit.getLogger().info("RewatchCommand | Точка входа COMMAND: /rewatch была введена и пропущена. Вызов обработчика: handleReoff | Админ-режим"); // ТЕСТЕР
             service.handleReoff(admin.getUniqueId());
             return true;
         }

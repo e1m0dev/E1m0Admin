@@ -26,7 +26,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
 
     @Override
     public void deleteAdminStatus(UUID adminID) {
-        Bukkit.getLogger().info("AdminsDAO | Администратор удален.");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
         adminDao.delAdmin(adminID.toString());
@@ -34,7 +33,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
 
     @Override
     public void deleteAdminStatusLog(UUID adminID, UUID staffID, String reason) {
-        Bukkit.getLogger().info("AdminsDAO | Администратор удален и отпечатан лог");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
         String uuid = UUID.randomUUID().toString();
@@ -46,7 +44,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
 
     @Override
     public void systemDeleteAdminStatusLog(UUID adminID, UUID staffID, String reason) {
-        Bukkit.getLogger().info("AdminsDAO | Администратор удален и отпечатан лог");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
         Player admin = Bukkit.getPlayer(adminID);
@@ -57,7 +54,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
 
     @Override
     public void upAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary) {
-        Bukkit.getLogger().info("AdminsDAO | Адмиминистратор был повышен!");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
         adminDao.upStatus(adminID.toString(), newPrefix, newWeight, newSalary);
@@ -65,7 +61,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
 
     @Override
     public void downAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary) {
-        Bukkit.getLogger().info("AdminsDAO | Администратор был понижен.");
         AdminsDAO adminDao = jdbi.onDemand(AdminsDAO.class);
 
         adminDao.downStatus(adminID.toString(), newPrefix, newWeight, newSalary);
@@ -73,7 +68,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
 
     @Override
     public void giveBonusLog(UUID adminID, UUID staffID, int sum, String message) {
-        Bukkit.getLogger().info("AdminsDAO | Администратор получил бонус.");
         BonusDAO bonusDAO = jdbi.onDemand(BonusDAO.class);
 
         Player admin = Bukkit.getPlayer(adminID);

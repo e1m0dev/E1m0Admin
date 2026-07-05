@@ -57,7 +57,6 @@ public class AdminUpCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("aup")) {
-            Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /aup. Команда прошла!"); // ТЕСТЕР
             staffService.upStatus(admin.getUniqueId(), staff.getUniqueId());
         }
 

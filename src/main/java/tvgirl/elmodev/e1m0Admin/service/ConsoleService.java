@@ -85,17 +85,9 @@ public class ConsoleService implements ConsoleServiceAPI {
             return;
         }
 
-        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cup. Точка выхода -1 - Сбор информации. Нынешне: Префикс %prefix, Вес: %weight, Зарплата: %salary"
-                .replace("%prefix", prefixBase)
-                .replace("%weight", String.valueOf(weightBase))
-                .replace("%salary", String.valueOf(salaryBase))
-        ); // ТЕСТЕР
-
-
         String rankKey = null;
         int rankWeight = 0;
 
-        Bukkit.getLogger().info("ConsoleUpAdminCommand | COMMAND-SERVICE: /cup. Точка выхода 0 - Пагинация."); // ТЕСТЕР
         if (admin == null) return;
 
         for (String key : ranksSection.getKeys(false)) {
@@ -114,7 +106,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         int targetWeight = rankWeight + 1;
         int currentWeight = 0;
 
-        Bukkit.getLogger().info("ConsoleUpAdminCommand | COMMAND-SERVICE: /cup. Точка выхода 1 - Баня с конфигом."); // ТЕСТЕР
 
         for (String key : ranksSection.getKeys(false)) {
             if (cfg.getInt("Admin.AdminRanks." + key + ".weight") == targetWeight) {
@@ -133,10 +124,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
 
         staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
-        Bukkit.getLogger().info("ConsoleUpAdminCommand | COMMAND-SERVICE: /cup. Точка выхода 2 - Конечный результат + sendRepo: Ник: %admin. Префикс в базе: %prefix, зарплата: %salary"
-                .replace("%admin", admin.getName())
-                .replace("%prefix", newPrefix)
-                .replace("%salary", String.valueOf(newSalary))); // ТЕСТЕР
     }
 
     @Override
@@ -153,17 +140,8 @@ public class ConsoleService implements ConsoleServiceAPI {
             return;
         }
 
-
-        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода -1 - Сбор информации. Нынешне: Префикс %prefix, Вес: %weight, Зарплата: %salary"
-                .replace("%prefix", prefixBase)
-                .replace("%weight", String.valueOf(weightBase))
-                .replace("%salary", String.valueOf(salaryBase))
-        ); // ТЕСТЕР
-
         String rankKey = null;
         int rankWeight = 0;
-
-        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода 0 - Пагинация."); // ТЕСТЕР
 
         if (admin == null) return;
 
@@ -187,7 +165,6 @@ public class ConsoleService implements ConsoleServiceAPI {
             return;
         }
 
-        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода 1 - Проверки и баня с конфигом."); // ТЕСТЕР
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
             Bukkit.getLogger().info("Config Weight: " + cfgWeight);
@@ -207,12 +184,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
         String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
 
-        Bukkit.getLogger().info("ConsoleDownAdminCommand | COMMAND-SERVICE: /cdown. Точка выхода 2 - Конечный результат + sendRepo: Ник: %admin. Префикс в базе: %prefix, зарплата: %salary"
-                .replace("%admin", admin.getName())
-                .replace("%salary", String.valueOf(newSalary)) // ТЕСТЕР
-
-                .replace("%prefix", newPrefix));
-
         staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
     }
 
@@ -223,6 +194,5 @@ public class ConsoleService implements ConsoleServiceAPI {
         staffRepository.deleteAdminStatus(adminID);
         secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
-        Bukkit.getLogger().info("ConsoleDelAdminCommand | COMMAND-SERVICE: /cdel. Команда прошла sendRepo.");
     }
 }

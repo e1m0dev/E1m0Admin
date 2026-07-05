@@ -73,7 +73,6 @@ public class AdminDownCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("adown")) {
-            Bukkit.getLogger().info("AdminDownCommand | COMMAND: /adown. Команда прошла успешно.");
             staffService.downStatus(admin.getUniqueId(), staff.getUniqueId());
         }
 

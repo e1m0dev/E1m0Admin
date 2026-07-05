@@ -61,15 +61,11 @@ public class PlayerReportCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().info("Точка 2"); // ТЕСТЕР
-
         boolean containsInMemory = playerReportCache.containsKey(player.getUniqueId());
         if (containsInMemory) {
             sender.sendPath(player, "Messages.Errors.playerHaveReport");
             return false;
         }
-
-        Bukkit.getLogger().info("Size: " + reportList.size());
 
         for (Map.Entry<UUID, Report> report : playerReportCache.entrySet()) reportList.add(report.getValue());
 
@@ -77,20 +73,14 @@ public class PlayerReportCommand implements CommandExecutor {
             if (reportList.size() >= maxSize) {
                 Bukkit.getLogger().info(String.valueOf(reportList.size() >= maxSize));
 
-                Bukkit.getLogger().info("Size: " + reportList.size()); // ТЕСТЕР
                 sender.sendPath(player, "Messages.Errors.reportSizeIsMax");
                 return false;
             }
         }
 
-        Bukkit.getLogger().info("Точка 3"); // ТЕСТЕР
-
         if(command.getName().toLowerCase().equalsIgnoreCase("report")) {
             Bukkit.getLogger().info("RepMessage: " + reportMessage);
             Bukkit.getLogger().info("Минималка: " + minLength);
-
-            Bukkit.getLogger().info("Точка len: " + reportMessage.length()); // ТЕСТЕР
-            Bukkit.getLogger().info("Точка minLength: " + minLength); // ТЕСТЕР
 
             if(reportMessage.length() < minLength) {
                 sender.sendPath(player, "Messages.Errors.reportLengthError",
@@ -98,8 +88,6 @@ public class PlayerReportCommand implements CommandExecutor {
 
                 return false;
             }
-
-            Bukkit.getLogger().info("Точка 5"); // ТЕСТЕР
 
             Report report = new Report(
                     randomID,
@@ -112,11 +100,6 @@ public class PlayerReportCommand implements CommandExecutor {
                     cfg.getString("Admin.Report.status_send"),
                     System.currentTimeMillis()
             );
-
-            Bukkit.getLogger().info("Точка 6"); // ТЕСТЕР
-
-            Bukkit.getLogger().info("RepMessage: " + reportMessage);
-            Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /report была введена и пропущена. PlayerID: " + player.getUniqueId() + "PlayerName: " + player.getName() + "Сообщение: " + reportMessage); // ТЕСТЕР
 
             sender.sendPath(player, "Messages.reportSended",
                     "%report", reportMessage);

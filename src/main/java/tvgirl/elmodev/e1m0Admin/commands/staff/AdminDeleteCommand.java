@@ -62,7 +62,6 @@ public class AdminDeleteCommand implements CommandExecutor {
         String reason = String.join(" ", reasonArray);
 
         if (command.getName().toLowerCase().equalsIgnoreCase("adel")) {
-            Bukkit.getLogger().info("AdminDelCommand | COMMAND: /adel. Команда прошла успешно, ушла в обработчик.");
             staffService.deleteAdmin(admin.getUniqueId(), staff.getUniqueId(), reason);
         }
 

@@ -49,7 +49,6 @@ public class AccessCommand implements CommandExecutor {
         }
 
         if(command.getName().toLowerCase().equalsIgnoreCase("aaccess")) {
-            Bukkit.getLogger().info("AccessCommand | Точка входа COMMAND: /aacess была введена и пропущена."); // ТЕСТЕР
             secretCodeGui.openPINGui(admin.getUniqueId());
         }
         return true;

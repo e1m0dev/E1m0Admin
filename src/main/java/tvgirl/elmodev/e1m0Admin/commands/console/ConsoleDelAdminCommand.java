@@ -47,7 +47,6 @@ public class ConsoleDelAdminCommand implements CommandExecutor {
                 return false;
             }
 
-            Bukkit.getLogger().info("ConsoleDelAdminCommand | COMMAND: /cdel. Команда прошла успешно, ушла в обработчик.");
             consoleService.delAdminConsole(admin.getUniqueId(), consoleID, reason);
         }
 

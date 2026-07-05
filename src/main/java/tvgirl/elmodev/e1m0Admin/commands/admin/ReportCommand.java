@@ -41,7 +41,6 @@ public class ReportCommand implements CommandExecutor {
         }
 
         if (strings.length < 1) {
-            Bukkit.getLogger().info("AccessCommand | ТОЧКА ЗАШЛА В ЧЕКЕР STR!"); // ТЕСТЕР
             sender.sendPath(admin, "Messages.Errors.lengthError");
             return false;
         }
@@ -58,12 +57,9 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().info("AccessCommand | ТОЧКА ПРОШЛА ВСЕ ПРОВЕРКИ!"); // ТЕСТЕР
-
         // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
         String response = String.join(" ", strings);
 
-        Bukkit.getLogger().info("ReportCommand | Точка входа COMMAND: /arep была введена и пропущена. Сообщение от администратора: " + response); // ТЕСТЕР
         reportGUI.openReportGUI(admin.getUniqueId(), response);
 
         return true;

@@ -49,10 +49,8 @@ public class InvisibilityCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().info("InvisibilityCommand | ПРОШЛА РЕГИСТРАЦИЮ"); // ТЕСТЕР
 
         if (command.getName().toLowerCase().equalsIgnoreCase("ainv")) {
-            Bukkit.getLogger().info("InvisibilityCommand | Точка входа COMMAND: /ainvise была введена и пропущена."); // ТЕСТЕР
             service.handleInvisibility(admin.getUniqueId());
         }
 

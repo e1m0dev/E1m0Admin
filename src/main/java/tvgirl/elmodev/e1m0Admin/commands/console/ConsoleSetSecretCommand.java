@@ -53,13 +53,7 @@ public class ConsoleSetSecretCommand implements CommandExecutor {
 
         Integer code = Integer.parseInt(strCode);
 
-
         if (command.getName().toLowerCase().equalsIgnoreCase("csetsecret")) {
-            Bukkit.getLogger().info("ConsoleSetAdminSecretCommand | COMMAND: /csetsecret. Команда прошла успешно, переменные: Staff: %staff, Admin: %admin, Code: %code"
-                    .replace("%staff", "CONSOLE")
-                    .replace("%admin", admin.getName())
-                    .replace("%code", String.valueOf(code))); // ТЕСТЕР
-
             consoleService.setSecretConsole(admin.getUniqueId(), consoleID, code);
         }
 
