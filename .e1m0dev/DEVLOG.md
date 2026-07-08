@@ -978,5 +978,19 @@ API:
 CORE:
 💛 README.txt: Были подправлены и уточнены несколько моментов
 
-2.0 Admin Optional && Player Structure:
-Сделать поддержку СБД
+Version 1.1 - Commit 1.1.1: API rework && Rework PLUGIN! ecosystem || MultiModule system.
+
+❗ Теперь - ROOT - E1m0Root, Плагин - E1m0Admin, API - E1m0AdminAPI;
+
+🧑‍💻 E1m0 | В E1m0AdminAPI я переименовал методы для выражения логики, то есть было AdminSystemRepositoryAPI стало -
+systemStorage. Это важное упрощения для людей чтобы им было легче не запутатся в этом всем..
+
+# 08.07.2025
+
+🧑‍💻 E1m0 | Я не знаю, делаю мультимодульник 3-ий день, пересобираю проект уже в третий раз, я уже схожу с ума третье
+утро.
+🧑‍💻 E1m0 | Я наконец то смог сделать мультик, как же давно я этого не делал..
+
+API:
+💚 Модели State: Report && SecretCode | Успешно перенесены в API
+💚 Модель Event: AdminAccessEvent | Успешно перенесен в API
