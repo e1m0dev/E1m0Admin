@@ -14,7 +14,6 @@ import tvgirl.elmodev.e1m0admin.api.service.SystemServiceAPI;
 import tvgirl.elmodev.e1m0admin.api.service.gui.ReportSystemServiceAPI;
 import tvgirl.elmodev.e1m0admin.api.service.gui.SecretCodeServiceAPI;
 import tvgirl.elmodev.e1m0admin.api.utils.PermissionsManagerAPI;
-import tvgirl.elmodev.e1m0admin.api.utils.SenderAPI;
 
 public interface E1m0AdminAPI {
 
@@ -52,7 +51,5 @@ public interface E1m0AdminAPI {
     SecretCodeServiceAPI secretCodeLogic();
 
     /* 🧑‍💻 | UTILS */
-    SenderAPI sender();
-
     PermissionsManagerAPI permissions();
 }

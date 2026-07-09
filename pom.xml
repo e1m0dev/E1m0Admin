@@ -4,12 +4,50 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>tvgirl.elmodev</groupId>
+    <groupId>io.github.e1m0dev</groupId>
     <artifactId>e1m0admin-parent</artifactId>
-    <version>1.1-DEV</version>
+    <version>1.2.0-STABLE</version>
     <packaging>pom</packaging>
 
     <name>E1m0Root</name>
+    <url>https://github.com/e1m0dev/E1m0Admin</url>
+    <description>Player/Administrator/Administration API for Minecraft servers.</description>
+
+    <inceptionYear>2026</inceptionYear>
+
+    <organization>
+        <name>E1m0Dev</name>
+        <url>https://github.com/e1m0dev</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Mozilla Public License Version 2.0</name>
+            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>e1m0dev</id>
+            <name>e1m0dev</name>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>
+            scm:git:https://github.com/e1m0dev/E1m0Admin.git
+        </connection>
+
+        <developerConnection>
+            scm:git:ssh://github.com/e1m0dev/E1m0Admin.git
+        </developerConnection>
+
+        <url>
+            https://github.com/e1m0dev/E1m0Admin
+        </url>
+    </scm>
 
     <properties>
         <java.version>21</java.version>
@@ -20,4 +58,174 @@
         <module>e1m0admin-plugin</module>
         <module>e1m0admin-api</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.helpch.at/releases/</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.e1m0dev</groupId>
+                <artifactId>e1m0admin-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.papermc.paper</groupId>
+                <artifactId>paper-api</artifactId>
+                <version>1.21.11-R0.1-SNAPSHOT</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>7.0.2</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.7.11</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>9.7.0</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.jdbi/jdbi3-core -->
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-core</artifactId>
+                <version>3.53.0</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.jdbi/jdbi3-sqlobject -->
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-sqlobject</artifactId>
+                <version>3.53.0</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+            <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>3.5.9</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>me.clip</groupId>
+                <artifactId>placeholderapi</artifactId>
+                <version>2.12.2</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.8.0</version>
+
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.7</version>
+
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+
+                        <phase>verify</phase>
+
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+
+                    <bestPractices>true</bestPractices>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+
+                <extensions>true</extensions>
+
+                <configuration>
+
+                    <publishingServerId>central</publishingServerId>
+
+                    <autoPublish>true</autoPublish>
+
+                </configuration>
+
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
