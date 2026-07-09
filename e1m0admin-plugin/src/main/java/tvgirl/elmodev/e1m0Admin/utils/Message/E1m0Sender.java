@@ -1,15 +1,13 @@
 package tvgirl.elmodev.e1m0Admin.utils.Message;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tvgirl.elmodev.e1m0admin.api.utils.SenderAPI;
 import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 
-public class E1m0Sender implements SenderAPI {
+public class E1m0Sender {
 
     private final FileConfiguration cfg;
     private E1m0Color color = new E1m0Color();
@@ -18,7 +16,6 @@ public class E1m0Sender implements SenderAPI {
         this.cfg = cfg;
     }
 
-    @Override
     public void sendString(@NotNull Player sendedPlayer, @NotNull String message, @Nullable String... replacements) {
         String text = PlaceholderAPI.setPlaceholders(sendedPlayer, message);
 
@@ -37,10 +34,9 @@ public class E1m0Sender implements SenderAPI {
         }
     }
 
-    @Override
-    public void sendPath(@NotNull Player sendUser, @NotNull String path, @Nullable String... replacements) {
+    public void sendPath(@NotNull Player sendedPlayer, @NotNull String path, @Nullable String... replacements) {
         String cfgMessage = cfg.getString(path);
-        String text = PlaceholderAPI.setPlaceholders(sendUser, cfgMessage);
+        String text = PlaceholderAPI.setPlaceholders(sendedPlayer, cfgMessage);
 
         if (replacements != null) {
             for (int i = 0; i < replacements.length; i += 2) {
@@ -51,9 +47,9 @@ public class E1m0Sender implements SenderAPI {
         String prefix = cfg.getString("Settings.prefixEnable");
 
         if (cfg.getBoolean("Settings.prefixEnable")) {
-            sendUser.sendMessage(color.parse(prefix + " " + cfgMessage));
+            sendedPlayer.sendMessage(color.parse(prefix + " " + cfgMessage));
         } else {
-            sendUser.sendMessage(color.parse(cfgMessage));
+            sendedPlayer.sendMessage(color.parse(cfgMessage));
         }
     }
 }
