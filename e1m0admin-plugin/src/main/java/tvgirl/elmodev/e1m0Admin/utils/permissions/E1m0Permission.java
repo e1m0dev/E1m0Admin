@@ -23,12 +23,6 @@ public class E1m0Permission implements PermissionsManagerAPI {
     @Override
     public boolean checkSecretCodeAccess(UUID id) {
         SecretCodeState state = codeManager.getAdminByID(id);
-
-        if (state == null) {
-            return false;
-        }
-
-        Bukkit.getLogger().warning("AdminUUID: " + state.getAdminID());
-        return true;
+        return state != null;
     }
 }

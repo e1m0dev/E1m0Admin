@@ -37,8 +37,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         sender.sendPath(admin, "Messages.changeCodeAdmin",
                 "%staff", "CONSOLE",
                 "%code", String.valueOf(code));
-
-        Bukkit.getLogger().info("AdminChangeSecretCode | COMMAND-SERVICE: /csetsecret. Регистрирование репо + закрепление факта");
     }
 
     @Override
@@ -47,7 +45,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         Player admin = Bukkit.getPlayer(adminID);
 
         if (systemRepository.checkAdminInBase(adminID)) {
-            Bukkit.getLogger().warning("Человек уже есть в базе данных!");
+            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.setAdminIsAdminError"));
             return;
         }
 
@@ -62,10 +60,11 @@ public class ConsoleService implements ConsoleServiceAPI {
 
                 // Отправляю в репо.
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
-                Bukkit.getLogger().info("ConsoleSetAdminCommand | COMMAND-SERVICE: /csetadmin. Администратор поставлен, + sendRepo"); // ❗ | Вот тут Важно! Тк.к консоль != Player, это не является тестером а прямым сообщением в консоль с успехом!
+                sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminSet"));
                 return;
             } else {
-                Bukkit.getLogger().info("ConsoleSetAdminCommand | COMMAND-SERVICE: /csetadmin. Администратор НЕ поставлен, ошибка weight"); // ❗ | Вот тут Важно! Тк.к консоль != Player, это не является тестером а прямым сообщением в консоль с ошибкой!
+                sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.setAdminWeightError"));
+                return;
             }
         }
     }
@@ -80,7 +79,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
-            Bukkit.getLogger().warning("Администратора указанного в команде - не существует в базе.");
+            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.upAdminNotAdminError"));
             return;
         }
 
@@ -123,6 +122,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
 
         staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminUp"));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
-            Bukkit.getLogger().warning("Администратора указанного в команде - не существует в базе.");
+            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.upAdminNotAdminError"));
             return;
         }
 
@@ -184,6 +184,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
 
         staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminDown"));
     }
 
     @Override
@@ -193,5 +194,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         staffRepository.deleteAdminStatus(adminID);
         secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminDelete"));
     }
 }

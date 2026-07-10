@@ -31,7 +31,6 @@ public class AdminGameService implements GameServiceAPI {
     private final AdminGameRepository gameRepository;
     private final SecretCodeGui secretCodeGui;
 
-    // Перенести в дамп E1m0
     private final HashSet<UUID> inviseCache; // Администраторы в инвизе;
 
     private final HashMap<UUID, BukkitTask> rewatchTasksCache; // Таски для переноса и защитки;
@@ -154,14 +153,14 @@ public class AdminGameService implements GameServiceAPI {
 
                         List<String> messages = cfg.getStringList("Admin.Report.NewReport.reportMessage");
 
-                        // TODO: Сделать отдельный list sender в 2.0 для крутой полной настройки.
                         for (String message : messages) {
-                            message = message
+                            messages.stream().map(
+                                    s -> s
                                     .replace("%content", argContent)
                                     .replace("%player", argPlayer)
-                            ;
+                            );
 
-                            sender.sendString(adm, message);
+                            sender.sendString(adm, messages);
                         }
 
                     }
