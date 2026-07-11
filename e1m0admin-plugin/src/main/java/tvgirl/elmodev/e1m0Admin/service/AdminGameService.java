@@ -87,10 +87,14 @@ public class AdminGameService implements GameServiceAPI {
 
         admin.setGameMode(GameMode.SPECTATOR);
 
+        double rewatchVectorX = cfg.getDouble("Settings.Dev.rewatchVectorX");
+        double rewatchVectorY = cfg.getDouble("Settings.Dev.rewatchVectorY");
+        double rewatchVectorZ = cfg.getDouble("Settings.Dev.rewatchVectorZ");
+
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                Vector v = new Vector(0, cfg.getDouble("Settings.Dev.rewatchVector"), 0);
+                Vector v = new Vector(rewatchVectorX, rewatchVectorY, rewatchVectorZ);
                 Location watchVector = player.getLocation().add(v);
 
                 admin.teleport(watchVector);

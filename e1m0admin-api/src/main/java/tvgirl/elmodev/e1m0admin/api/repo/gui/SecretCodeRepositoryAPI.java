@@ -12,6 +12,7 @@ public interface SecretCodeRepositoryAPI {
 
     void systemDeleteAdmin(UUID adminID); // | Удаляет секретный код администратора, обычно вместе с администратором на момент Commit 1.10 -> 1.0-BETA Version
 
-    int getSecretCode(UUID adminID); // | Просто получает SecretCode из Базы Данных по UUID администратора.
+    boolean checkSecretCode(UUID adminID); // | Просто получает ответ есть ли Secret из Базы Данных по UUID администратора.
 
+    int getSecretCode(UUID adminID); // | Просто получает SecretCode из Базы Данных по UUID администратора.
 }

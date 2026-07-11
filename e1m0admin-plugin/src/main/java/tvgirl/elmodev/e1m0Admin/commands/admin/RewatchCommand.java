@@ -75,6 +75,15 @@ public class RewatchCommand implements CommandExecutor {
         // /re E1m0 || /rewatch E1m0
         if (command.getName().toLowerCase().equalsIgnoreCase("re") || command.getName().toLowerCase().equalsIgnoreCase("rewatch")) {
             service.handleRewatch(admin.getUniqueId(), player.getUniqueId());
+
+            // CLS | Console Log
+            boolean isActive = cfg.getBoolean("Settings.consoleLogActive");
+            if (isActive) {
+                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.ConsoleLogs.rewatchLog",
+                        "%admin", admin.getName(),
+                        "%player", player.getName()
+                );
+            }
         }
 
         return true;

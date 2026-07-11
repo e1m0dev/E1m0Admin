@@ -188,6 +188,46 @@ public class ConsoleService implements ConsoleServiceAPI {
     }
 
     @Override
+    public void giveBonusAllConsole(UUID consoleID, int sum, String message) {
+        for (Player admin : Bukkit.getOnlinePlayers()) {
+            if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;
+
+            String action = cfg.getString("Admin.Bonus.giveBonus")
+                    .replace("%admin", admin.getName())
+                    .replace("%bonus", String.valueOf(sum));
+
+            sender.sendPath(admin, "Messages.adminBonus",
+                    "%message", message,
+                    "%staff", "CONSOLE",
+                    "%bonus", String.valueOf(sum));
+
+            staffRepository.giveBonusLog(admin.getUniqueId(), consoleID, sum, message);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action);
+        }
+    }
+
+    @Override
+    public void giveBonusConsole(UUID consoleID, UUID adminID, int sum, String message) {
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (!admin.hasPermission(cfg.getString("Permissions.admin"))) {
+            return;
+        }
+
+        String action = cfg.getString("Admin.Bonus.giveBonus")
+                .replace("%admin", admin.getName())
+                .replace("%bonus", String.valueOf(sum));
+
+        sender.sendPath(admin, "Messages.adminBonusAll",
+                "%message", message,
+                "%staff", "CONSOLE",
+                "%bonus", String.valueOf(sum));
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action);
+        staffRepository.giveBonusLog(adminID, consoleID, sum, message);
+    }
+
+    @Override
     public void delAdminConsole(UUID adminID, UUID consoleID, String reason) {
         Player admin = Bukkit.getPlayer(adminID);
 

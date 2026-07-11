@@ -75,6 +75,8 @@ public class E1m0Sender {
                 }
             }
 
+            // TODO: Делать ли систему отправки в API?
+
             sender.sendMessage(message);
         }
     }

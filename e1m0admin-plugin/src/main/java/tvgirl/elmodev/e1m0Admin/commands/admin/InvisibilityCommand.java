@@ -52,6 +52,13 @@ public class InvisibilityCommand implements CommandExecutor {
 
         if (command.getName().toLowerCase().equalsIgnoreCase("ainv")) {
             service.handleInvisibility(admin.getUniqueId());
+
+            // CLS | Console Log
+            boolean isActive = cfg.getBoolean("Settings.consoleLogActive");
+            if (isActive) {
+                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.ConsoleLogs.inviseLog",
+                        "%admin", admin.getName());
+            }
         }
 
         return true;

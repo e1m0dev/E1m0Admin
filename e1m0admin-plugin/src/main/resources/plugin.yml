@@ -15,80 +15,71 @@ commands:
   rep:
     description: "Команда ответа на репорт"
     aliases: [ arep, reps ]
-    usage: "/arep Спешу к Вам на помощь!"
+
   ainv:
     description: "Команда сокрытия администратора"
     aliases: [ ainvise, ainvisibility ]
-    usage: "/ainv"
+
   re:
     description: "Команда слежки за игроком"
     aliases: [ recon, re, rec ]
-    usage: "/arec E1m0"
+
   reoff:
     description: "Отключение слежки за игроком"
     aliases: [ roff, arewatchoff ]
-    usage: "/areoff"
 
   aaccess:
     description: "Войти в систему"
     aliases: [ adminaccess, acc ]
-    usage: "/aaccess, или /acc"
 
   # | PLAYER
   report:
     description: "Отправить жалобу"
-    usage: "/report E1m0 Нарушает правила SOLID!"
 
   # | STAFF
   abonusall:
     description: "Выдать администраторам бонус"
-    usage: "/abonusall 777 Хорошая работа."
 
   asecret:
     description: "Сменить код-пароль для администратора"
     aliases: [ setsecret ]
-    usage: "/asecret E1m0 7777"
 
   abonus:
     description: "Выдать бонус одному администратору"
-    usage: "/abonus E1m0"
 
   adown:
     description: "Понизить администратора"
-    usage: "/adown E1m0"
 
   aset:
     description: "Поставить администратора"
-    usage: "/aset E1m0 1"
 
   adel:
     description: "Снять администратора"
-    usage: "/adel E1m0"
 
   aup:
     description: "Повысить администратора"
-    usage: "/aup E1m0"
 
   # | Console
   cup:
     description: "Повысить администратора | Удаленно ❗"
-    usage: "/cup E1m0"
 
   cdel:
     description: "Снять администратора | Удаленно ❗"
-    usage: "/cdel E1m0 Уволен"
 
   cdown:
     description: "Понизить администратора | Удаленно ❗"
-    usage: "/cdown E1m0"
 
   csetadmin:
     description: "Поставить администратора | Удаленно ❗"
-    usage: "/csetadmin E1m0 1"
 
   csetsecret:
     description: "Поменять код администратора | Удаленно ❗"
-    usage: "/csetsecret E1m0 1"
+
+  cbonusall:
+    description: "Выдать всем администраторам бонус | Удаленно ❗"
+
+  cbonus:
+    description: "Выдать администратору бонус | Удаленно ❗"
 
   # | CONTROLLERS
   arepaccept:

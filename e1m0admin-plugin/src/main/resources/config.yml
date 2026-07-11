@@ -10,14 +10,17 @@ Database:
 
 # Параметры плагина | Параметры самого плагина на которые он будет опираться в работе своих функций.
 Settings:
-  prefixEnable: false  # Сообщения | Будет ли показыватся префикс? Пример: E1m0-Admin - Внимание | У Вас - нет на это права!
-  prefix: "E1m0-Admin" # Сообщения | Префикс при системных сообщениях. Пример: ADM | У вас нет на это прав!
-  world: "world"       # Мир       | В папке с Вашим сервером, у Вас есть в server.properties название Вашего мира.
+  consoleLogActive: true      # Сообщения | Будут ли логироватся действия администратора?
+  prefixEnable: false         # Сообщения | Будет ли показыватся префикс? Пример: E1m0-Admin - Внимание | У Вас - нет на это права!
+  prefix: "&cE1m0-Admin |"    # Сообщения | Префикс при системных сообщениях. Пример: ADM | У вас нет на это прав!
+  world: "world"              # Мир       | В папке с Вашим сервером, у Вас есть в server.properties название Вашего мира.
 
   Dev:
-    rewatchTick: 1 # Слежка |❗ Опасная настройка, только для знающих людей с уровнем допуска DEV Рекомендуемое значение: 10+.
-    # ❓- Сколько тиков будет длиться один кадр слежки? Меньше тиков = больше плавности == БОЛЬШЕ нагрузка на сервер!
-    rewatchVector: 1 # Слежка | На сколько высоко будет камера у администратора?
+    rewatchTick: 5 # Слежка |❗ Опасная настройка, только для знающих людей с уровнем допуска DEV Рекомендуемое значение: 10+.
+    # ❓- Сколько тиков будет длиться один кадр слежки? Меньше тиков = больше плавности == БОЛЬШЕ нагрузка на сервер! Если у Вас тпс ниже 20 - Не советую.
+    rewatchVectorX: 3 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    rewatchVectorY: 3 # Слежка | На сколько высоко будет камера у администратора?
+    rewatchVectorZ: 3 # Слежка | На сколько "глубоко" будет камера у администратора?
 
     salaryCheck: 60 # | ❗ Через сколько минут будет проходить проверка scheduler на зарплаты админов? Советую не трогать если не знаем что такое. Действия с базой там плотные.
 
@@ -165,7 +168,7 @@ Admin:
       sound: "entity.player.attack.knockback"
       reportMessage:
         - ""
-        - "Внимание, поступил новый репорт: %content. Отправитель: %player"
+        - "&7Внимание, поступил новый &cрепорт&7: &b%content&7. Отправитель: %player"
         - ""
 
     # | https://minecraftsounds.com/
@@ -174,7 +177,7 @@ Admin:
       sound: "entity.player.levelup"
       emergencyMessage:
         - ""
-        - "Внимание 🚨 | Обнаружен срочный репорт: %content"
+        - "&4Внимание 🚨 &7| Обнаружен срочный репорт: &7%content"
         - ""
 
     # | https://minecraftsounds.com/
@@ -184,7 +187,7 @@ Admin:
       permission: "e1admin_bypass"
       donateMessage:
         - ""
-        - "Внимание❗ Репорт от VIP клиента! %content. Отправитель: %player"
+        - "<gradient:#FD1AB6:#6554B6>Внимание❗ Репорт от VIP клиента! %content. Отправитель: %player</gradient>"
         - ""
 
     # Репортики | Функция при которой при нажатии на срочный репорт не нужно вводить форму для определенного администратора.
@@ -192,17 +195,17 @@ Admin:
     # Здесь же - Форма автоматическая.
     AutoReport:
       enable: true
-      auto_Answer: "Спешим к Вам на помощь!"
+      auto_Answer: "&cРепорт | Спешим к Вам на помощь!"
 
     # Репортики | Если навести на emergency report что будет показано?
     HoverReport:
       - "Нажмите чтобы взять ❤️"
-      - "Репорт: %content"
-      - "Статус: %status"
-      - "Принял: %admin"
+      - "&cРепорт&7: %content"
+      - "&aСтатус&7: %status"
+      - "&4Принял&7: %admin"
       - ""
-      - "Отправил: %player"
-      - "Дата: %date"
+      - "&aОтправил&7: %player"
+      - "&7Дата: %date"
 
     # | https://minecraft-inside.ru/blocks/
     # Репортики | Ну тут думаю понятно, адаптивное меню если что-то не нравится.
@@ -223,7 +226,7 @@ Admin:
       ReportItem:
         NAME: "%content"
         ITEM: PLAYER_HEAD
-        LORE: # Форма как будет выгляеть репорт при наведении | Или же - его лор.
+        LORE: # Форма как будет выглядеть репорт при наведении | Или же - его лор.
           - "&7Репорт: %content"
           - "&7Статус: %status"
           - ""
@@ -241,80 +244,85 @@ Messages:
   inviseOn: "&6Вы включили невидимку!"
   inviseOff: "&7Вы отключили невидимку!"
 
-  secretCodeAccess: "Вы успешно авторизовались!"
+  secretCodeAccess: "&cВы — успешно авторизовались под своим именем в системе администрации!"
 
-  reportTake: "Вы успешно взяли репорт игрока: %player. Содержимое: %content"
-  reportMessagePlayerFast: "Администратор %admin — успешно взял ваш репорт в работу!"
+  reportTake: "&aВы успешно взяли репорт игрока&7: %player. Содержимое: %content"
+  reportMessagePlayerFast: "&aАдминистратор &6%admin &a— успешно взял ваш репорт в работу!"
 
   adminBonusAll: "&7Администратор %staff выдал всем бонус: %bonus $!"
   adminBonus: "&7Администратор %staff выдал Вам бонус: %bonus $! Сообщение: %message"
   adminPay: "&7Вы получили админ зарплату в виде: %salary $!"
 
-  successfulSetAdmin: "Вы были успешно назначены на пост администратора %level уровня, администратором %staff"
-  successfulSetStaff: "%admin был успешно назначены на пост администратора %level уровня"
+  successfulSetAdmin: "&cПоздравляем! Вы — были успешно назначены на пост администратора %level уровня, &6администратором %staff"
+  successfulSetStaff: "&6%admin &a— был успешно назначены на пост администратора &6%level &aуровня"
 
-  upAdmin: "Вас успешно повысил администратор %staff"
-  successfulUpStaff: "Вы успешно повысили администратора %admin"
-  successfulUpAdmin: "Вы успешно были повышены администратором %staff"
+  successfulUpStaff: "&aВы успешно повысили администратора &6%admin"
+  successfulUpAdmin: "&aВы успешно были повышены администратором &6%staff"
 
-  successfulDownStaff: "Вы успешно понизили администратора %admin"
-  successfulDownAdmin: "Вы были понижены администратором %staff.."
+  successfulDownStaff: "Вы успешно понизили администратора &6%admin"
+  successfulDownAdmin: "Вы были понижены администратором &6%staff.."
 
-  changeCodeAdmin: "❗ Внимание! Вам сменили игровой код администратора, тот кто сменил: %staff. Код: %code"
-  changeCodeStaff: "❗ Внимание! ВЫ сменили игровой код администратора %admin. Его новый код: %code!"
+  changeCodeAdmin: "❗ &cВнимание! Вам сменили игровой код администратора! &6Тот кто сменил: %staff. &aНовый код: &6%code. Не потеряйте его!"
+  changeCodeStaff: "❗ &cВнимание! Вы сменили игровой код администратора %admin. &6Его новый код: %code!"
 
-  reportSended: "Репорт %report был успешно отправлен!"
-  reportAdminResponse: "Вам ответил администратор %admin, с ответом: %response"
+  reportSended: "&aРепорт %report был успешно отправлен!"
+  reportAdminResponse: "&aВам ответил администратор &6%admin, &aс ответом: &6%response"
 
-  deleteAdminByStaff: "Вы были сняты администратором %staff!"
-  successfulDeleteAdmin: "Вы успешно сняли администратора %admin!"
+  deleteAdminByStaff: "&cВы были сняты администратором &6%staff!"
+  successfulDeleteAdmin: "&aВы успешно сняли администратора &6%admin!"
 
-  # CONSOLE
-  successfulAdminDelete: "Администратор успешно удален!"
-  successfulAdminDown: "Администратор успешно понижен!"
-  successfulAdminSet: "Администратор успешно поставлен!"
-  successfulAdminUp: "Администратор успешно повышен!"
+  # CONSOLE ACTIONS
+  successfulAdminDelete: "&fЛОГ &7| &aАдминистратор успешно удален!"
+  successfulAdminDown: "&fЛОГ &7| &aАдминистратор успешно понижен!"
+  successfulAdminSet: "&fЛОГ &7| &aАдминистратор успешно поставлен!"
+  successfulAdminUp: "&fЛОГ &7| &aАдминистратор успешно повышен!"
 
   Errors:
-    nullPlayer: "Такого игрока не существует..."
-    lengthError: "Неправильное использование команды! Пробейте /ahelp —— Для просмотра помощи для администрации."
-    consoleError: "Консоли нельзя."
+    nullPlayer: "&cТакого игрока не существует..."
+    lengthError: "&cНеправильное использование команды!"
+    consoleError: "Консоли нельзя.."
 
-    permissionError: "У вас нет доступа к данной команде!"
+    permissionError: "&cУ вас нет доступа к данной команде!"
 
     secretCodeNotInput: "&6Внимание! &7| &cВы еще не получили права администратора своего уровня, просим Вас подтвердите статус администратора: &a/aaccess!"
-    secretCodeIsWrong: "Вы ввели неправильный код! Попробуйте снова!"
+    secretCodeIsWrong: "&cВы ввели неправильный код! Попробуйте снова!"
 
-    reportSizeIsMax: "Извините! Все администраторы сейчас перегружены репортами, попробуйте пожалуйста, позже!"
-    reportLengthError: "Минимальный набор репорта составляет %len символов!"
+    reportSizeIsMax: "&cИзвините! Все администраторы сейчас перегружены репортами, попробуйте пожалуйста, позже!"
+    reportLengthError: "&cМинимальный набор репорта составляет &6%len &cсимволов!"
 
     # STAFF
-    staffPermissionError: "У вас нет печати старшего администратора!"
+    staffPermissionError: "&cУ вас нет печати: &6Старшего администратора!"
 
     setAdminWeightIsNull: "&cВыдаваемый ранг — должен быть больше 0!"
     setAdminWeightNotFound: "&cВведенный ранг — НЕ найден.."
 
-    downAdminLevelError: "Администратор уже находится на минимальном уровне!"
-    downAdminWeightError: "Вы — не можете понизить данного администратора!"
+    downAdminLevelError: "&cАдминистратор уже находится на минимальном уровне!"
+    downAdminWeightError: "&cВы — не можете понизить данного администратора!"
 
-    deleteAdminWeightError: "Вы — не можете уволить данного администратора!"
+    deleteAdminWeightError: "&cВы — не можете уволить данного администратора!"
 
-    upAdminWeightError: "Вы — не можете повысить данного администратора!"
-    upAdminLevelError: "Администратор уже находится на максимальном уровне!"
-    upAdminSelfError: "Вы не можете повысить себя!"
+    upAdminWeightError: "&cВы — не можете повысить данного администратора!"
+    upAdminLevelError: "&cАдминистратор уже находится на максимальном уровне!"
+    upAdminSelfError: "&cВы не можете повысить себя!"
 
-    secretCodeHasInputted: "Вы уже вводили секретный пин!"
-    setAdminCodeIsWrong: "Вы не правильно ввели новый код для администратора, пример кода: 7777"
+    secretCodeHasInputted: "&cВы уже вводили секретный пин!"
+    setAdminCodeIsWrong: "&cВы не правильно ввели новый код для администратора, &6пример кода: 7777"
 
-    reoffNullError: "Вы не за кем не следите и не можете отключится!"
+    reoffNullError: "&cВы не за кем не следите и не можете отключится!"
 
-    playerHaveReport: "У вас уже есть репорт!"
-    noReportsInMemory: "Доступных репортов сейчас нет!"
-    adminSendReportToAdmins: "Вы же администратор.. Как можно отправлять репорты самому себе?"
+    playerHaveReport: "&cУ вас уже есть репорт!"
+    noReportsInMemory: "&cДоступных репортов сейчас нет!"
+    adminSendReportToAdmins: "&cВы же администратор.. Как можно отправлять репорты &6самому себе?"
 
-    # CONSOLE
+    # CONSOLE ACTIONS
 
-    upAdminNotAdminError: "Администратора указанного в команде - не существует в базе."
+    upAdminNotAdminError: "&fЛОГ &7| &cАдминистратора указанного в команде - не существует в базе."
 
-    setAdminIsAdminError: "Человек уже есть в базе данных!"
-    setAdminWeightError: "Администратор НЕ поставлен - Ошибка weight!"
+    setAdminIsAdminError: "&fЛОГ &7| &cЧеловек уже есть в базе данных!"
+    setAdminWeightError: "&fЛОГ &7| &cАдминистратор НЕ поставлен - Ошибка weight!"
+
+  ConsoleLogs:
+    accessLog: "&fЛОГ &7| &7Администратор &6%admin успешно авторизовался в системе ✅."
+    inviseLog: "&fЛОГ &7| &7Администратор &6%admin зашел в невидимку 👻.."
+    reportLog: "&fЛОГ &7| &7Администратор &6%admin успешно взялся за репорты с формой %response 🧑‍💻"
+    rewatchLog: "&fЛОГ &7| &7Администратор &6%admin зашел в слежку за игроком %player 🎥 - 💺🛏️..." # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfj3K8zuo7Zp77tu-YACPa7PGuxYOasedpEVRPj1WEVpRcKpFKhEzVBVY&s=10

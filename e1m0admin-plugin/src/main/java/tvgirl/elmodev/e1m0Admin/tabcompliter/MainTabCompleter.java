@@ -46,6 +46,7 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
+                case "cbonus":
                 case "abonus":
                     if (strings.length == 1) {
                         getOnlinePlayers(tab);
@@ -59,6 +60,7 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
+                case "cbonusall":
                 case "abonusall":
                     if (strings.length == 1) {
                         tab.add("10?");

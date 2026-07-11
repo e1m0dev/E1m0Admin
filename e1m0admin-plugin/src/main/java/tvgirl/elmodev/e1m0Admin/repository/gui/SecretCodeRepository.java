@@ -37,6 +37,11 @@ public class SecretCodeRepository implements SecretCodeRepositoryAPI {
     }
 
     @Override
+    public boolean checkSecretCode(UUID adminID) {
+        return secretDAO.checkCode(adminID.toString());
+    }
+
+    @Override
     public int getSecretCode(UUID adminID) {
         return secretDAO.getCode(adminID.toString());
     }

@@ -207,12 +207,15 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("aup").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
 
         // - | Console
-        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(getConfig(), consoleService));
-        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(getConfig(), consoleService));
-        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(getConfig(), consoleService));
+        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
+        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(sender, getConfig(), consoleService));
+        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(sender, getConfig(), consoleService));
 
-        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(getConfig(), consoleService));
-        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(getConfig(), consoleService));
+        getCommand("cbonus").setExecutor(new ConsoleGiveBonusCommand(sender, getConfig(), consoleService));
+        getCommand("cbonusall").setExecutor(new ConsoleGiveBonusCommand(sender, getConfig(), consoleService));
+
+        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(sender, getConfig(), consoleService));
+        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(sender, getConfig(), consoleService));
 
         // ❓ | Tab-Completer.
         getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));

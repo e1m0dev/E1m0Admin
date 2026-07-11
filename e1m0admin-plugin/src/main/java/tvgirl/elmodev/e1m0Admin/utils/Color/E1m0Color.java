@@ -2,6 +2,7 @@ package tvgirl.elmodev.e1m0Admin.utils.Color;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,6 +21,18 @@ public class E1m0Color {
         message = applyHex(message);
         message = applyLegacy(message);
         return MINI.deserialize(message);
+    }
+
+    public String parseLegacy(String message) {
+        if (message == null) return "";
+
+        message = applyHex(message);
+        message = applyLegacy(message);
+
+        Component mini = MINI.deserialize(message);
+        String finalText = PlainTextComponentSerializer.plainText().serialize(mini);
+
+        return finalText;
     }
 
     private String applyHex(String text) {

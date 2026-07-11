@@ -72,6 +72,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
         }
 
         SecretCodeState state = secretCode.get(id);
+        Player admin = Bukkit.getPlayer(id);
 
         state.setFours_step(i);
         String code = String.valueOf(state.getOne_step()) + String.valueOf(state.getTwo_step()) + String.valueOf(state.getThree_step()) + String.valueOf(state.getFours_step());
@@ -96,6 +97,13 @@ public class SecretCodeService implements SecretCodeServiceAPI {
 
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                 }
+
+                // CLS | Console Log
+                boolean isActive = cfg.getBoolean("Settings.consoleLogActive");
+                if (isActive) {
+                    sender.sendConsole(Bukkit.getConsoleSender(), "Messages.ConsoleLogs.accessLog",
+                            "%admin", admin.getName());
+                }
             }
 
             // Вот тут - Админ имеет *ВЕС*, именно по этому действия уже с фактом системы, а не надуманным мной действием.
@@ -106,7 +114,6 @@ public class SecretCodeService implements SecretCodeServiceAPI {
 
             SecretCodeState stateCheck = manager.getAdminByID(id);
             boolean f = stateCheck != null;
-            Bukkit.getLogger().warning("Boolean: " + f);
         } else {
             if(cfg.getBoolean("Admin.SecretCode.wrongCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {

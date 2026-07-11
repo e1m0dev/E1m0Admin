@@ -52,4 +52,14 @@ public interface SecretCodeDAO {
     int getCode(
             @Bind("uuid") String uuid
     );
+
+
+    @SqlQuery("""
+                SELECT code
+                FROM e1admin_code
+                WHERE uuid = :uuid
+            """)
+    boolean checkCode(
+            @Bind("uuid") String uuid
+    );
 }

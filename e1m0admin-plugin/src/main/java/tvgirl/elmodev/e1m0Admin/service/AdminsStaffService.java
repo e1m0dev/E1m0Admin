@@ -261,7 +261,6 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action);
         staffRepository.giveBonusLog(adminID, staffID, sum, message);
-
     }
 
     @Override
