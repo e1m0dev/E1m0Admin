@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0admin.api.service.StaffServiceAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
@@ -17,12 +18,14 @@ public class AdminsStaffService implements StaffServiceAPI {
     private final SecretCodeRepository secretCodeRepository;
     private final AdminSystemRepository systemRepository;
     private final AdminStaffRepository staffRepository;
+    private final SecretCodeManager secretCodeManager;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
 
-    public AdminsStaffService(SecretCodeRepository secretCodeRepository, AdminStaffRepository staffRepository, AdminSystemRepository systemRepository, FileConfiguration cfg, E1m0Sender sender) {
+    public AdminsStaffService(SecretCodeRepository secretCodeRepository, AdminStaffRepository staffRepository, AdminSystemRepository systemRepository, SecretCodeManager secretCodeManager, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
+        this.secretCodeManager = secretCodeManager;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
         this.sender = sender;
@@ -30,18 +33,18 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void upStatus(UUID adminID, UUID staffId) {
-        Player staff = Bukkit.getPlayer(staffId);
+    public void upStatus(UUID adminID, UUID staffID) {
+        Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (staffId == adminID) {
+        if (staffID == adminID) {
             sender.sendPath(staff, "Messages.Errors.upAdminSelfError");
             return;
         }
 
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
 
-        int weightBaseStaff = systemRepository.getAdminWeight(staffId);
+        int weightBaseStaff = systemRepository.getAdminWeight(staffID);
 
         String prefixBase = systemRepository.getAdminPrefix(adminID);
         int weightBase = systemRepository.getAdminWeight(adminID);
@@ -51,6 +54,7 @@ public class AdminsStaffService implements StaffServiceAPI {
         // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff <= weightBase) {
             sender.sendPath(staff, "Messages.Errors.upAdminWeightError");
+            secretCodeManager.takeAdminAccess(staffID);
             return;
         }
 
@@ -106,7 +110,7 @@ public class AdminsStaffService implements StaffServiceAPI {
             return;
         }
 
-        //TODO: Сделать мож ивент какой что ли, а то скучновато по сообщениям как то..
+        // TODO: Сделать мож ивент какой что ли, а то скучновато по сообщениям как то..
         sender.sendPath(staff, "Messages.successfulUpStaff", "%admin", admin.getName());
         sender.sendPath(admin, "Messages.successfulUpAdmin", "%staff", staff.getName());
 
@@ -114,18 +118,18 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void downStatus(UUID adminID, UUID staffId) {
+    public void downStatus(UUID adminID, UUID staffID) {
         Player admin = Bukkit.getPlayer(adminID);
-        Player staff = Bukkit.getPlayer(staffId);
+        Player staff = Bukkit.getPlayer(staffID);
 
-        if (staffId == adminID) {
+        if (staffID == adminID) {
             sender.sendPath(admin, "Messages.Errors.upAdminSelfError");
             return;
         }
 
         ConfigurationSection ranksSection = cfg.getConfigurationSection("Admin.AdminRanks");
 
-        int weightBaseStaff = systemRepository.getAdminWeight(staffId);
+        int weightBaseStaff = systemRepository.getAdminWeight(staffID);
 
         String prefixBase = systemRepository.getAdminPrefix(adminID);
         int weightBase = systemRepository.getAdminWeight(adminID);
@@ -134,6 +138,7 @@ public class AdminsStaffService implements StaffServiceAPI {
         // Сделать ли триггер на слив через снятие?
         // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff <= weightBase) {
+            secretCodeManager.takeAdminAccess(staffID);
             sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
             return;
         }
@@ -220,8 +225,9 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBaseAdmin = systemRepository.getAdminWeight(adminID);
 
         // Сделать ли триггер на слив через снятие?
-        // E1m0: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff < weightBaseAdmin) {
+            secretCodeManager.takeAdminAccess(staffID);
             sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
             return;
         }
@@ -289,6 +295,17 @@ public class AdminsStaffService implements StaffServiceAPI {
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
+        int weightBaseStaff = systemRepository.getAdminWeight(staffID);
+        int weightBaseAdmin = systemRepository.getAdminWeight(adminID);
+
+        // Сделать ли триггер на слив через снятие?
+        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+        if (weightBaseStaff < weightBaseAdmin) {
+            secretCodeManager.takeAdminAccess(staffID);
+            sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+            return;
+        }
+
         sender.sendPath(admin, "Messages.changeCodeAdmin",
                 "%staff", staff.getName(),
                 "%code", String.valueOf(code));
@@ -299,5 +316,23 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         secretCodeRepository.staffSetSecretCode(adminID, staffID, code);
         // TODO: Event?
+    }
+
+    @Override
+    public void adminUnBanSystem(UUID adminID, UUID staffID) {
+        Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (secretCodeManager.isBlocked(adminID)) {
+            secretCodeManager.removeBlockAdmin(adminID);
+        } else {
+            sender.sendPath(staff, "Messages.Errors.adminNotBanned");
+        }
+
+        sender.sendPath(admin, "Messages.unbannedSystem",
+                "%staff", staff.getName());
+
+        sender.sendPath(staff, "Messages.successfulUnbannedSystem",
+                "%admin", admin.getName());
     }
 }

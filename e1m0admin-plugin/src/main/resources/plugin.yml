@@ -20,6 +20,9 @@ commands:
     description: "Команда сокрытия администратора"
     aliases: [ ainvise, ainvisibility ]
 
+  ahelp:
+    description: "Сценарии и помощь для администрации"
+
   re:
     description: "Команда слежки за игроком"
     aliases: [ recon, re, rec ]
@@ -32,9 +35,16 @@ commands:
     description: "Войти в систему"
     aliases: [ adminaccess, acc ]
 
+  ablock:
+    description: "Заблокировать доступ администратору при сливе"
+    aliases: [ aban ]
+
   # | PLAYER
   report:
     description: "Отправить жалобу"
+
+  admins:
+    description: "Команда для просмотра администрации"
 
   # | STAFF
   abonusall:
@@ -58,6 +68,10 @@ commands:
 
   aup:
     description: "Повысить администратора"
+
+  aunban:
+    description: "Снять блокировку с администратора"
+    aliases: [ apardon ]
 
   # | Console
   cup:

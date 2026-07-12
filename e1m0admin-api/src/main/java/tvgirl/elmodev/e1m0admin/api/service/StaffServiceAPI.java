@@ -15,4 +15,6 @@ public interface StaffServiceAPI {
     void adminBonusAll(UUID staffID, int sum, String message); // Выдать админ-бонус администраторам
 
     void setSecretPassword(UUID adminID, UUID staffID, int code); // Сменить администратору код
+
+    void adminUnBanSystem(UUID adminID, UUID staffID); // Разморозить доступ к командам и системам администратору
 }

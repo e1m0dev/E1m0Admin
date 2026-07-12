@@ -19,7 +19,7 @@ public class E1m0Sender {
         this.cfg = cfg;
     }
 
-    public void sendString(@NotNull Player sendedPlayer, @NotNull List<String> messageList, @Nullable String... replacements) {
+    public void sendStringList(@NotNull Player sendedPlayer, @NotNull List<String> messageList, @Nullable String... replacements) {
         for (String message : messageList) {
             String text = PlaceholderAPI.setPlaceholders(sendedPlayer, message);
 
@@ -32,8 +32,10 @@ public class E1m0Sender {
             String prefix = cfg.getString("Settings.prefixEnable");
 
             if (cfg.getBoolean("Settings.prefixEnable")) {
+                if (sendedPlayer == null) return;
                 sendedPlayer.sendMessage(color.parse(prefix + " " + text));
             } else {
+                if (sendedPlayer == null) return;
                 sendedPlayer.sendMessage(color.parse(text));
             }
         }
@@ -58,8 +60,10 @@ public class E1m0Sender {
             String prefix = cfg.getString("Settings.prefixEnable");
 
             if (cfg.getBoolean("Settings.prefixEnable")) {
+                if (sendedPlayer == null) return;
                 sendedPlayer.sendMessage(color.parse(prefix + " " + cfgMessage));
             } else {
+                if (sendedPlayer == null) return;
                 sendedPlayer.sendMessage(color.parse(message));
             }
         }

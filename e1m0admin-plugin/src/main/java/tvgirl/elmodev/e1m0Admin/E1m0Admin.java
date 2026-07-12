@@ -5,11 +5,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import tvgirl.elmodev.e1m0Admin.commands.admin.AccessCommand;
-import tvgirl.elmodev.e1m0Admin.commands.admin.InvisibilityCommand;
-import tvgirl.elmodev.e1m0Admin.commands.admin.ReportCommand;
-import tvgirl.elmodev.e1m0Admin.commands.admin.RewatchCommand;
+import tvgirl.elmodev.e1m0Admin.commands.admin.*;
 import tvgirl.elmodev.e1m0Admin.commands.console.*;
+import tvgirl.elmodev.e1m0Admin.commands.player.AdminsCommand;
 import tvgirl.elmodev.e1m0Admin.commands.player.PlayerReportCommand;
 import tvgirl.elmodev.e1m0Admin.commands.staff.*;
 import tvgirl.elmodev.e1m0Admin.gui.controller.report.ReportController;
@@ -56,7 +54,8 @@ public final class E1m0Admin extends JavaPlugin {
     private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>(); // Сессии кэша админов
 
     // 🌐 | CODE MEMORY
-    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>(); // Кэширование игроков с кодом для utils
+    private HashSet<UUID> blockedAdmins = new HashSet<>(); // Кэширование заблокированных администраторов.
+    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>(); // Кэширование игроков с кодом для utils.
 
     // 🪼 | Invise Memory
     private HashSet<UUID> inviseCache = new HashSet<>(); // Администраторы в инвизе;
@@ -151,7 +150,7 @@ public final class E1m0Admin extends JavaPlugin {
         gameRepository = new AdminGameRepository(databaseManager.getJdbi());
 
         // ♾️ | State
-        secretCodeManager = new SecretCodeManager(codeCache);
+        secretCodeManager = new SecretCodeManager(codeCache, blockedAdmins);
         sessionManager = new AdminSessionManager(systemRepository, sessionsCache);
 
         // 🧑‍🔬 | Service
@@ -161,11 +160,11 @@ public final class E1m0Admin extends JavaPlugin {
         secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, permissionManager, secretCodeManager, getConfig(), sender);
 
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
-        staffService = new AdminsStaffService(secretCodeRepository, staffRepository, systemRepository, getConfig(), sender);
-        gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), reportGui, sender, this);
+        staffService = new AdminsStaffService(secretCodeRepository, staffRepository, systemRepository, secretCodeManager, getConfig(), sender);
+        gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, secretCodeManager, reportGui, sender, this);
 
         // ⌚ | Permissions
-        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
+        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, blockedAdmins, getConfig(), sender);
 
         // - | E1m0
         lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
@@ -193,9 +192,15 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("ainv").setExecutor(new InvisibilityCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("reoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("re").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
+        getCommand("ahelp").setExecutor(new AHelpCommand(sender, getConfig(), gameService));
+        getCommand("aban").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
+        getCommand("ablock").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
+        getCommand("aunban").setExecutor(new AdminUnBanCommand(sender, getConfig(), staffService, permissionManager));
+        getCommand("apardon").setExecutor(new AdminUnBanCommand(sender, getConfig(), staffService, permissionManager));
 
         // - | Player
         getCommand("report").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, playerReportCache));
+        getCommand("admins").setExecutor(new AdminsCommand(sender, getConfig(), gameService));
 
         // - | Staff
         getCommand("adown").setExecutor(new AdminDownCommand(sender, getConfig(), staffService, permissionManager, systemRepository));
@@ -227,6 +232,7 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("reoff").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("report").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("admins").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("abonusall").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("setsecret").setTabCompleter(new MainTabCompleter(getConfig()));

@@ -40,6 +40,7 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
+
         if (strings.length < 1) {
             sender.sendPath(admin, "Messages.Errors.lengthError");
             return false;

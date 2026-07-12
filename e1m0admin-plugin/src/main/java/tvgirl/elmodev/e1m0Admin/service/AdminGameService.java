@@ -14,6 +14,8 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.E1m0Admin;
+import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
+import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 import tvgirl.elmodev.e1m0admin.api.service.GameServiceAPI;
 import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
 import tvgirl.elmodev.e1m0Admin.gui.guis.secretcode.SecretCodeGui;
@@ -30,6 +32,7 @@ public class AdminGameService implements GameServiceAPI {
     private final ReportSystemRepository reportRepository;
     private final AdminGameRepository gameRepository;
     private final SecretCodeGui secretCodeGui;
+    private final E1m0Permission permission;
 
     private final HashSet<UUID> inviseCache; // Администраторы в инвизе;
 
@@ -37,12 +40,15 @@ public class AdminGameService implements GameServiceAPI {
     private final HashMap<UUID, Report> playerReportCache; // Игроки с репортом в памяти;
     private final HashMap<UUID, UUID> reconCache; // Администраторы в рекона;
 
+    private final SecretCodeManager secretCodeManager;
+
     private final FileConfiguration cfg;
     private final ReportGUI reportGUI;
     private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
-    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
+    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, SecretCodeManager secretCodeManager, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
+        this.secretCodeManager = secretCodeManager;
         this.playerReportCache = playerReportCache;
         this.rewatchTasksCache = rewatchTasksCache;
         this.reportRepository = reportRepository;
@@ -50,6 +56,7 @@ public class AdminGameService implements GameServiceAPI {
         this.secretCodeGui = secretCodeGui;
         this.inviseCache = inviseCache;
         this.reconCache = reconCache;
+        this.permission = permission;
         this.reportGUI = reportGUI;
         this.sender = sender;
         this.plugin = plugin;
@@ -164,9 +171,8 @@ public class AdminGameService implements GameServiceAPI {
                                     .replace("%player", argPlayer)
                             );
 
-                            sender.sendString(adm, messages);
+                            sender.sendStringList(adm, messages);
                         }
-
                     }
                 }
 
@@ -243,5 +249,75 @@ public class AdminGameService implements GameServiceAPI {
 
         reportRepository.gameReportSend(report);
         playerReportCache.remove(report.getPlayerID());
+    }
+
+    @Override
+    public void adminBlockAccess(UUID targetID, UUID adminID) {
+        Player target = Bukkit.getPlayer(targetID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (secretCodeManager.isBlocked(targetID) || secretCodeManager.isBlocked(adminID)) {
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminBlockInternalError");
+            return;
+        }
+
+        secretCodeManager.takeAdminAccess(targetID);
+        secretCodeManager.takeAdminAccess(adminID);
+
+        sender.sendPath(admin, "Messages.successfulBlocked",
+                "%target", target.getName());
+        sender.sendPath(admin, "Messages.youAdminAccessIsBlocked",
+                "%admin", target.getName());
+    }
+
+    @Override
+    public void adminHelp(UUID adminID) {
+        Player admin = Bukkit.getPlayer(adminID);
+        List<String> ahelpAdminList = cfg.getStringList("Admin.AHelp.admin");
+        List<String> ahelpStaffList = cfg.getStringList("Admin.AHelp.staff");
+
+        if (admin.hasPermission("Permissions.admin")) sender.sendStringList(admin, ahelpAdminList);
+        if (admin.hasPermission("Permissions.staff")) sender.sendStringList(admin, ahelpStaffList);
+    }
+
+    @Override
+    public void getAdminList(UUID playerID) {
+        // Администраторы на посту (checkPermission)
+        // Администраторы в игре (hasPermission)
+
+        Player player = Bukkit.getPlayer(playerID);
+
+        List<String> adminListJob = new ArrayList<>();
+        List<String> adminListGame = new ArrayList<>();
+
+        List<String> cfgAdminList = cfg.getStringList("Admin.AdminList");
+
+        for (Player admin : Bukkit.getOnlinePlayers()) {
+
+            // | Условие: Если администратор регистрировался в системе - значит он на посту.
+            if (permission.checkSecretCodeAccess(admin.getUniqueId())) {
+                // | И мы - его добавляем.
+                adminListJob.add(admin.getName());
+            } else {
+
+                // Но! Если он НЕ регистрировался НО имеет печать администратора - добавляем его в Game список.
+                // То есть - в игре но не на посту.
+                if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
+                    adminListJob.add(admin.getName());
+                }
+            }
+        }
+
+        for (String string : cfgAdminList) {
+            for (String listJob : adminListJob) {
+                String adminInJob = string.replace("%adminInJob", listJob);
+            }
+
+            for (String listGame : adminListGame) {
+                String adminInGame = string.replace("%adminInGame", listGame);
+            }
+
+            sender.sendPath(player, "Admin.AdminList");
+        }
     }
 }
