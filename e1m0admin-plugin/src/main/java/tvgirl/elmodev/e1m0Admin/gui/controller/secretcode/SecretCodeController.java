@@ -53,11 +53,7 @@ public class SecretCodeController implements Listener {
 
         if (item == null) return;
 
-        Bukkit.getLogger().warning(item + " Это предмет");
-
         String action = item.getPersistentDataContainer().get(actionKey, PersistentDataType.STRING);
-
-        Bukkit.getLogger().warning(action + " Это действие");
 
         UUID playerID = e.getWhoClicked().getUniqueId();
         int num = handlerButton(action);
@@ -69,22 +65,18 @@ public class SecretCodeController implements Listener {
 
         switch (holder.getName().toLowerCase()) {
             case "step_pin" -> {
-                Bukkit.getLogger().warning("STEP_PIN");
                 codeService.oneStepHandler(playerID, num);
                 codeGUI.openTwoStepGUI(playerID);
             }
             case "step_two" -> {
-                Bukkit.getLogger().warning("step_two");
                 codeService.twoStepHandler(playerID, num);
                 codeGUI.openThreeStepGUI(playerID);
             }
             case "step_three" -> {
-                Bukkit.getLogger().warning("step_three");
                 codeService.threeStepHandler(playerID, num);
                 codeGUI.openFoursStepGUI(playerID);
             }
             case "step_fours" -> {
-                Bukkit.getLogger().warning("step_fours");
                 codeService.foursStepHandler(playerID, num);
             }
         }

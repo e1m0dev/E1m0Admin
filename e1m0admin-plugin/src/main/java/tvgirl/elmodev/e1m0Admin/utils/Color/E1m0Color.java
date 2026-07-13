@@ -72,4 +72,10 @@ public class E1m0Color {
                 .map(this::parse)
                 .toList();
     }
+
+    public List<String> parseList(List<String> messages) {
+        return messages.stream()
+                .map(this::parseLegacy)
+                .toList();
+    }
 }

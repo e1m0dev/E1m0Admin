@@ -13,75 +13,80 @@ import java.util.List;
 public class E1m0Sender {
 
     private final FileConfiguration cfg;
-    private E1m0Color color = new E1m0Color();
+    private final E1m0Color color = new E1m0Color();
 
     public E1m0Sender(FileConfiguration cfg) {
         this.cfg = cfg;
     }
 
-    public void sendStringList(@NotNull Player sendedPlayer, @NotNull List<String> messageList, @Nullable String... replacements) {
+    public void sendStringList(@NotNull Player player, @NotNull List<String> messageList, @Nullable String... replacements) {
         for (String message : messageList) {
-            String text = PlaceholderAPI.setPlaceholders(sendedPlayer, message);
+            sendMessage(player, message, replacements);
+        }
+    }
 
-            if (replacements != null) {
-                for (int i = 0; i < replacements.length; i += 2) {
-                    message = message.replace(replacements[i], replacements[i + 1]);
-                }
-            }
+    public void sendPath(@NotNull Player player, @NotNull String path, @Nullable String... replacements) {
 
-            String prefix = cfg.getString("Settings.prefixEnable");
+        if (cfg.isString(path)) {
+            sendMessage(player, cfg.getString(path), replacements);
+            return;
+        }
 
-            if (cfg.getBoolean("Settings.prefixEnable")) {
-                if (sendedPlayer == null) return;
-                sendedPlayer.sendMessage(color.parse(prefix + " " + text));
-            } else {
-                if (sendedPlayer == null) return;
-                sendedPlayer.sendMessage(color.parse(text));
+        if (cfg.isList(path)) {
+            for (String message : cfg.getStringList(path)) {
+                sendMessage(player, message, replacements);
             }
         }
     }
 
-    public void sendPath(@NotNull Player sendedPlayer, @NotNull String path, @Nullable String... replacements) {
-        List<String> cfgMessage = cfg.getStringList(path);
+    public void sendConsole(@NotNull CommandSender sender, @NotNull String path, @Nullable String... replacements) {
 
-        // E1m0:
-        // Если не будет принимать обновление строковое добавитть Arrays, типо по одной строке.
-        // Если будет больше двух строк - обычный перебор, если одна - Arrays
-        for (String message : cfgMessage) {
+        if (cfg.isString(path)) {
+            sendConsoleMessage(sender, cfg.getString(path), replacements);
+            return;
+        }
 
-            String text = PlaceholderAPI.setPlaceholders(sendedPlayer, message);
-
-            if (replacements != null) {
-                for (int i = 0; i < replacements.length; i += 2) {
-                    message = message.replace(replacements[i], replacements[i + 1]);
-                }
-            }
-
-            String prefix = cfg.getString("Settings.prefixEnable");
-
-            if (cfg.getBoolean("Settings.prefixEnable")) {
-                if (sendedPlayer == null) return;
-                sendedPlayer.sendMessage(color.parse(prefix + " " + cfgMessage));
-            } else {
-                if (sendedPlayer == null) return;
-                sendedPlayer.sendMessage(color.parse(message));
+        if (cfg.isList(path)) {
+            for (String message : cfg.getStringList(path)) {
+                sendConsoleMessage(sender, message, replacements);
             }
         }
     }
 
-    public void sendConsole(CommandSender sender, @NotNull String path, @Nullable String... replacements) {
-        List<String> cfgMessage = cfg.getStringList(path);
+    private void sendMessage(@NotNull Player player, @Nullable String message, @Nullable String... replacements) {
 
-        for (String message : cfgMessage) {
-            if (replacements != null) {
-                for (int i = 0; i < replacements.length; i += 2) {
-                    message = message.replace(replacements[i], replacements[i + 1]);
-                }
-            }
-
-            // TODO: Делать ли систему отправки в API?
-
-            sender.sendMessage(message);
+        if (message == null) {
+            return;
         }
+
+        if (replacements != null) {
+            for (int i = 0; i < replacements.length - 1; i += 2) {
+                message = message.replace(replacements[i], replacements[i + 1]);
+            }
+        }
+
+        message = PlaceholderAPI.setPlaceholders(player, message);
+
+        if (cfg.getBoolean("Settings.prefixEnable")) {
+            String prefix = cfg.getString("Settings.prefix", "");
+            message = prefix + " " + message;
+        }
+
+        player.sendMessage(color.parse(message));
+    }
+
+    private void sendConsoleMessage(@NotNull CommandSender sender, @Nullable String message, @Nullable String... replacements) {
+
+        if (message == null) {
+            return;
+        }
+
+        if (replacements != null) {
+            for (int i = 0; i < replacements.length - 1; i += 2) {
+                message = message.replace(replacements[i], replacements[i + 1]);
+            }
+        }
+
+        sender.sendMessage(color.parse(message));
     }
 }

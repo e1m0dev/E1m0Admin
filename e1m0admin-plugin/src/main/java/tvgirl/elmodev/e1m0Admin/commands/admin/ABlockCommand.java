@@ -57,8 +57,11 @@ public class ABlockCommand implements CommandExecutor {
             sender.sendPath(admin, "Messages.Errors.notAdmin");
         }
 
+        Bukkit.getLogger().warning("!adminBlockAccess! / 1 "); // Тестер
+
         if (command.getName().toLowerCase().equalsIgnoreCase("ablock")) {
             service.adminBlockAccess(targetAdmin.getUniqueId(), admin.getUniqueId());
+            Bukkit.getLogger().warning("!adminBlockAccess! / 2 "); // Тестер
 
             // CLS | Console Log
             boolean isActive = cfg.getBoolean("Settings.consoleLogActive");

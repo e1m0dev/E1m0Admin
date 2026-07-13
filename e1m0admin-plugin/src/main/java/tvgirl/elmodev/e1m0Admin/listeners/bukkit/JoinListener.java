@@ -8,19 +8,25 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 
 public class JoinListener implements Listener {
 
+    private final E1m0Sender send;
     private final FileConfiguration cfg;
     private final AdminSessionManager sessionManager;
 
-    public JoinListener(FileConfiguration cfg, AdminSessionManager sessionManager) {
+    public JoinListener(E1m0Sender send, FileConfiguration cfg, AdminSessionManager sessionManager) {
+        this.send = send;
         this.cfg = cfg;
         this.sessionManager = sessionManager;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAdminJoin(PlayerJoinEvent e) {
+        send.sendPath(e.getPlayer(), "Messages.teleportToAZ");
+        send.sendPath(e.getPlayer(), "Messages.inviseOn");
+
         Player p = e.getPlayer();
         if(!p.hasPermission(cfg.getString("Permissions.admin"))) return;
 

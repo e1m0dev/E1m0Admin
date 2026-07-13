@@ -34,6 +34,7 @@ import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.service.AdminSystemService;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 import tvgirl.elmodev.e1m0admin.api.state.report.Report;
@@ -72,7 +73,8 @@ public final class E1m0Admin extends JavaPlugin {
 
     // BOOT:
 
-    /* SENDER */
+    /* UTILS */
+    private E1m0Color color;
     private E1m0Sender sender;
 
     /* DATABASE */
@@ -122,7 +124,9 @@ public final class E1m0Admin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        databaseSource.shutdown();
+        if (databaseSource != null) {
+            databaseSource.shutdown();
+        }
     }
 
     private void bootstrap() {
@@ -131,8 +135,9 @@ public final class E1m0Admin extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults();
 
-        // 💬 | Sender
+        // 💬 | UTILS
         sender = new E1m0Sender(getConfig());
+        color = new E1m0Color();
 
         // ⚙️ | Database
         databaseSource = new DatabaseSource(getConfig());
@@ -170,11 +175,11 @@ public final class E1m0Admin extends JavaPlugin {
         lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
 
         // 🌐 | GUI
-        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
+        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig(), sender, color);
         reportGui = new ReportGUI(playerReportCache, reportKey, reportActions, reportService, getConfig(), this, sender);
 
         // 🗣️ | Listeners
-        lManager.registerEvents(new JoinListener(getConfig(), sessionManager), this);
+        lManager.registerEvents(new JoinListener(sender, getConfig(), sessionManager), this);
         lManager.registerEvents(new QuitListener(getConfig(), systemService, sessionManager, secretCodeManager, playerReportCache), this);
 
         // Controllers

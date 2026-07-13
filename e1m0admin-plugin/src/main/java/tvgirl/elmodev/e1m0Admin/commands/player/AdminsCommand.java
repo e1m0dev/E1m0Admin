@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.commands.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -38,6 +39,8 @@ public class AdminsCommand implements CommandExecutor {
             sender.sendPath(player, "Messages.Errors.permissionError");
             return false;
         }
+
+        Bukkit.getLogger().warning("getAdminList / 0!"); // ТЕСТЕР
 
         if (command.getName().toLowerCase().equalsIgnoreCase("admins")) {
             service.getAdminList(player.getUniqueId());

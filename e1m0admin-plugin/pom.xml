@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.e1m0dev</groupId>
         <artifactId>e1m0admin-parent</artifactId>
-        <version>1.2.0-STABLE</version>
+        <version>2.0.0-DEV</version>
     </parent>
 
     <artifactId>e1m0admin-plugin</artifactId>
@@ -15,6 +15,10 @@
 
     <name>E1m0Admin</name>
 
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -59,7 +63,7 @@
             <dependency>
                 <groupId>org.jdbi</groupId>
                 <artifactId>jdbi3-core</artifactId>
-                <version>3.53.0</version>
+                <version>3.49.6</version>
                 <scope>compile</scope>
             </dependency>
 
@@ -67,7 +71,7 @@
             <dependency>
                 <groupId>org.jdbi</groupId>
                 <artifactId>jdbi3-sqlobject</artifactId>
-                <version>3.53.0</version>
+                <version>3.49.6</version>
                 <scope>compile</scope>
             </dependency>
 
@@ -136,6 +140,8 @@
     </dependencies>
 
     <build>
+        <finalName>E1m0Admin-${project.version}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -145,6 +151,10 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
+
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
 
                         <configuration>
 

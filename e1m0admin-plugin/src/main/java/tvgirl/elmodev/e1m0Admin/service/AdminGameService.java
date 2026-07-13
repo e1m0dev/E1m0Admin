@@ -261,8 +261,10 @@ public class AdminGameService implements GameServiceAPI {
             return;
         }
 
-        secretCodeManager.takeAdminAccess(targetID);
-        secretCodeManager.takeAdminAccess(adminID);
+        Bukkit.getLogger().warning("adminBlockAccess! / 1.2"); // ТЕСТЕР
+
+        secretCodeManager.addBlockAdmin(targetID);
+        secretCodeManager.addBlockAdmin(adminID);
 
         sender.sendPath(admin, "Messages.successfulBlocked",
                 "%target", target.getName());
@@ -273,11 +275,13 @@ public class AdminGameService implements GameServiceAPI {
     @Override
     public void adminHelp(UUID adminID) {
         Player admin = Bukkit.getPlayer(adminID);
-        List<String> ahelpAdminList = cfg.getStringList("Admin.AHelp.admin");
-        List<String> ahelpStaffList = cfg.getStringList("Admin.AHelp.staff");
 
-        if (admin.hasPermission("Permissions.admin")) sender.sendStringList(admin, ahelpAdminList);
-        if (admin.hasPermission("Permissions.staff")) sender.sendStringList(admin, ahelpStaffList);
+        Bukkit.getLogger().warning("getAdminList / 2!"); // ТЕСТЕР
+
+        if (admin.hasPermission("Permissions.admin")) sender.sendPath(admin, "Admin.AHelp.admin");
+        if (admin.hasPermission("Permissions.staff")) sender.sendPath(admin, "Admin.AHelp.staff");
+
+        Bukkit.getLogger().warning("getAdminList / 3!"); // ТЕСТЕР
     }
 
     @Override
@@ -290,9 +294,13 @@ public class AdminGameService implements GameServiceAPI {
         List<String> adminListJob = new ArrayList<>();
         List<String> adminListGame = new ArrayList<>();
 
+        List<String> finalMessage = new ArrayList<>();
         List<String> cfgAdminList = cfg.getStringList("Admin.AdminList");
 
+        Bukkit.getLogger().warning("getAdminList / 1!"); // ТЕСТЕР
+
         for (Player admin : Bukkit.getOnlinePlayers()) {
+            if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;
 
             // | Условие: Если администратор регистрировался в системе - значит он на посту.
             if (permission.checkSecretCodeAccess(admin.getUniqueId())) {
@@ -303,21 +311,44 @@ public class AdminGameService implements GameServiceAPI {
                 // Но! Если он НЕ регистрировался НО имеет печать администратора - добавляем его в Game список.
                 // То есть - в игре но не на посту.
                 if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
-                    adminListJob.add(admin.getName());
+                    adminListGame.add(admin.getName());
                 }
             }
         }
 
-        for (String string : cfgAdminList) {
-            for (String listJob : adminListJob) {
-                String adminInJob = string.replace("%adminInJob", listJob);
+        for (String configString : cfgAdminList) {
+            if (configString.contains("%adminInJob")) {
+
+                if (adminListJob.isEmpty()) {
+                    finalMessage.add(configString.replace("%adminInJob", "Никого"));
+                } else {
+                    for (String jobNick : adminListJob) {
+                        finalMessage.add(configString.replace("%adminInJob", jobNick));
+                    }
+                }
+
+                continue;
             }
 
-            for (String listGame : adminListGame) {
-                String adminInGame = string.replace("%adminInGame", listGame);
+            if (configString.contains("%adminInGame")) {
+
+                if (adminListGame.isEmpty()) {
+                    finalMessage.add(configString.replace("%adminInGame", "Никого"));
+                } else {
+                    for (String gameNick : adminListGame) {
+                        finalMessage.add(configString.replace("%adminInGame", gameNick));
+                    }
+                }
+
+                continue;
             }
 
-            sender.sendPath(player, "Admin.AdminList");
+            finalMessage.add(configString);
         }
+
+        sender.sendStringList(player, finalMessage);
+
+        adminListJob.clear();
+        adminListGame.clear();
     }
 }
