@@ -1364,3 +1364,124 @@ E1m0:
 🧑‍💻 | Я сделал еще кучу мелких правок пытаясь перевести версию на 1.16.5 но слишком устал, завтра начнутся тесты а я
 исправил только сендер..
 🧑‍💻 | По всему плагину расставлены тестеры из-за 2.0, надо будет как следует проверить плагин.
+
+Version 2.0 - Commit 2.4.0: Tests, fix, release | v2.0-RELEASE
+
+API:
+💚 E1m0ProviderAPI | Новый класс для выпуска API, буду надеяться что поддержат.
+
+💚 SecretCodeRepositoryAPI | Новый метод updateSecretCode - Обновляет Secret если у админа он уже есть.
+💚 SecretCodeServiceAPI | Новый метод checkSecret - Проверка, есть ли вообще код у администратора.
+
+Listeners:
+❤️ JoinListener | Убраны вчерашние тестеры сообщений когда была проверка систем разветвления.
+
+Commands:
+❗ AccessCommand | Смена зависимостей AdminGameService -> SecretCodeService.
+💚 AccessCommand | Добавлено новое условие проверки есть ли секрет-код: service.checkSecret.
+
+💚 AccessCommand | Вводятся первые меры по борьбе с /aban, получается так что старая система Permissions уже не
+удовлетворяет желаний, по этому я ее улучшил добавив checkSystem который проверяет блок, и может быть расширен и
+передает дальше по цепи checkSecretCodeAccess.
+💚 ReportCommand | Вводятся первые меры по борьбе с /aban, получается так что старая система Permissions уже не
+удовлетворяет желаний, по этому я ее улучшил добавив checkSystem который проверяет блок, и может быть расширен и
+передает дальше по цепи checkSecretCodeAccess.
+
+DAO:
+💚 SecretCodeDAO | Появился новый метод проверки биполярной системы setSecret, для того чтобы либо ОБНОВЛЯТЬ, либо
+ДОБАВЛЯТЬ секретный код.
+
+GUI:
+💜 SecretCodeGuiAPI | Исправлена проблема наконец то с цветами.
+💜 SecretCodeGuiAPI | Исправлена проблема с лором.
+
+Repository:
+💚 SecretCodeRepository | updateSecretCode - Появился новый метод проверки биполярной системы setSecret, для того чтобы
+либо ОБНОВЛЯТЬ, либо ДОБАВЛЯТЬ секретный код.
+
+Service:
+🧑‍💻 AdminGameService | На время тестов были расставлены тестеры с обозначительными знаками.
+🧑‍💻 AdminSystemService | На время тестов были расставлены тестеры с обозначительными знаками.
+
+❗ AdminSystemService | Метод: adminPay был переведен НА МИНУТЫ!
+
+💚 AdminStaffService | Была добавлена биполярная система проверки на setSecretPassword, для улучшения управляемости.
+
+💚 AdminStaffService | Была добавлена новая зависимость от AdminSessionManager.
+💚 AdminStaffService | В метод upStatus был добавлен адаптивный кэш!
+💚 AdminStaffService | В метод setAdmin был добавлен адаптивный кэш!
+💚 AdminStaffService | В метод downStatus был добавлен адаптивный кэш!
+💚 AdminStaffService | В метод deleteAdmin был добавлен адаптивный кэш!
+
+💛 AdminSystemService | Немного реворка и ревью, потому что старые условия не работают, буду проводить тесты новых и
+чинить Salary.
+
+💜 AdminStaffServicee | Отправка сообщения не staff а admin при поставлении на пост, было исправлено, теперь сообщение
+шлет: Admin и staff /aset.
+💜 AdminSystemService | Исправил проблему с путем, думал первое время что дело в сообшении но нет, предательская точка
+между: cfg.getString("Admin.AdminRanks" + key + ".scom") и cfg.getString("Admin.AdminRanks!!!!!.!!!!!" + key + ".scom")
+делала мне мозг, слава богу не долго, а не то я уже начал отлаживать все что можно было
+💜 AdminSystemService | Самый страшный и тупой баг на моей памяти: }.runTaskTimer(plugin,20 * 60 * cfg.getLong("
+Settings.Dev.salaryCheck"), 20 * 60 * cfg.getLong("Settings.salaryCheck")); -> Вызывает БЕСКОНЕЧНЫЙ ПЕРИОД ПРОВЕРКИ В 0
+ТИКОВ ПОТОМУ ЧТО ПУТЬ НЕ ВЕРНЫЙ И ОН ВЫБРАСЫВАЕТ 0 ТИКОВ А ТО ЕСТЬ КАЖДЫЙ ТИК, НУЖЕН: }.runTaskTimer(plugin,20 * 60 *
+cfg.getLong("Settings.Dev.salaryCheck"), 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"));
+
+💜 ConsoleService | Отправка успешного сообщения, а точнее ее путь был нарушен, нужно было через Message а не
+Message.Errors, скорее всего ошибка копирования. setAdminConsole
+💜 ConsoleService | Отправка успешного сообщения, а точнее ее путь был нарушен, нужно было через Message а не
+Message.Errors, скорее всего ошибка копирования. upAdminConsole
+💜 ConsoleService | Отправка успешного сообщения, а точнее ее путь был нарушен, нужно было через Message а не
+Message.Errors, скорее всего ошибка копирования. downAdminConsole
+💜 ConsoleService | Отправка успешного сообщения, а точнее ее путь был нарушен, нужно было через Message а не
+Message.Errors, скорее всего ошибка копирования. delAdminConsole
+
+💜 AdminGameService | Отправка сообщения не target а админу при блоке доступа, была исправлена, теперь сообщение шлет и
+админу и таргету блока.
+💜 AdminGameService | Был не правильный путь к youAdminAccessIsBlocked. Messages.youAdminAccessIsBlocked ->
+Messages.Errors.youAdminAccessIsBlocked.
+
+💜 AdminGameService | Исправлена проблема adminHelp, она заключалась в правах как я и думал. НО, стоит обратить внимание,
+что я почти не использую cfg.getString(), из-за своих тулок, и по этому я забываю сделать проверку на права из конфига а
+не просто на права.
+💜 AdminGameService | Исправлена проблема /admins связанная с DI в главном плагине, нашел ее по-вчерашнему стек трейсу
+v2.0.
+
+State:
+💚 AdminSessionManager | Новый метод обновления взаимодействия с кэшем плагина -> update(UUID id, String newPrefix, int
+newWeight, int newSalary), теперь - кэш администрации является динамическим!
+🩷 AdminSessionManager | Небольшое ревью переменных для чистоты проекта. p -> admin. как например в join.
+
+Utils:
+💚 E1m0Permission | Новый метод checkSystem который проверяет блокировку и не дает использовать команды в купе с
+checkSecretCodeAccess должен работать, но пока что только на моей молитве.
+
+E1m0:
+💚 E1m0Admin | Добавлен are, так как писали про этот баг что в README он есть а тут его нет потому что вообще я от него
+решил отказатся в пользу /re [Player], но как то так.
+💚 E1m0Admin | В связи с динамическим кэшированием - переработка зависимостей в цепях DI.
+💚 E1m0Admin | В блок TabCompleter были добавлены новые команды.
+
+e1m0dev:
+💚 TODO.MD | Были добавлены новые идеи.
+
+resources:
+❗ | Скорее всего буду публиковать в resources и config и plugin ПОКА ЧТО, пока нет конфигов отдельно.
+
+💚 config.yml/Admin/Salary/SalaryActions | Немного переработана структура.
+
+💚 config.yml/Dev/ | Добавлены пресеты настроек для Rewatch
+
+💚 config.yml/Messages/Errors | Новое сообщение: notCode - Отвечает за ошибку при отклонении базой кода, потому что его
+нет и его нужно задать.
+💚 config.yml/Messages/Errors | Новое сообщение в под-отдел CONSOLE ACTIONS: successfulAdminSetSecret - Отвечает за лог
+для консоли об успешной установке.
+
+💜 config.yml/Messages | successfulSetStaff - Отправлялся админу 😛 Исправлено.
+💜 config.yml/Messages | successfulSetStaff - Ошибка в слове была исправлена.
+💜 config.yml/Messages/Erorrs | youAdminAccessIsBlocked - Чуть переделал для некоторых мест, просто убрал слово ошибка на
+всякий.
+
+💚 plugin.yml | Новый/Старый allies в /recon - are :)
+
+TabCompleter:
+🤔 MainTabCompleter | Вижу баг, у aban - продолжается TabCompleter, а вот у других - нет.

@@ -7,6 +7,8 @@ public interface SecretCodeRepositoryAPI {
     /* STAFF | 🧑‍🔬 */
     void staffSetSecretCode(UUID adminID, UUID staffID, int code); // | Устанавливает SecretCode от определенного администратора.
 
+    void updateSecretCode(UUID adminID, UUID staffID, int code);  // | Обновляет SecretCode от определенного администратора.
+
     /* SYSTEM | 💾 */
     void systemSetSecretCode(UUID adminID, int code); // | Устанавливает SecretCode от КОНСОЛИ/СИСТЕМЫ, а не от администратора.
 

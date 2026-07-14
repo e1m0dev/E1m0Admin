@@ -24,9 +24,6 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAdminJoin(PlayerJoinEvent e) {
-        send.sendPath(e.getPlayer(), "Messages.teleportToAZ");
-        send.sendPath(e.getPlayer(), "Messages.inviseOn");
-
         Player p = e.getPlayer();
         if(!p.hasPermission(cfg.getString("Permissions.admin"))) return;
 

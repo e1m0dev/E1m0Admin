@@ -28,14 +28,6 @@ public class MainTabCompleter implements TabCompleter {
         if (sender.hasPermission(cfg.getString("Permissions.admin"))) {
             switch (command.getName().toLowerCase()) {
 
-                case "aunban":
-                case "aban":
-                    if (strings.length == 1) {
-                        getOnlineAdmins(tab);
-                    }
-
-                    break;
-
                 case "admins":
                 case "ahelp":
                     if (strings.length == 1) {
@@ -51,6 +43,14 @@ public class MainTabCompleter implements TabCompleter {
                 case "arep":
                     if (strings.length == 1) {
                         tab.add("Answer?");
+                    }
+
+                    break;
+
+                case "aunban":
+                case "aban":
+                    if (strings.length == 1) {
+                        getOnlineAdmins(tab);
                     }
 
                     break;

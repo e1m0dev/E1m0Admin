@@ -38,6 +38,11 @@ public class SecretCodeService implements SecretCodeServiceAPI {
     }
 
     @Override
+    public boolean checkSecret(UUID id) {
+        return secretCodeRepository.checkSecretCode(id);
+    }
+
+    @Override
     public void oneStepHandler(UUID id, int i) {
         if (secretCode.containsKey(id)) return;
         SecretCodeState state = new SecretCodeState(id);

@@ -36,8 +36,6 @@ public class SecretCodeController implements Listener {
         if (!(inv.getHolder() instanceof SecretCodeHolder holder)) return;
         e.setCancelled(true);
 
-        Bukkit.getLogger().warning(holder.getName() + " Это holder]");
-
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         if (inv == null) {

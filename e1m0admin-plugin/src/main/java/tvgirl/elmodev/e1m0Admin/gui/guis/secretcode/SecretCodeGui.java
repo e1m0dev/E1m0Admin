@@ -18,7 +18,6 @@ import tvgirl.elmodev.e1m0admin.api.gui.SecretCodeGuiAPI;
 import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
 import tvgirl.elmodev.e1m0Admin.gui.holder.secretcode.SecretCodeHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -83,18 +82,13 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
     private void createItemsInInventory(Inventory i) {
         ConfigurationSection configGUI = cfg.getConfigurationSection("Admin.GUI.SecretGUI.items");
 
-        List<String> loreNumber = new ArrayList<>();
-        loreNumber.add("Просто нажмите для введения цифры.");
-
-        List<String> loreClose = new ArrayList<>();
-        loreClose.add("Просто нажмите для закрытия");
-
         for (String s : configGUI.getKeys(false)) {
             // Достаю все нужное из конфига по кастом ключам.
             String action = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".action");
             String name = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".name");
             int slot = cfg.getInt("Admin.GUI.SecretGUI.items." + s + ".slot");
 
+            List<String> lore = cfg.getStringList("Admin.GUI.SecretGUI.items." + s + ".lore");
             String materialString = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".item");
 
             // Объявленные.
@@ -121,9 +115,9 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
                 item.setItemMeta(skullMeta);
 
                 // Создаем предмет.
-                i.setItem(slot, creteSkullItem(name, action, item, loreNumber));
+                i.setItem(slot, creteSkullItem(name, action, item, lore));
             } else {
-                i.setItem(slot, createButtonItem(name, action, mat, 1, loreNumber));
+                i.setItem(slot, createButtonItem(name, action, mat, 1, lore));
             }
         }
     }
@@ -136,8 +130,8 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
                 PersistentDataType.STRING,
                 action);
 
-        meta.setDisplayName(name);
-        meta.setLore(lore);
+        meta.displayName(color.parse(name));
+        meta.lore(color.parse(lore));
 
         item.setItemMeta(meta);
         return item;
@@ -152,8 +146,8 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
                 PersistentDataType.STRING,
                 action);
 
-        meta.setDisplayName(color.parseLegacy(name));
-        meta.setLore(color.parseList(lore));
+        meta.displayName(color.parse(name));
+        meta.lore(color.parse(lore));
 
         item.setItemMeta(meta);
         return item;

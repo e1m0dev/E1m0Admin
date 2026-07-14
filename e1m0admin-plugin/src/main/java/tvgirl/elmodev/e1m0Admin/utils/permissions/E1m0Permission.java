@@ -27,13 +27,19 @@ public class E1m0Permission implements PermissionsManagerAPI {
         this.cfg = cfg;
     }
 
+
     @Override
-    public boolean checkSecretCodeAccess(UUID id) {
+    public boolean checkSystem(UUID id) {
         if (blockedAdmins.contains(id)) {
             sender.sendPath(Bukkit.getPlayer(id), "Messages.Errors.youAdminAccessIsBlocked");
             return false;
         }
 
+        return true;
+    }
+
+    @Override
+    public boolean checkSecretCodeAccess(UUID id) {
         SecretCodeState state = codeManager.getAdminByID(id);
         return state != null;
     }

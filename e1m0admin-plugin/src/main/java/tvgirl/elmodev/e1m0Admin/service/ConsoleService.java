@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0admin.api.service.ConsoleServiceAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
@@ -15,13 +16,15 @@ import java.util.UUID;
 public class ConsoleService implements ConsoleServiceAPI {
 
     private final SecretCodeRepository secretCodeRepository;
+    private final AdminSessionManager adminSessionManager;
     private final AdminSystemRepository systemRepository;
     private final AdminStaffRepository staffRepository;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
-    public ConsoleService(SecretCodeRepository secretCodeRepository, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, FileConfiguration cfg, E1m0Sender sender) {
+    public ConsoleService(SecretCodeRepository secretCodeRepository, AdminSessionManager adminSessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
+        this.adminSessionManager = adminSessionManager;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
         this.cfg = cfg;
@@ -33,6 +36,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         Player admin = Bukkit.getPlayer(adminID);
 
         secretCodeRepository.systemSetSecretCode(adminID, code);
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminSetSecret"));
 
         sender.sendPath(admin, "Messages.changeCodeAdmin",
                 "%staff", "CONSOLE",
@@ -58,14 +62,14 @@ public class ConsoleService implements ConsoleServiceAPI {
                 int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
                 String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
-                // Отправляю в репо.
+                // Отправляю в репо + закрепляю в кэше.
+                adminSessionManager.update(adminID, prefix, weight, salary);
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
-                sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminSet"));
-                return;
+                sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminSet"));
             } else {
                 sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.setAdminWeightError"));
-                return;
             }
+            return;
         }
     }
 
@@ -79,7 +83,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
-            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.upAdminNotAdminError"));
+            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.upAdminNotAdminError"));
             return;
         }
 
@@ -121,8 +125,9 @@ public class ConsoleService implements ConsoleServiceAPI {
         int newWeight = cfg.getInt("Admin.AdminRanks." + currentKey + ".weight");
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
 
+        adminSessionManager.update(adminID, newPrefix, newWeight, newSalary);
         staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminUp"));
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminUp"));
     }
 
     @Override
@@ -183,8 +188,9 @@ public class ConsoleService implements ConsoleServiceAPI {
         int newSalary = cfg.getInt("Admin.AdminRanks." + currentKey + ".salary");
         String newPrefix = cfg.getString("Admin.AdminRanks." + currentKey + ".prefix");
 
+        adminSessionManager.update(adminID, newPrefix, newWeight, newSalary);
         staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminDown"));
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminDown"));
     }
 
     @Override
@@ -231,9 +237,10 @@ public class ConsoleService implements ConsoleServiceAPI {
     public void delAdminConsole(UUID adminID, UUID consoleID, String reason) {
         Player admin = Bukkit.getPlayer(adminID);
 
+        adminSessionManager.quit(adminID);
         staffRepository.deleteAdminStatus(adminID);
         secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.successfulAdminDelete"));
+        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminDelete"));
     }
 }

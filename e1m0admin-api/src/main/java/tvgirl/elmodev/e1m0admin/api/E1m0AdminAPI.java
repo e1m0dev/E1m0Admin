@@ -17,6 +17,10 @@ import tvgirl.elmodev.e1m0admin.api.utils.PermissionsManagerAPI;
 
 public interface E1m0AdminAPI {
 
+    static E1m0AdminAPI get() { // НОВЫЙ МЕТОД ДЛЯ ВЫПУСКА API.
+        return E1m0ProviderAPI.get();
+    }
+
     /* 🌐 | GUI */
     ReportGuiAPI reportUI();
 
@@ -52,4 +56,5 @@ public interface E1m0AdminAPI {
 
     /* 🧑‍💻 | UTILS */
     PermissionsManagerAPI permissions();
+
 }

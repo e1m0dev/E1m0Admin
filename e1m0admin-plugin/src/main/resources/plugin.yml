@@ -25,7 +25,7 @@ commands:
 
   re:
     description: "Команда слежки за игроком"
-    aliases: [ recon, re, rec ]
+    aliases: [ recon, re, rec, are ]
 
   reoff:
     description: "Отключение слежки за игроком"

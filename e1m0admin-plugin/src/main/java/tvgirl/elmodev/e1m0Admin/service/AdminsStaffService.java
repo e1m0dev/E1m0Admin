@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
+import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0admin.api.service.StaffServiceAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.repository.AdminSystemRepository;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class AdminsStaffService implements StaffServiceAPI {
 
     private final SecretCodeRepository secretCodeRepository;
+    private final AdminSessionManager adminSessionManager;
     private final AdminSystemRepository systemRepository;
     private final AdminStaffRepository staffRepository;
     private final SecretCodeManager secretCodeManager;
@@ -23,8 +25,9 @@ public class AdminsStaffService implements StaffServiceAPI {
     private final E1m0Sender sender;
 
 
-    public AdminsStaffService(SecretCodeRepository secretCodeRepository, AdminStaffRepository staffRepository, AdminSystemRepository systemRepository, SecretCodeManager secretCodeManager, FileConfiguration cfg, E1m0Sender sender) {
+    public AdminsStaffService(SecretCodeRepository secretCodeRepository, AdminSessionManager adminSessionManager, AdminStaffRepository staffRepository, AdminSystemRepository systemRepository, SecretCodeManager secretCodeManager, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
+        this.adminSessionManager = adminSessionManager;
         this.secretCodeManager = secretCodeManager;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
@@ -114,6 +117,7 @@ public class AdminsStaffService implements StaffServiceAPI {
         sender.sendPath(staff, "Messages.successfulUpStaff", "%admin", admin.getName());
         sender.sendPath(admin, "Messages.successfulUpAdmin", "%staff", staff.getName());
 
+        adminSessionManager.update(adminID, newPrefix, newWeight, newSalary);
         staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
     }
 
@@ -176,6 +180,8 @@ public class AdminsStaffService implements StaffServiceAPI {
         //TODO: Сделать мож ивент какой что ли, а то скучновато по сообщениям как то..
         sender.sendPath(staff, "Messages.successfulDownStaff", "%admin", admin.getName());
         sender.sendPath(admin, "Messages.successfulDownAdmin", "%staff", staff.getName());
+
+        adminSessionManager.update(adminID, newPrefix, newWeight, newSalary);
         staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
     }
 
@@ -196,6 +202,7 @@ public class AdminsStaffService implements StaffServiceAPI {
                 int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
                 String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
+                adminSessionManager.update(adminID, prefix, weight, salary);
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
 
                 sender.sendPath(admin, "Messages.successfulSetAdmin",
@@ -204,7 +211,7 @@ public class AdminsStaffService implements StaffServiceAPI {
                 );
 
 
-                sender.sendPath(admin, "Messages.successfulSetStaff",
+                sender.sendPath(staff, "Messages.successfulSetStaff",
                         "%level", String.valueOf(weight),
                         "%admin", admin.getName()
                 );
@@ -240,6 +247,7 @@ public class AdminsStaffService implements StaffServiceAPI {
 
 
         // TODO: Лучше - Вывести в Event.
+        adminSessionManager.quit(adminID);
         staffRepository.deleteAdminStatus(adminID);
         secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.deleteAdminStatusLog(staffID, adminID, reason);
@@ -314,7 +322,12 @@ public class AdminsStaffService implements StaffServiceAPI {
                 "%admin", admin.getName(),
                 "%code", String.valueOf(code));
 
-        secretCodeRepository.staffSetSecretCode(adminID, staffID, code);
+        if (secretCodeRepository.checkSecretCode(adminID)) {
+            secretCodeRepository.updateSecretCode(adminID, staffID, code);
+        } else {
+            secretCodeRepository.staffSetSecretCode(adminID, staffID, code);
+        }
+
         // TODO: Event?
     }
 

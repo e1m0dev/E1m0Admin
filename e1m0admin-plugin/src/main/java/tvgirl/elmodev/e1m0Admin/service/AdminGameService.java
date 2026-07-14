@@ -131,6 +131,7 @@ public class AdminGameService implements GameServiceAPI {
         }
 
         admin.teleportAsync(new Location(world, x, y, z));
+        sender.sendPath(admin, "Messages.teleportToAZ");
         reconCache.remove(adminID);
     }
 
@@ -268,7 +269,7 @@ public class AdminGameService implements GameServiceAPI {
 
         sender.sendPath(admin, "Messages.successfulBlocked",
                 "%target", target.getName());
-        sender.sendPath(admin, "Messages.youAdminAccessIsBlocked",
+        sender.sendPath(target, "Messages.Errors.youAdminAccessIsBlocked",
                 "%admin", target.getName());
     }
 
@@ -276,12 +277,13 @@ public class AdminGameService implements GameServiceAPI {
     public void adminHelp(UUID adminID) {
         Player admin = Bukkit.getPlayer(adminID);
 
-        Bukkit.getLogger().warning("getAdminList / 2!"); // ТЕСТЕР
+        if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
+            sender.sendPath(admin, "Admin.AHelp.admin");
+        }
 
-        if (admin.hasPermission("Permissions.admin")) sender.sendPath(admin, "Admin.AHelp.admin");
-        if (admin.hasPermission("Permissions.staff")) sender.sendPath(admin, "Admin.AHelp.staff");
-
-        Bukkit.getLogger().warning("getAdminList / 3!"); // ТЕСТЕР
+        if (admin.hasPermission(cfg.getString("Permissions.staff"))) {
+            sender.sendPath(admin, "Admin.AHelp.staff");
+        }
     }
 
     @Override
