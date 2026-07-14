@@ -25,6 +25,14 @@ public class SecretCodeRepository implements SecretCodeRepositoryAPI {
     }
 
     @Override
+    public void updateSecretCode(UUID adminID, UUID staffID, int code) {
+        Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        secretDAO.staffUpdateSecretCode(adminID.toString(), admin.getName(), staff.getName(), code);
+    }
+
+    @Override
     public void systemSetSecretCode(UUID adminID, int code) {
         Player adm = Bukkit.getPlayer(adminID);
         secretDAO.systemSetSecretCode(adminID.toString(), adm.getName(), code, adm.getAddress().toString());
@@ -34,6 +42,11 @@ public class SecretCodeRepository implements SecretCodeRepositoryAPI {
     public void systemDeleteAdmin(UUID adminID) {
         Player adm = Bukkit.getPlayer(adminID);
         secretDAO.delAdminSecret(adminID.toString());
+    }
+
+    @Override
+    public boolean checkSecretCode(UUID adminID) {
+        return secretDAO.checkCode(adminID.toString()) != null;
     }
 
     @Override

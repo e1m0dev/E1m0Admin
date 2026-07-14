@@ -45,6 +45,8 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
+        if (!permissionManager.checkSystem(admin.getUniqueId())) return false;
+
         boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
         if (!checkPermission) {
             sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
@@ -57,10 +59,22 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
-        // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
         String response = String.join(" ", strings);
 
-        reportGUI.openReportGUI(admin.getUniqueId(), response);
+        // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
+        if (command.getName().toLowerCase().equalsIgnoreCase("arep")) {
+            reportGUI.openReportGUI(admin.getUniqueId(), response);
+
+            // CLS | Console Log
+            boolean isActive = cfg.getBoolean("Settings.consoleLogActive");
+            if (isActive) {
+                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.ConsoleLogs.reportLog",
+                        "%admin", admin.getName(),
+                        "%response", response
+                );
+            }
+        }
+
 
         return true;
     }

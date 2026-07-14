@@ -7,7 +7,7 @@ public class AdminSession {
     private final UUID uuid;
     private final String name;
 
-    private int workedHours;
+    private int workedMinutes;
 
     private final int adminSalary;
     private final int adminWeight;
@@ -33,16 +33,16 @@ public class AdminSession {
         return name;
     }
 
-    public int getWorkedHours() {
-        return workedHours;
+    public int getWorkedMinutes() {
+        return workedMinutes;
     }
 
     public long getJoinTime() {
         return joinTime;
     }
 
-    public void plusWorkedHours() {
-        workedHours++;
+    public void plusWorkedMinutes() {
+        workedMinutes++;
     }
 
     public int getAdminSalary() {

@@ -28,11 +28,29 @@ public class MainTabCompleter implements TabCompleter {
         if (sender.hasPermission(cfg.getString("Permissions.admin"))) {
             switch (command.getName().toLowerCase()) {
 
+                case "admins":
+                case "ahelp":
+                    if (strings.length == 1) {
+                        tab.add("Больше ничего не надо?");
+                        tab.add("Просто /admins");
+                        tab.add("Просто /ahelp");
+                    }
+
+                    break;
+
                 case "rep":
                 case "reps":
                 case "arep":
                     if (strings.length == 1) {
                         tab.add("Answer?");
+                    }
+
+                    break;
+
+                case "aunban":
+                case "aban":
+                    if (strings.length == 1) {
+                        getOnlineAdmins(tab);
                     }
 
                     break;
@@ -46,9 +64,10 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
+                case "cbonus":
                 case "abonus":
                     if (strings.length == 1) {
-                        getOnlinePlayers(tab);
+                        getOnlineAdmins(tab);
                     } else if (strings.length == 2) {
                         tab.add("10?");
                         tab.add("100?");
@@ -59,6 +78,7 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
+                case "cbonusall":
                 case "abonusall":
                     if (strings.length == 1) {
                         tab.add("10?");
@@ -73,7 +93,7 @@ public class MainTabCompleter implements TabCompleter {
                 case "adel":
                 case "cdel":
                     if (strings.length == 1) {
-                        getOnlinePlayers(tab);
+                        getOnlineAdmins(tab);
                     } else if (strings.length == 2) {
                         tab.add("Reason del?");
                     }
@@ -95,16 +115,12 @@ public class MainTabCompleter implements TabCompleter {
                 case "setsecret":
                 case "asecret":
                     if (strings.length == 1) {
-                        getOnlinePlayers(tab);
+                        getOnlineAdmins(tab);
                     } else if (strings.length == 2) {
                         tab.add("Code?");
                     }
 
                     break;
-
-                case "re":
-                case "arec":
-                case "recon":
 
                 case "cup":
                 case "cdown":
@@ -112,8 +128,19 @@ public class MainTabCompleter implements TabCompleter {
                 case "aup":
                 case "adown":
                     if (strings.length == 1) {
+                        getOnlineAdmins(tab);
+                    }
+
+                    break;
+
+                case "re":
+                case "arec":
+                case "recon":
+                    if (strings.length == 1) {
                         getOnlinePlayers(tab);
-                }
+                    }
+
+                    break;
             }
         }
         return tab;
@@ -122,6 +149,14 @@ public class MainTabCompleter implements TabCompleter {
     private void getOnlinePlayers(List<String> tab) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             tab.add(player.getName());
+        }
+    }
+
+    private void getOnlineAdmins(List<String> tab) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.hasPermission(cfg.getString("Permissions.admin"))) {
+                tab.add(player.getName());
+            }
         }
     }
 }

@@ -3,13 +3,12 @@ package tvgirl.elmodev.e1m0Admin;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import tvgirl.elmodev.e1m0Admin.commands.admin.AccessCommand;
-import tvgirl.elmodev.e1m0Admin.commands.admin.InvisibilityCommand;
-import tvgirl.elmodev.e1m0Admin.commands.admin.ReportCommand;
-import tvgirl.elmodev.e1m0Admin.commands.admin.RewatchCommand;
+import tvgirl.elmodev.e1m0Admin.commands.admin.*;
 import tvgirl.elmodev.e1m0Admin.commands.console.*;
+import tvgirl.elmodev.e1m0Admin.commands.player.AdminsCommand;
 import tvgirl.elmodev.e1m0Admin.commands.player.PlayerReportCommand;
 import tvgirl.elmodev.e1m0Admin.commands.staff.*;
 import tvgirl.elmodev.e1m0Admin.gui.controller.report.ReportController;
@@ -36,8 +35,10 @@ import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
 import tvgirl.elmodev.e1m0Admin.service.AdminSystemService;
 import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
+import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
+import tvgirl.elmodev.e1m0admin.api.E1m0AdminAPI;
 import tvgirl.elmodev.e1m0admin.api.state.report.Report;
 import tvgirl.elmodev.e1m0admin.api.state.secretcode.SecretCodeState;
 
@@ -56,7 +57,8 @@ public final class E1m0Admin extends JavaPlugin {
     private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>(); // Сессии кэша админов
 
     // 🌐 | CODE MEMORY
-    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>(); // Кэширование игроков с кодом для utils
+    private HashSet<UUID> blockedAdmins = new HashSet<>(); // Кэширование заблокированных администраторов.
+    private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>(); // Кэширование игроков с кодом для utils.
 
     // 🪼 | Invise Memory
     private HashSet<UUID> inviseCache = new HashSet<>(); // Администраторы в инвизе;
@@ -73,7 +75,8 @@ public final class E1m0Admin extends JavaPlugin {
 
     // BOOT:
 
-    /* SENDER */
+    /* UTILS */
+    private E1m0Color color;
     private E1m0Sender sender;
 
     /* DATABASE */
@@ -123,7 +126,9 @@ public final class E1m0Admin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        databaseSource.shutdown();
+        if (databaseSource != null) {
+            databaseSource.shutdown();
+        }
     }
 
     private void bootstrap() {
@@ -132,8 +137,9 @@ public final class E1m0Admin extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults();
 
-        // 💬 | Sender
+        // 💬 | UTILS
         sender = new E1m0Sender(getConfig());
+        color = new E1m0Color();
 
         // ⚙️ | Database
         databaseSource = new DatabaseSource(getConfig());
@@ -151,31 +157,31 @@ public final class E1m0Admin extends JavaPlugin {
         gameRepository = new AdminGameRepository(databaseManager.getJdbi());
 
         // ♾️ | State
-        secretCodeManager = new SecretCodeManager(codeCache);
+        secretCodeManager = new SecretCodeManager(codeCache, blockedAdmins);
         sessionManager = new AdminSessionManager(systemRepository, sessionsCache);
 
+        // ⌚ | Permissions
+        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, blockedAdmins, getConfig(), sender);
+
         // 🧑‍🔬 | Service
-        consoleService = new ConsoleService(secretCodeRepository, systemRepository, staffRepository, getConfig(), sender);
+        consoleService = new ConsoleService(secretCodeRepository, sessionManager, systemRepository, staffRepository, getConfig(), sender);
 
         reportService = new ReportSystemService(sender, getConfig(), playerReportCache, reportSystemRepository);
         secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, permissionManager, secretCodeManager, getConfig(), sender);
 
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
-        staffService = new AdminsStaffService(secretCodeRepository, staffRepository, systemRepository, getConfig(), sender);
-        gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), reportGui, sender, this);
-
-        // ⌚ | Permissions
-        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, getConfig());
+        staffService = new AdminsStaffService(secretCodeRepository, sessionManager, staffRepository, systemRepository, secretCodeManager, getConfig(), sender);
+        gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, secretCodeManager, reportGui, sender, this);
 
         // - | E1m0
         lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
 
         // 🌐 | GUI
-        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig());
+        secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig(), sender, color);
         reportGui = new ReportGUI(playerReportCache, reportKey, reportActions, reportService, getConfig(), this, sender);
 
         // 🗣️ | Listeners
-        lManager.registerEvents(new JoinListener(getConfig(), sessionManager), this);
+        lManager.registerEvents(new JoinListener(sender, getConfig(), sessionManager), this);
         lManager.registerEvents(new QuitListener(getConfig(), systemService, sessionManager, secretCodeManager, playerReportCache), this);
 
         // Controllers
@@ -187,15 +193,22 @@ public final class E1m0Admin extends JavaPlugin {
 
         // 🤖 | Commands
         // - | Admin
-        getCommand("aaccess").setExecutor(new AccessCommand(sender, getConfig(), gameService, secretCodeGui, permissionManager));
+        getCommand("aaccess").setExecutor(new AccessCommand(sender, getConfig(), secretCodeService, secretCodeGui, permissionManager));
         getCommand("arep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
         getCommand("rep").setExecutor(new ReportCommand(sender, reportGui, getConfig(), gameService, permissionManager));
+        getCommand("apardon").setExecutor(new AdminUnBanCommand(sender, getConfig(), staffService, permissionManager));
+        getCommand("aunban").setExecutor(new AdminUnBanCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("ainv").setExecutor(new InvisibilityCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("reoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
+        getCommand("are").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("re").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
+        getCommand("ablock").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
+        getCommand("ahelp").setExecutor(new AHelpCommand(sender, getConfig(), gameService));
+        getCommand("aban").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
 
         // - | Player
         getCommand("report").setExecutor(new PlayerReportCommand(sender, getConfig(), gameService, playerReportCache));
+        getCommand("admins").setExecutor(new AdminsCommand(sender, getConfig(), gameService));
 
         // - | Staff
         getCommand("adown").setExecutor(new AdminDownCommand(sender, getConfig(), staffService, permissionManager, systemRepository));
@@ -207,12 +220,15 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("aup").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
 
         // - | Console
-        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(getConfig(), consoleService));
-        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(getConfig(), consoleService));
-        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(getConfig(), consoleService));
+        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
+        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(sender, getConfig(), consoleService));
+        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(sender, getConfig(), consoleService));
 
-        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(getConfig(), consoleService));
-        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(getConfig(), consoleService));
+        getCommand("cbonus").setExecutor(new ConsoleGiveBonusCommand(sender, getConfig(), consoleService));
+        getCommand("cbonusall").setExecutor(new ConsoleGiveBonusCommand(sender, getConfig(), consoleService));
+
+        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(sender, getConfig(), consoleService));
+        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(sender, getConfig(), consoleService));
 
         // ❓ | Tab-Completer.
         getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));
@@ -220,10 +236,14 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("rep").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("arep").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("ainv").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("aban").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("ahelp").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("recon").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("reoff").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("ablock").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("report").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("admins").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("abonusall").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("setsecret").setTabCompleter(new MainTabCompleter(getConfig()));

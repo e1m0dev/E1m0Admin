@@ -78,10 +78,6 @@ public class ReportGUI implements ReportGuiAPI {
                 return;
             }
 
-            for (Report reps : reportList) {
-                Bukkit.getLogger().warning(reps.getReport());
-            }
-
             int slot = 0;
 
             int maxSize = cfg.getInt("Admin.Report.reportMaxSize");
@@ -92,7 +88,7 @@ public class ReportGUI implements ReportGuiAPI {
             for (Report report : reportList) {
                 // Сам репорт
 
-                List<String> preLore = cfg.getStringList("Admin.Report.GUI.ReportItem.LORE"); // Stream
+                List<String> preLore = cfg.getStringList("Admin.GUI.ReportItem.LORE"); // Stream
                 List<String> lore = preLore.stream()
                         .map(line -> line
                                 .replace("%content", report.getReport())
@@ -108,18 +104,17 @@ public class ReportGUI implements ReportGuiAPI {
 
         // ▶️ | Кнопки
         for(String s : reportGui.getKeys(false)) {
-            ItemStack item = new ItemStack(Material.valueOf(cfg.getString("Admin.Report.GUI.ReportGUI.items." + s + ".item")));
+            ItemStack item = new ItemStack(Material.valueOf(cfg.getString("Admin.GUI.ReportGUI.items." + s + ".item")));
             ItemMeta meta = item.getItemMeta();
 
-            // ❗ Ревью | Требуется горничная, 2.0
-            List<String> lore = cfg.getStringList("Admin.Report.GUI.ReportGUI.items." + s + ".lore"); // Stream
-            String itemName = cfg.getString("Admin.Report.GUI.ReportGUI.items." + s + ".name");
-            int itemSlot = cfg.getInt("Admin.Report.GUI.ReportGUI.items." + s + ".slot");
+            List<String> lore = cfg.getStringList("Admin.GUI.ReportGUI.items." + s + ".lore"); // Stream
+            String itemName = cfg.getString("Admin.GUI.ReportGUI.items." + s + ".name");
+            int itemSlot = cfg.getInt("Admin.GUI.ReportGUI.items." + s + ".slot");
 
             String finalItemName = PlainTextComponentSerializer.plainText().serialize(color.parse(itemName));
 
             meta.setDisplayName(finalItemName);
-            meta.setLore(lore); //TODO: Не красит цвета, решить в 2.0
+            meta.setLore(lore); // TODO: Не красит цвета, решить в 2.0
 
             item.setItemMeta(meta);
             inv.setItem(itemSlot, item);
@@ -132,11 +127,7 @@ public class ReportGUI implements ReportGuiAPI {
 
     private ItemStack createReportItem(Report report, List<String> lore) {
 
-        for (String slore : lore) {
-            Bukkit.getLogger().warning("SLORE2 : " + slore);
-        }
-
-        String material = cfg.getString("Admin.Report.GUI.ReportItem.ITEM");
+        String material = cfg.getString("Admin.GUI.ReportItem.ITEM");
         ItemStack item = new ItemStack(Material.valueOf(material), 1);
 
         ItemMeta meta = item.getItemMeta();
@@ -150,7 +141,7 @@ public class ReportGUI implements ReportGuiAPI {
                 PersistentDataType.STRING,
                 "open_report");
 
-        String reportName = cfg.getString("Admin.Report.GUI.ReportItem.NAME");
+        String reportName = cfg.getString("Admin.GUI.ReportItem.NAME");
 
         LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
         List<Component> component = color.parse(lore);

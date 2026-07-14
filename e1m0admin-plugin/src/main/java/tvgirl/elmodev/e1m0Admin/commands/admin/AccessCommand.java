@@ -1,6 +1,5 @@
 package tvgirl.elmodev.e1m0Admin.commands.admin;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -8,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import tvgirl.elmodev.e1m0Admin.gui.guis.secretcode.SecretCodeGui;
-import tvgirl.elmodev.e1m0Admin.service.AdminGameService;
+import tvgirl.elmodev.e1m0Admin.service.gui.SecretCodeService;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 
@@ -16,18 +15,17 @@ public class AccessCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
     private final FileConfiguration cfg;
-    private final AdminGameService service;
+    private final SecretCodeService service;
     private final SecretCodeGui secretCodeGui;
     private final E1m0Permission permissionManager;
 
-    public AccessCommand(E1m0Sender sender, FileConfiguration cfg, AdminGameService service, SecretCodeGui secretCodeGui, E1m0Permission permissionManager) {
-        this.sender = sender;
+    public AccessCommand(E1m0Sender sender, FileConfiguration cfg, SecretCodeService service, SecretCodeGui secretCodeGui, E1m0Permission permissionManager) {
         this.cfg = cfg;
+        this.sender = sender;
         this.service = service;
         this.secretCodeGui = secretCodeGui;
         this.permissionManager = permissionManager;
     }
-
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
@@ -35,6 +33,8 @@ public class AccessCommand implements CommandExecutor {
             commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
             return false;
         }
+
+        if (!permissionManager.checkSystem(admin.getUniqueId())) return false;
 
         boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
         if (checkPermission) {
@@ -45,6 +45,11 @@ public class AccessCommand implements CommandExecutor {
         String permission = cfg.getString("Permissions.admin");
         if (!admin.hasPermission(permission)) {
             sender.sendPath(admin, "Messages.Errors.permissionError");
+            return false;
+        }
+
+        if (!service.checkSecret(admin.getUniqueId())) {
+            sender.sendPath(admin, "Messages.Errors.notCode");
             return false;
         }
 

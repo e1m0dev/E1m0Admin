@@ -12,4 +12,8 @@ public interface ConsoleServiceAPI {
     void upAdminConsole(UUID adminID, UUID consoleID);                  // | Повысить администратора от лица самой консоли: "Извне".
 
     void downAdminConsole(UUID adminID, UUID consoleID);                // | Понизить администратора от лица самой консоли: "Извне".
+
+    void giveBonusAllConsole(UUID consoleID, int sum, String message);                   // | Понизить администратора от лица самой консоли: "Извне".
+
+    void giveBonusConsole(UUID consoleID, UUID adminID, int sum, String message);        // | Понизить администратора от лица самой консоли: "Извне".
 }

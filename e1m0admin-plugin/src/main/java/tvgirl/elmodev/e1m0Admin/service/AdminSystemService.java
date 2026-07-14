@@ -47,62 +47,69 @@ public class AdminSystemService implements SystemServiceAPI {
 
     @Override
     public void adminPay() {
-        // Получаю секцию часов из конфига.
+        // Получаю секции из конфига.
         ConfigurationSection sectionSalary = cfg.getConfigurationSection("Admin.AdminRanks");
         ConfigurationSection sectionBonus = cfg.getConfigurationSection("Admin.Salary.SalaryActions");
-                new BukkitRunnable() {
+
+        new BukkitRunnable() {
             @Override
             public void run() {
+                if (!cfg.getBoolean("Server.adminPay")) return;
+
                 for (AdminSession aSession : sessionManager.getSessions()) {
                     Player adm = Bukkit.getPlayer(aSession.getUuid());
 
-                    if (aSession.getUuid() != adm.getUniqueId()) continue;
-
                     // Проверяю: A) Время нажитое на сервере. B) Какой это час?
                     long onlineTime = System.currentTimeMillis() - aSession.getJoinTime();
-                    long hours = onlineTime / 3600000L;
+                    long minutes = onlineTime / 60000;
+
+                    if (minutes <= aSession.getWorkedMinutes()) {
+                        continue;
+                    }
 
                     // Если час превышает тот что был в State = значит он новый.
-                    if (hours > aSession.getWorkedHours()) {
-                        aSession.plusWorkedHours();
+                    if (minutes > aSession.getWorkedMinutes()) {
+                        aSession.plusWorkedMinutes();
 
-                        if (!cfg.getBoolean("Server.adminPay")) return;
                         // Игрок все еще жив и на сервере?
                         if (adm == null) {
                             continue;
                         }
 
-                        for (String key : sectionSalary.getKeys(true)) {
-                            String adminPrefix = aSession.getAdminPrefix();
+                        for (String key : sectionSalary.getKeys(false)) {
+                            int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
+                            int adminWeight = aSession.getAdminWeight();
 
                             // Если не подошел по prefix = скип.
-                            if (!cfg.getString("Admin.AdminRanks." + key + ".prefix").equalsIgnoreCase(adminPrefix))
+                            if (cfgWeight != adminWeight)
                                 continue;
 
                             // Получаю зарплату
                             int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
+                            String salaryString = String.valueOf(salary);
+
 
                             // Вывожу сообщение + выдаю ему честно нажитое.
                             sender.sendPath(adm, "Messages.adminPay",
                                     "%salary", String.valueOf(salary));
 
                             // Достаю его зарплату из конфига по патчу
-                            String str = cfg.getString("Admin.AdminRanks" + key + ".scom")
+                            String str = cfg.getString("Admin.AdminRanks." + key + ".scom")
                                     .replace("%player", adm.getName())
-                                    .replace("%salary", String.valueOf(salary));
+                                    .replace("%salary", salaryString);
 
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
                         }
 
                         // Если админ бонус на сервере выключен - скип.
                         if (!cfg.getBoolean("Server.adminBonus")) continue;
-                        for (String key : sectionBonus.getKeys(true)) {
+                        for (String key : sectionBonus.getKeys(false)) {
 
                             // Получаю часы и зарплату игрока из его таблицы + state session.
-                            int hour = cfg.getInt("Admin.Salary.SalaryActions." + key + ".hour");
+                            int hour = cfg.getInt("Admin.Salary.SalaryActions." + key + ".minutes");
                             int salary = aSession.getAdminSalary();
 
-                            if (hour == aSession.getWorkedHours()) {
+                            if (hour == aSession.getWorkedMinutes()) {
                                 // Если часы совпадают - делаем определенные действия
                                 for (String s : cfg.getStringList("Admin.Salary.SalaryActions." + key + ".Actions")) {
                                     String str = s
@@ -116,7 +123,7 @@ public class AdminSystemService implements SystemServiceAPI {
                     }
                 }
             }
-                }.runTaskTimer(plugin, 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"), 20 * cfg.getLong("Settings.salaryCheck"));
+        }.runTaskTimer(plugin, 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"), 20 * 60 * cfg.getLong("Settings.Dev.salaryCheck"));
     }
 
     @Override

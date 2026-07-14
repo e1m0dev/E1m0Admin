@@ -45,7 +45,27 @@ public class AdminSessionManager {
             Bukkit.getLogger().info("AdminSession: Is null, bug of a plugin?");
         }
 
-        sessionsCache.put(p.getUniqueId(), newSession);
+        sessionsCache.put(id, newSession);
+    }
+
+    public void update(UUID id, String newPrefix, int newWeight, int newSalary) {
+        Player admin = Bukkit.getPlayer(id);
+        sessionsCache.remove(id);
+
+        AdminSession newSession = new AdminSession(
+                admin.getUniqueId(),
+                admin.getName(),
+                newSalary,
+                newWeight,
+                newPrefix,
+                System.currentTimeMillis()
+        );
+
+        if (newSession == null) {
+            Bukkit.getLogger().info("AdminSession: Is null update, bug of a plugin?");
+        }
+
+        sessionsCache.put(admin.getUniqueId(), newSession);
     }
 
     public void quit(UUID id) {

@@ -7,22 +7,11 @@
     <parent>
         <groupId>io.github.e1m0dev</groupId>
         <artifactId>e1m0admin-parent</artifactId>
-        <version>1.2.0-STABLE</version>
+        <version>v2.0.0-RELEASE</version>
     </parent>
 
     <artifactId>e1m0admin-api</artifactId>
     <packaging>jar</packaging>
 
     <name>E1m0AdminAPI</name>
-
-    <build>
-        <!--        <finalName>E1m0AdminAPI-${project.version}</finalName>-->
-    </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-        </dependency>
-    </dependencies>
 </project>
