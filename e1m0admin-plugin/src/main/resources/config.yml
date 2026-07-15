@@ -217,6 +217,91 @@ Admin:
       - "&a/asetsecret &7— Выдать секретный код."
       - ""
 
+  AutoSetAdmin:
+
+    # - |
+    autoSetPermissions:
+      enable: true          # |
+      permissionInWeight: # |
+        1:
+          permissions:
+            - "lp user %admin permission set e1admin.admin"
+            - "lp user %admin permission set e1admin.invise"
+            - "lp user %admin permission set e1admin.rewatch"
+            - "lp user %admin permission set e1admin.arep"
+            - "lp user %admin permission set e1admin.aban"
+        2:
+          permissions:
+            - "lp user %admin permission set e1admin.adminbonus"
+            - "lp user %admin permission set e1admin.adminbonusall"
+        3:
+          permissions:
+            - "lp user %admin permission set e1admin.staff"
+            - "lp user %admin permission set e1admin.asecret"
+            - "lp user %admin permission set e1admin.downadmin"
+            - "lp user %admin permission set e1admin.deladmin"
+            - "lp user %admin permission set e1admin.setadmin"
+            - "lp user %admin permission set e1admin.upadmin"
+
+    autoSetSkins:
+      enable: true
+      skinsInWeight:
+        1:
+          skin:
+            - "skin set ADMIN %admin"
+        2:
+          skin:
+            - "skin set STAFF %admin"
+        3:
+          skin:
+            - "skin set CONSOLE %admin"
+
+
+  AutoDelAdmin:
+
+    # - |
+    autoDelPermissions:
+      enable: true          # |
+      permissionInWeight: # |
+        1:
+          permissions:
+            - "lp user %admin permission unset e1admin.admin"
+            - "lp user %admin permission unset e1admin.invise"
+            - "lp user %admin permission unset e1admin.rewatch"
+            - "lp user %admin permission unset e1admin.arep"
+            - "lp user %admin permission unset e1admin.aban"
+        2:
+          permissions:
+            - "lp user %admin permission unset e1admin.adminbonus"
+            - "lp user %admin permission unset e1admin.adminbonusall"
+        3:
+          permissions:
+            - "lp user %admin permission unset e1admin.staff"
+            - "lp user %admin permission unset e1admin.asecret"
+            - "lp user %admin permission unset e1admin.downadmin"
+            - "lp user %admin permission unset e1admin.deladmin"
+            - "lp user %admin permission unset e1admin.setadmin"
+            - "lp user %admin permission unset e1admin.upadmin"
+
+    autoDelSkins:
+      enable: true
+      skinsInWeight:
+        1:
+          skin:
+            - "skin clear %admin"
+        2:
+          skin:
+            - "skin clear %admin"
+        3:
+          skin:
+            - "skin clear %admin"
+
+  Leak:
+    enable: true
+    LeakSound: "ENTITY_ENDER_DRAGON_DEATH" # | Ирония с падшим ангелом у которого отобрали все что он имел.
+    LeakActions:
+      - "kick %leak Подозрения в сливе админ-прав."
+
   # Репортики | Связанные с игрой администрации и игроков, контрольные слова, статусы, бонусы и прочее.
   #  Здесь можно настроить GUI, авто-ответы на репорты, бонусы за репорты и т.д:
   Report:
@@ -468,12 +553,13 @@ Messages:
     downAdminLevelError: "&cАдминистратор уже находится на минимальном уровне!"
     downAdminWeightError: "&cВы — не можете понизить данного администратора!"
 
-    deleteAdminWeightError: "&cВы — не можете уволить данного администратора!"
+    delAdminWeightError: "&cВы — не можете уволить данного администратора!"
 
     upAdminWeightError: "&cВы — не можете повысить данного администратора!"
     upAdminLevelError: "&cАдминистратор уже находится на максимальном уровне!"
     upAdminSelfError: "&cВы не можете повысить себя!"
 
+    setSecretAdminWeightError: "&cВы — не можете повысить данного администратора!"
     secretCodeHasInputted: "&cВы уже вводили секретный пин!"
     setAdminCodeIsWrong: "&cВы не правильно ввели новый код для администратора, &6пример кода: 7777"
 
@@ -486,10 +572,12 @@ Messages:
     adminBlockInternalError: "&cВнутренняя ошибка при блокировке! Администратор уже находится в блоке!"
 
     # CONSOLE ACTIONS
-    upAdminNotAdminError: "&fЛОГ &7| &cАдминистратора указанного в команде - не существует в базе."
+    leakSoundIsNotFound: "&сОшибка! &7| &cОшибка в конфиге в строке: LeakSound. Такого звука — не существует в Вашей версии Minecraft. Пример звука: ENTITY_ENDER_DRAGON_DEATH."
+
+    upAdminNotAdminError: "&fЛОГ &7| &cАдминистратора указанного в команде — не существует в базе."
 
     setAdminIsAdminError: "&fЛОГ &7| &cЧеловек уже есть в базе данных!"
-    setAdminWeightError: "&fЛОГ &7| &cАдминистратор НЕ поставлен - Ошибка weight!"
+    setAdminWeightError: "&fЛОГ &7| &cАдминистратор НЕ поставлен — Ошибка weight!"
 
   ConsoleLogs:
     aHelpLog: "&fЛОГ &7| &7Администратор &6%admin пробил команду /ahelp 🗺️."
@@ -497,4 +585,10 @@ Messages:
     inviseLog: "&fЛОГ &7| &7Администратор &6%admin зашел в невидимку 👻.."
     reportLog: "&fЛОГ &7| &7Администратор &6%admin успешно взялся за репорты с формой %response 🧑‍💻"
     ABlockLog: "&fЛОГ &7| &4⚠️ ВАЖНО: АДМИНИСТРАТОР &6%admin ИСПОЛЬЗОВАЛ АДМИНСКИЙ БЛОК НА АДМИНИСТРАТОРА %target! ⚠️."
-    rewatchLog: "&fЛОГ &7| &7Администратор &6%admin зашел в слежку за игроком %player 🎥 - 💺🛏️..." # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfj3K8zuo7Zp77tu-YACPa7PGuxYOasedpEVRPj1WEVpRcKpFKhEzVBVY&s=10
+    rewatchLog: "&fЛОГ &7| &7Администратор &6%admin зашел в слежку за игроком %player 🎥 — 💺🛏️..." # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfj3K8zuo7Zp77tu-YACPa7PGuxYOasedpEVRPj1WEVpRcKpFKhEzVBVY&s=10
+
+    Leak:
+      upAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался повысить администратора %admin который выше его по рангу ❗"
+      delAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался снять администратора %admin который выше его по рангу ❗"
+      downAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался понизить администратора %admin который выше его по рангу ❗"
+      setSecretAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался поставить секретный код администратору %admin который выше его по рангу ❗"

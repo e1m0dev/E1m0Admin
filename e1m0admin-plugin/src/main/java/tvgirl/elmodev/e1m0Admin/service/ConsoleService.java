@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import tvgirl.elmodev.e1m0Admin.event.AdminDelEvent;
+import tvgirl.elmodev.e1m0Admin.event.AdminSetEvent;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0admin.api.service.ConsoleServiceAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
@@ -62,8 +64,9 @@ public class ConsoleService implements ConsoleServiceAPI {
                 int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
                 String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
-                // Отправляю в репо + закрепляю в кэше.
+                // Отправляю в репо + закрепляю в кэше + ивент.
                 adminSessionManager.update(adminID, prefix, weight, salary);
+                Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, consoleID, weight));
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
                 sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminSet"));
             } else {
@@ -241,6 +244,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         staffRepository.deleteAdminStatus(adminID);
         secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
+        Bukkit.getPluginManager().callEvent(new AdminDelEvent(adminID, consoleID));
         sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminDelete"));
     }
 }

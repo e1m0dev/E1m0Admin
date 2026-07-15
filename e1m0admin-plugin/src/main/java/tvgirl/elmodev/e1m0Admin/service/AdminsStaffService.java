@@ -4,6 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import tvgirl.elmodev.e1m0Admin.event.AdminDelEvent;
+import tvgirl.elmodev.e1m0Admin.event.AdminLeakEvent;
+import tvgirl.elmodev.e1m0Admin.event.AdminSetEvent;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0admin.api.service.StaffServiceAPI;
@@ -53,11 +56,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-        // Сделать ли триггер на слив через снятие?
-        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff <= weightBase) {
             sender.sendPath(staff, "Messages.Errors.upAdminWeightError");
-            secretCodeManager.takeAdminAccess(staffID);
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.upAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -139,11 +142,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-        // Сделать ли триггер на слив через снятие?
-        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff <= weightBase) {
-            secretCodeManager.takeAdminAccess(staffID);
             sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.downAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -203,6 +206,7 @@ public class AdminsStaffService implements StaffServiceAPI {
                 String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
                 adminSessionManager.update(adminID, prefix, weight, salary);
+                Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, staffID, weight));
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
 
                 sender.sendPath(admin, "Messages.successfulSetAdmin",
@@ -234,8 +238,10 @@ public class AdminsStaffService implements StaffServiceAPI {
         // Сделать ли триггер на слив через снятие?
         // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff < weightBaseAdmin) {
-            secretCodeManager.takeAdminAccess(staffID);
             sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.delAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -245,12 +251,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         sender.sendPath(admin, "Messages.deleteAdminByStaff",
                 "%staff", staff.getName());
 
-
-        // TODO: Лучше - Вывести в Event.
-        adminSessionManager.quit(adminID);
-        staffRepository.deleteAdminStatus(adminID);
-        secretCodeRepository.systemDeleteAdmin(adminID);
-        staffRepository.deleteAdminStatusLog(staffID, adminID, reason);
+        adminSessionManager.quit(adminID); // Удаляем сессию
+        staffRepository.deleteAdminStatus(adminID); // Удаляем из базы данных
+        secretCodeRepository.systemDeleteAdmin(adminID); // Удаляем доступ к командам
+        staffRepository.deleteAdminStatusLog(staffID, adminID, reason); // Лог об удалении
+        Bukkit.getPluginManager().callEvent(new AdminDelEvent(adminID, staffID)); // Создаем ивент об увольнении
 
         Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /adel. Команда прошла sendRepo.");
     }
@@ -306,11 +311,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBaseStaff = systemRepository.getAdminWeight(staffID);
         int weightBaseAdmin = systemRepository.getAdminWeight(adminID);
 
-        // Сделать ли триггер на слив через снятие?
-        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff < weightBaseAdmin) {
-            secretCodeManager.takeAdminAccess(staffID);
-            sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+            sender.sendPath(staff, "Messages.Errors.setSecretAdminWeightError");
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.setSecretAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 

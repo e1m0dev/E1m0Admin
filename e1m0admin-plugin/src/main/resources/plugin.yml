@@ -85,6 +85,7 @@ commands:
 
   csetadmin:
     description: "Поставить администратора | Удаленно ❗"
+    aliases: [ cset ]
 
   csetsecret:
     description: "Поменять код администратора | Удаленно ❗"

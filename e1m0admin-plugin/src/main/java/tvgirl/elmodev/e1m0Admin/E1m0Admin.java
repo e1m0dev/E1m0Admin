@@ -17,6 +17,9 @@ import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
 import tvgirl.elmodev.e1m0Admin.gui.guis.secretcode.SecretCodeGui;
 import tvgirl.elmodev.e1m0Admin.listeners.bukkit.QuitListener;
 import tvgirl.elmodev.e1m0Admin.listeners.e1m0.AdminAccessListener;
+import tvgirl.elmodev.e1m0Admin.listeners.e1m0.AdminDelListener;
+import tvgirl.elmodev.e1m0Admin.listeners.e1m0.AdminLeakListener;
+import tvgirl.elmodev.e1m0Admin.listeners.e1m0.AdminSetListener;
 import tvgirl.elmodev.e1m0Admin.repository.AdminGameRepository;
 import tvgirl.elmodev.e1m0Admin.repository.gui.ReportSystemRepository;
 import tvgirl.elmodev.e1m0Admin.repository.gui.SecretCodeRepository;
@@ -173,14 +176,18 @@ public final class E1m0Admin extends JavaPlugin {
         staffService = new AdminsStaffService(secretCodeRepository, sessionManager, staffRepository, systemRepository, secretCodeManager, getConfig(), sender);
         gameService = new AdminGameService(reportSystemRepository, gameRepository, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, secretCodeManager, reportGui, sender, this);
 
-        // - | E1m0
-        lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
-
         // 🌐 | GUI
         secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig(), sender, color);
         reportGui = new ReportGUI(playerReportCache, reportKey, reportActions, reportService, getConfig(), this, sender);
 
-        // 🗣️ | Listeners
+        // - | Listeners - E1m0
+        lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
+
+        lManager.registerEvents(new AdminLeakListener(sender, getConfig(), secretCodeManager), this);
+        lManager.registerEvents(new AdminSetListener(sender, getConfig(), systemService), this);
+        lManager.registerEvents(new AdminDelListener(sender, getConfig(), systemService), this);
+
+        // 🗣️ | Listeners - Bukkit
         lManager.registerEvents(new JoinListener(sender, getConfig(), sessionManager), this);
         lManager.registerEvents(new QuitListener(getConfig(), systemService, sessionManager, secretCodeManager, playerReportCache), this);
 
@@ -221,6 +228,7 @@ public final class E1m0Admin extends JavaPlugin {
 
         // - | Console
         getCommand("cup").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
+        getCommand("cset").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
         getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(sender, getConfig(), consoleService));
         getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(sender, getConfig(), consoleService));
 

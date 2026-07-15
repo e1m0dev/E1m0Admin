@@ -27,7 +27,6 @@ public class E1m0Permission implements PermissionsManagerAPI {
         this.cfg = cfg;
     }
 
-
     @Override
     public boolean checkSystem(UUID id) {
         if (blockedAdmins.contains(id)) {

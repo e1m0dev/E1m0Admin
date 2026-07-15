@@ -114,7 +114,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             // Вот тут - Админ имеет *ВЕС*, именно по этому действия уже с фактом системы, а не надуманным мной действием.
             user.closeInventory();
             manager.addAdminAccess(state);
-            Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user));
+            Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user.getUniqueId()));
 
 
             SecretCodeState stateCheck = manager.getAdminByID(id);
