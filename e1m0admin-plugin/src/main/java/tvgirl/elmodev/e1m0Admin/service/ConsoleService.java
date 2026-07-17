@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import tvgirl.elmodev.e1m0Admin.event.AdminDelEvent;
 import tvgirl.elmodev.e1m0Admin.event.AdminSetEvent;
+import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0admin.api.service.ConsoleServiceAPI;
 import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
@@ -21,16 +22,18 @@ public class ConsoleService implements ConsoleServiceAPI {
     private final AdminSessionManager adminSessionManager;
     private final AdminSystemRepository systemRepository;
     private final AdminStaffRepository staffRepository;
+    private final SecretCodeManager secretCodeManager;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
-    public ConsoleService(SecretCodeRepository secretCodeRepository, AdminSessionManager adminSessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, FileConfiguration cfg, E1m0Sender sender) {
+    public ConsoleService(SecretCodeRepository secretCodeRepository, AdminSessionManager adminSessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, SecretCodeManager secretCodeManager, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
         this.adminSessionManager = adminSessionManager;
+        this.secretCodeManager = secretCodeManager;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
-        this.cfg = cfg;
         this.sender = sender;
+        this.cfg = cfg;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminSetSecret"));
 
         sender.sendPath(admin, "Messages.changeCodeAdmin",
-                "%staff", "CONSOLE",
+                "%staff", cfg.getString("Settings.consolePrefix"),
                 "%code", String.valueOf(code));
     }
 
@@ -74,6 +77,28 @@ public class ConsoleService implements ConsoleServiceAPI {
             }
             return;
         }
+    }
+
+    @Override
+    public void consoleBanAdminAccess(UUID adminID, UUID consoleID) {
+
+    }
+
+    @Override
+    public void consoleUnBanAdminAccess(UUID adminID, UUID consoleID) {
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (secretCodeManager.isBlocked(adminID)) {
+            secretCodeManager.removeBlockAdmin(adminID);
+        } else {
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminNotBanned");
+        }
+
+        sender.sendPath(admin, "Messages.unbannedSystem",
+                "%staff", cfg.getString("Settings.consolePrefix"));
+
+        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulUnbannedSystem",
+                "%admin", admin.getName());
     }
 
     @Override
@@ -207,7 +232,7 @@ public class ConsoleService implements ConsoleServiceAPI {
 
             sender.sendPath(admin, "Messages.adminBonus",
                     "%message", message,
-                    "%staff", "CONSOLE",
+                    "%staff", cfg.getString("Settings.consolePrefix"),
                     "%bonus", String.valueOf(sum));
 
             staffRepository.giveBonusLog(admin.getUniqueId(), consoleID, sum, message);
@@ -229,7 +254,7 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         sender.sendPath(admin, "Messages.adminBonusAll",
                 "%message", message,
-                "%staff", "CONSOLE",
+                "%staff", cfg.getString("Settings.consolePrefix"),
                 "%bonus", String.valueOf(sum));
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action);

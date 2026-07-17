@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.service;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,11 +38,11 @@ public class AdminSystemService implements SystemServiceAPI {
     private E1m0Color c = new E1m0Color();
 
     public AdminSystemService(ReportSystemRepository reportRepository, AdminSessionManager sessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, Map<UUID, Report> playerReportCache, FileConfiguration cfg, E1m0Sender sender, E1m0Admin plugin) {
+        this.playerReportCache = playerReportCache;
         this.reportRepository = reportRepository;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
         this.sessionManager = sessionManager;
-        this.playerReportCache = playerReportCache;
         this.sender = sender;
         this.plugin = plugin;
         this.cfg = cfg;
@@ -163,6 +164,22 @@ public class AdminSystemService implements SystemServiceAPI {
     }
 
     @Override
+    public void autoComplimentActions(UUID adminID) {
+        boolean isWork = cfg.getBoolean("Admin.Compliment.enable");
+        if (!isWork) return;
+
+
+        Player admin = Bukkit.getPlayer(adminID);
+        List<String> runActions = cfg.getStringList("Admin.Compliment.Actions");
+
+        runActions
+                .stream()
+                .map(string -> string.replace("%admin", admin.getName()))
+                .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
+                .forEach(cmd -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd));
+    }
+
+    @Override
     public void autoSetAdmin(UUID adminID, UUID staffID, int weight) {
         // 1 - | Проверки.
         boolean permissionIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetPermissions.enable");
@@ -189,6 +206,7 @@ public class AdminSystemService implements SystemServiceAPI {
             // ❗ - | Исполнение.
             permissions.stream()
                     .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
                     .forEach(perm -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), perm));
         }
 
@@ -203,6 +221,7 @@ public class AdminSystemService implements SystemServiceAPI {
             // ❗ - | Исполнение.
             skins.stream()
                     .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
                     .forEach(skin -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), skin));
         }
     }
@@ -231,6 +250,7 @@ public class AdminSystemService implements SystemServiceAPI {
             // ❗ - | Исполнение.
             permissions.stream()
                     .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
                     .forEach(perm -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), perm));
         }
 
@@ -242,6 +262,7 @@ public class AdminSystemService implements SystemServiceAPI {
             // ❗ - | Исполнение.
             skins.stream()
                     .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
                     .forEach(skin -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), skin));
         }
     }
@@ -281,7 +302,7 @@ public class AdminSystemService implements SystemServiceAPI {
                 reportRepository.gameReportSend(newReport);
                 playerReportCache.remove(report.getPlayerID());
             } else {
-                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!");
+                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!"); // ЛОГ.
 
                 for (Map.Entry<UUID, Report> reportKeyOff : playerReportCache.entrySet()) {
                     if (reportKey.getValue().getUuid() == reportID) {

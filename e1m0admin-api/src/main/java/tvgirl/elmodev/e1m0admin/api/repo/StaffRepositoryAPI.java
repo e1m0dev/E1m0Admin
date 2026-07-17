@@ -7,12 +7,10 @@ public interface StaffRepositoryAPI {
 
     void deleteAdminStatus(UUID id); // | Удалить администратора из базы.
 
+    void deleteAdminStatusLog(UUID adminID, UUID staffID, String reason); // | Занести лог об увольнении администратора в базу.
     void systemDeleteAdminStatusLog(UUID adminID, UUID staffID, String reason); // | Занести лог об увольнении администратора в базу от лица системы.
 
-    void deleteAdminStatusLog(UUID adminID, UUID staffID, String reason); // | Занести лог об увольнении администратора в базу.
-
     void downAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary); // | Отправить запрос на понижение администратора в базе данных.
-
     void upAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary); // | Отправить запрос на повышение администратора в базе данных.
 
     void giveBonusLog(UUID adminID, UUID staffID, int sum, String message); // | Отправить лог о выданном бонусе администратору в базу данных.

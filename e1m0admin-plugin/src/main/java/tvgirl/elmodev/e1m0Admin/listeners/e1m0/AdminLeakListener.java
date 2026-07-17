@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import tvgirl.elmodev.e1m0Admin.event.AdminDelEvent;
 import tvgirl.elmodev.e1m0Admin.event.AdminLeakEvent;
 import tvgirl.elmodev.e1m0Admin.service.AdminSystemService;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;

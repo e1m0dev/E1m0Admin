@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.E1m0Admin;
+import tvgirl.elmodev.e1m0Admin.event.AdminComplimentEvent;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 import tvgirl.elmodev.e1m0admin.api.service.GameServiceAPI;
@@ -31,6 +32,7 @@ public class AdminGameService implements GameServiceAPI {
 
     private final ReportSystemRepository reportRepository;
     private final AdminGameRepository gameRepository;
+    private final HashSet<UUID> thanksPlayers;
     private final SecretCodeGui secretCodeGui;
     private final E1m0Permission permission;
 
@@ -47,12 +49,13 @@ public class AdminGameService implements GameServiceAPI {
     private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
-    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, SecretCodeManager secretCodeManager, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
+    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, HashSet<UUID> thanksPlayers, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, SecretCodeManager secretCodeManager, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
         this.secretCodeManager = secretCodeManager;
         this.playerReportCache = playerReportCache;
         this.rewatchTasksCache = rewatchTasksCache;
         this.reportRepository = reportRepository;
         this.gameRepository = gameRepository;
+        this.thanksPlayers = thanksPlayers;
         this.secretCodeGui = secretCodeGui;
         this.inviseCache = inviseCache;
         this.reconCache = reconCache;
@@ -352,5 +355,28 @@ public class AdminGameService implements GameServiceAPI {
 
         adminListJob.clear();
         adminListGame.clear();
+    }
+
+    @Override
+    public void addCompliment(UUID adminID, UUID playerID) {
+        Player player = Bukkit.getPlayer(playerID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (thanksPlayers.contains(playerID)) {
+            sender.sendPath(player, "Messages.Errors.cooldownErrorCompliment");
+            return;
+        }
+
+        thanksPlayers.add(playerID);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            if (thanksPlayers.contains(playerID)) {
+                thanksPlayers.remove(playerID);
+            }
+        }, 20 * 60 * cfg.getLong("Settings.complimentCooldown"));
+
+        gameRepository.addCompliment(adminID);
+
+        int compliments = gameRepository.getCompliments(adminID);
+        Bukkit.getPluginManager().callEvent(new AdminComplimentEvent(compliments, playerID, adminID));
     }
 }

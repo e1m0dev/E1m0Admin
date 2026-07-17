@@ -1,5 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.gui.guis.secretcode;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -44,7 +46,7 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
         Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_pin"), size, "PIN: ****");
         Player p = Bukkit.getPlayer(id);
 
-        createItemsInInventory(i);
+        createItemsInInventory(i, id);
         p.openInventory(i);
     }
 
@@ -55,7 +57,7 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
         Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_two"), size, "PIN: " + codeService.getInputCode(id));
         Player p = Bukkit.getPlayer(id);
 
-        createItemsInInventory(i);
+        createItemsInInventory(i, id);
         p.openInventory(i);
     }
 
@@ -65,7 +67,7 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
         Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_three"), size, "PIN: " + codeService.getInputCode(id));
         Player p = Bukkit.getPlayer(id);
 
-        createItemsInInventory(i);
+        createItemsInInventory(i, id);
         p.openInventory(i);
     }
 
@@ -75,11 +77,11 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
         Inventory i = Bukkit.createInventory(new SecretCodeHolder("step_fours"), size, "PIN: " + codeService.getInputCode(id));
         Player p = Bukkit.getPlayer(id);
 
-        createItemsInInventory(i);
+        createItemsInInventory(i, id);
         p.openInventory(i);
     }
 
-    private void createItemsInInventory(Inventory i) {
+    private void createItemsInInventory(Inventory i, UUID id) {
         ConfigurationSection configGUI = cfg.getConfigurationSection("Admin.GUI.SecretGUI.items");
 
         for (String s : configGUI.getKeys(false)) {
@@ -99,23 +101,45 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
             // Достаю все нужное из конфига по кастом ключам.
             if (materialString.equalsIgnoreCase("PLAYER_HEAD")) {
-                // | Если это голова.
-                SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 
-                String configSkullOwner = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".skull_owner");
+                String method = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".method");
+                if (method.equalsIgnoreCase("base64")) {
+                    // | Если это base64
+                    SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+                    String configBase64 = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".base64");
 
-                // Если есть PLAYER_HEAD но нет skull_owner
-                if (configSkullOwner.isEmpty() || configSkullOwner == null) {
-                    sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.configSkullGuiError");
+                    // Если есть BASE64 но нет base64:
+                    if (configBase64 == null || configBase64.isEmpty()) {
+                        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.configSkullGuiError");
+                    }
+
+                    PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+
+                    profile.setProperty(new ProfileProperty("textures", configBase64));
+                    skullMeta.setPlayerProfile(profile);
+
+                    i.setItem(slot, creteSkullItem(name, action, item, lore));
+                } else if (method.equalsIgnoreCase("owner")) {
+                    // | Если это голова.
+                    SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+
+                    String configSkullOwner = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".skull_owner");
+
+                    // Если есть PLAYER_HEAD но нет skull_owner
+                    if (configSkullOwner == null || configSkullOwner.isEmpty()) {
+                        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.configSkullGuiError");
+                    }
+
+                    OfflinePlayer skullOwner = Bukkit.getOfflinePlayer(configSkullOwner);
+
+                    skullMeta.setOwningPlayer(skullOwner);
+                    item.setItemMeta(skullMeta);
+
+                    // Создаем предмет.
+                    i.setItem(slot, creteSkullItem(name, action, item, lore));
+                } else {
+                    sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.invalidSkullMethod");
                 }
-
-                OfflinePlayer skullOwner = Bukkit.getOfflinePlayer(configSkullOwner);
-
-                skullMeta.setOwningPlayer(skullOwner);
-                item.setItemMeta(skullMeta);
-
-                // Создаем предмет.
-                i.setItem(slot, creteSkullItem(name, action, item, lore));
             } else {
                 i.setItem(slot, createButtonItem(name, action, mat, 1, lore));
             }

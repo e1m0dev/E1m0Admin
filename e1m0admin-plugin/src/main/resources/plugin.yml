@@ -40,6 +40,10 @@ commands:
     aliases: [ aban ]
 
   # | PLAYER
+  thanks:
+    description: "Отправить похвалу"
+    aliases: [ compliment, thx ]
+
   report:
     description: "Отправить жалобу"
 
@@ -80,6 +84,9 @@ commands:
   cdel:
     description: "Снять администратора | Удаленно ❗"
 
+  cbun:
+    description: "Заблокировать доступ администратору | Удаленно ❗"
+
   cdown:
     description: "Понизить администратора | Удаленно ❗"
 
@@ -95,6 +102,9 @@ commands:
 
   cbonus:
     description: "Выдать администратору бонус | Удаленно ❗"
+
+  cunbun:
+    description: "Разблокировать доступ администратору | Удаленно ❗"
 
   # | CONTROLLERS
   arepaccept:

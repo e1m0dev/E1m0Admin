@@ -34,6 +34,7 @@ public class DatabaseManager {
                             salary INTEGER NOT NULL,
                             prefix VARCHAR(64),
                             IP VARCHAR(32) NOT NULL,
+                            compliments INTEGER DEFAULT 0,
                             setAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     
                             PRIMARY KEY(uuid)

@@ -47,8 +47,15 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
+                case "thanks":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    }
+
+                case "cunban":
                 case "aunban":
                 case "aban":
+                case "cban":
                     if (strings.length == 1) {
                         getOnlineAdmins(tab);
                     }

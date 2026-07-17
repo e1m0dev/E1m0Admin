@@ -53,6 +53,16 @@ public interface AdminsDAO {
     );
 
     @SqlUpdate("""
+                UPDATE e1admin_admins SET
+                    compliments = compliments + 1
+                WHERE
+                    uuid = :uuid
+            """)
+    void addCompliment(
+            @Bind("uuid") String uuid
+    );
+
+    @SqlUpdate("""
         UPDATE e1admin_admins SET
                 weight = :weight, salary = :salary, prefix = :prefix
         WHERE
@@ -81,4 +91,13 @@ public interface AdminsDAO {
                     uuid = :uuid
     """)
     Admin findByUuid(@Bind("uuid") String uuid);
+
+    @SqlQuery("""
+                SELECT 
+                    compliments
+                FROM e1admin_admins
+                WHERE 
+                    uuid = :uuid
+            """)
+    int getCompliments(@Bind("uuid") String uuid);
 }

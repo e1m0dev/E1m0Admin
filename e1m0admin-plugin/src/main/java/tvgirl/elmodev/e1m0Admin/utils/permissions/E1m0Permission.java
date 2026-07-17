@@ -2,7 +2,6 @@ package tvgirl.elmodev.e1m0Admin.utils.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0admin.api.state.secretcode.SecretCodeState;
 import tvgirl.elmodev.e1m0admin.api.utils.PermissionsManagerAPI;
