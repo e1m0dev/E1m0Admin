@@ -14,4 +14,16 @@ public interface StaffRepositoryAPI {
     void upAdminStatus(UUID adminID, String newPrefix, int newWeight, int newSalary); // | Отправить запрос на повышение администратора в базе данных.
 
     void giveBonusLog(UUID adminID, UUID staffID, int sum, String message); // | Отправить лог о выданном бонусе администратору в базу данных.
+
+    void setAdminABan(UUID adminID, UUID staffID); // Занести в базу информацию о предположительном сливщике админ-поста и отобрать права.
+
+    void delAdminABan(UUID adminID); // Вынести из базы подозрений по поводу слива админки.
+
+    boolean checkAdminABan(UUID adminID); // Есть ли человек в базе подозреваемых по сливу?
+
+    void setAdminBlockList(UUID adminID, UUID staffID, String reason); // Занести в базу информацию о пользователе в Черном Списке Администрации (ЧСА)
+
+    void delAdminBlockList(UUID adminID); // Вынести из Черного Списка Администрации
+
+    boolean checkAdminBlockList(UUID adminID); // Проверить, находится ли человек в Черном Списке Администрации?
 }

@@ -200,6 +200,12 @@ public class AdminsStaffService implements StaffServiceAPI {
             return;
         }
 
+        boolean inBlackList = staffRepository.checkAdminBlockList(adminID);
+        if (inBlackList) {
+            sender.sendPath(staff, "Message.Errors.setAdminInBlackList");
+            return;
+        }
+
         for (String key : ranksSection.getKeys(false)) {
             if(cfg.getInt("Admin.AdminRanks." + key + ".weight") == weight)  {
                 int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
@@ -338,11 +344,12 @@ public class AdminsStaffService implements StaffServiceAPI {
 
     @Override
     public void adminUnBanSystem(UUID adminID, UUID staffID) {
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (secretCodeManager.isBlocked(adminID)) {
-            secretCodeManager.removeBlockAdmin(adminID);
+        if (isBlockedAdmin) {
+            staffRepository.delAdminABan(adminID);
         } else {
             sender.sendPath(staff, "Messages.Errors.adminNotBanned");
         }
@@ -352,5 +359,62 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         sender.sendPath(staff, "Messages.successfulUnbannedSystem",
                 "%admin", admin.getName());
+    }
+
+    @Override
+    public void adminAddBlockList(UUID adminID, UUID staffID, String reason) {
+        boolean inBlockList = staffRepository.checkAdminBlockList(adminID);
+        boolean isAdmin = systemRepository.checkAdminInBase(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (inBlockList) {
+            sender.sendPath(staff, "Messages.Errors.adminInBlackList");
+            return;
+        }
+
+        if (isAdmin) {
+            // Если это администратор, я с начала сравниваю веса:
+            int weightStaff = systemRepository.getAdminWeight(staffID);
+            int weightAdmin = systemRepository.getAdminWeight(adminID);
+
+            // Если у таргета, вес больше чем у того кто снимает - подозрения в сливе.
+            // Снять максимальный уровень админки может только консоль, это - безопасность сервера.
+            if (weightStaff <= weightAdmin) {
+                sender.sendPath(staff, "Messages.Errors.blacklistWeightError");
+
+                String message = cfg.getString("Messages.ConsoleLogs.Leak.blacklistWeightError");
+                Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, message));
+                return;
+            }
+
+            // Если это админ меньшего ранга - снять, повесить, растерзать, прострелить коленные чашечки.
+            // https://www.tiktok.com/@klyowa23/video/7657110663021694229?_r=1&_t=ZS-9879QZFfKpF
+            deleteAdmin(adminID, staffID, reason);
+        }
+
+        sender.sendPath(staff, "Messages.Errors.successfulAddBlockList",
+                "%admin", admin.getName());
+
+        staffRepository.setAdminBlockList(adminID, staffID, reason);
+    }
+
+    @Override
+    public void adminDelBlockList(UUID adminID, UUID staffID, String reason) {
+        boolean inBlockList = staffRepository.checkAdminBlockList(adminID);
+        Player admin = Bukkit.getPlayer(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
+
+        if (inBlockList) {
+            sender.sendPath(staff, "Messages.Errors.adminInBlackList",
+                    "%admin", admin.getName());
+
+            return;
+        }
+
+        sender.sendPath(staff, "Messages.Errors.successfulRemoveBlockList",
+                "%admin", admin.getName());
+
+        staffRepository.delAdminBlockList(adminID);
     }
 }

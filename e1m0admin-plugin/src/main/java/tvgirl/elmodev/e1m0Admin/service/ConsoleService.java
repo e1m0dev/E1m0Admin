@@ -58,6 +58,12 @@ public class ConsoleService implements ConsoleServiceAPI {
             return;
         }
 
+        boolean inBlackList = staffRepository.checkAdminBlockList(adminID);
+        if (inBlackList) {
+            sender.sendConsole(Bukkit.getServer().getConsoleSender(), "Message.Errors.setAdminInBlackList");
+            return;
+        }
+
         // ConfigSection | Как обычно перебираю конфиг секции.
         for (String key : ranksSection.getKeys(false)) {
             // ConfigSection | Нахожу по weight ранг - и работаю с его ключом.
@@ -81,15 +87,30 @@ public class ConsoleService implements ConsoleServiceAPI {
 
     @Override
     public void consoleBanAdminAccess(UUID adminID, UUID consoleID) {
+        Player admin = Bukkit.getPlayer(adminID);
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
 
+        if (!isBlockedAdmin) {
+            staffRepository.setAdminABan(adminID, consoleID);
+        } else {
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminBanned");
+        }
+
+        sender.sendPath(admin, "Messages.bannedSystem",
+                "%staff", cfg.getString("Settings.consolePrefix"));
+
+        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulBannedSystem",
+                "%admin", admin.getName());
     }
 
     @Override
     public void consoleUnBanAdminAccess(UUID adminID, UUID consoleID) {
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (secretCodeManager.isBlocked(adminID)) {
-            secretCodeManager.removeBlockAdmin(adminID);
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
+
+        if (isBlockedAdmin) {
+            staffRepository.delAdminABan(adminID);
         } else {
             sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminNotBanned");
         }

@@ -1592,7 +1592,7 @@ e1m0dev:
 ❤️ TODO.md | Был удален под-TODO: Сделать от ивентов autoActions | TODO: Отложено | Причина: Выполнен - 💚.
 ❤️ TODO.md | Был удален под-TODO: Сделать от ивентов слива sound | TODO: Отложено | Причина: Выполнен - 💚.
 
-Version 3.0.0 - Commit 3.1.0: Revirw, new function compliment, system language, ban-unban console
+Version 3.0.0 - Commit 3.1.0: Review, new function compliment, system language, ban-unban console
 
 🧹 Review:
 🩷 E1m0Permissions | Небольшое ревью зависимостей, убираю от мусора что-бы было красиво;
@@ -1711,6 +1711,100 @@ e1m0dev:
 ❤️ TODO.MD | Добавить /cunban для консоли | TODO: Отложено | Причина: Выполнен - 💚.
 ❤️ TODO.MD | Добавить /cban для консоли | TODO: Отложено | Причина: Выполнен - 💚.
 
-        
-        
+Version 3.0.0 - Commit 3.2.0: New DAO, new block systems, new black list systems
 
+❗ README.TXT - Были добавлены новые функции, в архитектуре были указаны новые команды, классы, ивенты, слушатели,
+триггеры и все о чем я зыбыл указать в прошлом 🤭
+
+API:
+💚 StaffServiceAPI | Добавлен новый метод adminDelBlockList - Позволяет убрать администратора из списка блокировки.
+💚 StaffServiceAPI | Добавлен новый метод adminAddBlockList - Позволяет добавить администратора в список блокировки.
+
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: setAdminABan - Занести в базу информацию о предположительном сливщике
+админ-поста и отобрать права.
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: delAdminABan - Вынести из базы подозрений по поводу слива админки.
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: checkAdminABan - Есть ли человек в базе подозреваемых по сливу?
+
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: setAdminBlockList - Занести в базу информацию о пользователе в Черном
+Списке Администрации (ЧСА)
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: delAdminBlockList - Вынести из ЧСА.
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: checkAdminBlockList - Проверить, находится ли человек в ЧСА?
+
+DAO:
+💚 BlockDAO | Добавлен новый класс BlockDAO, я решил не делать ABanDAO, BlockListDAO, а просто выделить логическую
+основу: Блокировка админки, либо на входе, либо на выходе.
+/* ABAN | 🧑‍🔬 */        
+💚 BlockDAO | Был добавлен новый метод: insertToABan - Заливает человека в память /aban.
+💚 BlockDAO | Был добавлен новый метод: delAdminABan - Убирает человека из памяти /aban
+💚 BlockDAO | Был добавлен новый метод: checkInABan - Проверяет человека в памяти /aban.
+/* BLOCKLIST | 🧑‍🔬 */
+💚 BlockDAO | Был добавлен новый метод: insertToBlackList - Заливает человека в память /ablist.
+💚 BlockDAO | Был добавлен новый метод: delAdminBlockList - Заливает человека в память /ablist.
+💚 BlockDAO | Был добавлен новый метод: checkInBlockList - Проверяет человека в памяти /ablist.
+
+Database:
+💚 Добавлена новая таблица: ABAN - Позволяет хранить игроков, которые находятся в блокировке возможностей своей админки.
+💚 Добавлена новая таблица: BLOCKLIST - Позволяет хранить игроков, которые находятся в черном листе администрации
+сервера.
+
+Commands:
+💚 AdminAddBlackListCommand | Новый адаптер для занесения в черный список.
+💚 AdminDelBlackListCommand | Новый адаптер для вынесения из черного списка.
+
+Service:
+❓💚 ConsoleService | Добавлена реализация для consoleBanAdminAccess, я не знаю как я вчера сделал consoleUnBanAdminAccess
+а просто consoleBanAdminAccess пропустил.. Очень странные дела 🥲
+
+💚 AdminStaffService | Добавлена реализация к adminDelBlockList из StaffServiceAPI;
+💚 AdminStaffService | Добавлена реализация к adminAddBlockList из StaffServiceAPI;
+
+💚 AdminStaffService | Вся система adminBlockAccess - Была переведена с кэша, на Базу Данных;
+💚 AdminStaffService | Вся система adminBlockAccess - Была переведена с кэша, на Базу Данных;
+💚 ConsoleService | Вся система adminBlockAccess - Была переведена с кэша, на Базу Данных;
+
+💚 AdminStaffService | В методе setAdmin - Была добавлена проверка на черный список;
+💚 ConsoleService | В методе setAdminConsole - Была добавлена проверка на черный список;
+
+💚 AdminGameService | Была добавлена зависимость от AdminStaffRepository;
+❤️ AdminGameService | Была удалена зависимость от SecretCodeManager!
+
+Repository:
+💚 AdminStaffRepository | Добавлена реализация метода: setAdminABan, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: delAdminABan, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: checkAdminABan, из AdminStaffRepositoryAPI.
+
+💚 AdminStaffRepository | Добавлена реализация метода: setAdminBlockList, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: delAdminBlockList, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: checkAdminBlockList, из AdminStaffRepositoryAPI.
+
+TabCompleter:
+💚 MainTabCompleter | Добавлен новый Completer: ablist.
+💚 MainTabCompleter | Добавлен новый Completer: abdlist.
+
+E1m0Admin:
+💚 E1m0Admin | Зарегистрирована команда: ablist - Позволяет заносить человека в ЧС администрации.
+💚 E1m0Admin | Зарегистрирована команда: abdlist - Позволяет удалить человека из ЧС администрации.
+
+💚 E1m0Admin | Зависимости были подключены в команду ThanksCommand.
+
+resources:
+💚 messages.yml en/ru | Было добавлено новое сообщение: bannedSystem - Лог админу о том что у него заблокировали доступ.
+💚 messages.yml en/ru | Было добавлено новое сообщение: bannedSystem - Лог консоли об успешной блокировке доступа.
+
+💚 messages.yml en/ru | Было добавлено новое сообщение: blacklistWeightError - Лог от слива, о том что администратор
+пытается занести в ЧС человека который ниже его по уровню.
+💚 messages.yml en/ru | Было добавлено новое сообщение: adminBanned - Лог для консоли, что администратору уже
+заблокировали доступ
+
+💚 messages.yml en/ru | Было добавлено новое сообщение: adminInBlackList - Лог для того чтобы уведомить что администратор
+УЖЕ находится в черном списке администрации и занести его нельзя.
+💚 messages.yml en/ru | Было добавлено новое сообщение: setAdminInBlackList - Сообщение staff и лог одновременно о том
+что администратор находится в ЧСА!
+
+💚 plugin.yml | Зарегистрирована команда: ablist - Позволяет заносить человека в ЧС администрации.
+💚 plugin.yml | Зарегистрирована команда: abdlist - Позволяет удалить человека из ЧС администрации.
+
+e1m0dev:
+
+❤️ TODO.MD | Улучшить систему абана и довести до БД а не до кэша | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.MD | Система ЧСА | TODO: Отложено | Причина: Выполнен - 💚.

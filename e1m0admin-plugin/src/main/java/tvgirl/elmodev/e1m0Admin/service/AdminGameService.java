@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.E1m0Admin;
 import tvgirl.elmodev.e1m0Admin.event.AdminComplimentEvent;
+import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 import tvgirl.elmodev.e1m0admin.api.service.GameServiceAPI;
@@ -30,7 +31,10 @@ import java.util.List;
 
 public class AdminGameService implements GameServiceAPI {
 
+    private UUID consoleID = UUID.fromString("S7777777-Y777-S777-T777-E7777777777M");
+
     private final ReportSystemRepository reportRepository;
+    private final AdminStaffRepository staffRepository;
     private final AdminGameRepository gameRepository;
     private final HashSet<UUID> thanksPlayers;
     private final SecretCodeGui secretCodeGui;
@@ -42,18 +46,17 @@ public class AdminGameService implements GameServiceAPI {
     private final HashMap<UUID, Report> playerReportCache; // Игроки с репортом в памяти;
     private final HashMap<UUID, UUID> reconCache; // Администраторы в рекона;
 
-    private final SecretCodeManager secretCodeManager;
 
     private final FileConfiguration cfg;
     private final ReportGUI reportGUI;
     private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
-    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, HashSet<UUID> thanksPlayers, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, SecretCodeManager secretCodeManager, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
-        this.secretCodeManager = secretCodeManager;
+    public AdminGameService(ReportSystemRepository reportRepository, AdminStaffRepository staffRepository, AdminGameRepository gameRepository, HashSet<UUID> thanksPlayers, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
         this.playerReportCache = playerReportCache;
         this.rewatchTasksCache = rewatchTasksCache;
         this.reportRepository = reportRepository;
+        this.staffRepository = staffRepository;
         this.gameRepository = gameRepository;
         this.thanksPlayers = thanksPlayers;
         this.secretCodeGui = secretCodeGui;
@@ -260,15 +263,18 @@ public class AdminGameService implements GameServiceAPI {
         Player target = Bukkit.getPlayer(targetID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (secretCodeManager.isBlocked(targetID) || secretCodeManager.isBlocked(adminID)) {
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
+        boolean isBlockedTarget = staffRepository.checkAdminABan(targetID);
+
+        if (isBlockedAdmin || isBlockedTarget) {
             sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminBlockInternalError");
             return;
         }
 
         Bukkit.getLogger().warning("adminBlockAccess! / 1.2"); // ТЕСТЕР
 
-        secretCodeManager.addBlockAdmin(targetID);
-        secretCodeManager.addBlockAdmin(adminID);
+        staffRepository.setAdminABan(targetID, adminID); // Таргету - блокирует доступ админ, потому что он использовал /aban, а вот самому админу, блокирует доступ СИСТЕМА, потому что это ТОЖЕ элемент защиты.
+        staffRepository.setAdminABan(adminID, consoleID);
 
         sender.sendPath(admin, "Messages.successfulBlocked",
                 "%target", target.getName());

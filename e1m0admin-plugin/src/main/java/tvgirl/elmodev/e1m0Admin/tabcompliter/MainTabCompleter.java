@@ -38,6 +38,14 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
+                case "ablist":
+                case "abdlist":
+                    if (strings.length == 1) {
+                        getOnlineAdmins(tab);
+                    }
+
+                    break;
+
                 case "rep":
                 case "reps":
                 case "arep":

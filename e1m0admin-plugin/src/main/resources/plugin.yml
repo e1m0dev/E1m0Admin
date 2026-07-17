@@ -35,7 +35,15 @@ commands:
     description: "Войти в систему"
     aliases: [ adminaccess, acc ]
 
-  ablock:
+  ablist:
+    description: "Занести в ЧС администрации."
+    aliases: [ ablocklist, addblist ]
+
+  abdlist:
+    description: "Вынести из ЧС администрации."
+    aliases: [ adeleteblacklist, adellist ]
+
+  aban:
     description: "Заблокировать доступ администратору при сливе"
     aliases: [ aban ]
 

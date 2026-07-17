@@ -182,7 +182,7 @@ public final class E1m0Admin extends JavaPlugin {
 
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
         staffService = new AdminsStaffService(secretCodeRepository, sessionManager, staffRepository, systemRepository, secretCodeManager, getConfig(), sender);
-        gameService = new AdminGameService(reportSystemRepository, gameRepository, thanksPlayersCache, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, secretCodeManager, reportGui, sender, this);
+        gameService = new AdminGameService(reportSystemRepository, staffRepository, gameRepository, thanksPlayersCache, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, reportGui, sender, this);
 
         // 🌐 | GUI
         secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig(), sender, color);
@@ -195,7 +195,7 @@ public final class E1m0Admin extends JavaPlugin {
         lManager.registerEvents(new AdminSetListener(sender, getConfig(), systemService), this);
         lManager.registerEvents(new AdminDelListener(sender, getConfig(), systemService), this);
 
-        lManager.registerEvents(new AdminComplimentListener(sender, getConfig()), this);
+        lManager.registerEvents(new AdminComplimentListener(sender, getConfig(), systemService), this);
 
         // 🗣️ | Listeners - Bukkit
         lManager.registerEvents(new JoinListener(sender, getConfig(), sessionManager), this);
@@ -230,12 +230,15 @@ public final class E1m0Admin extends JavaPlugin {
 
         // - | Staff
         getCommand("adown").setExecutor(new AdminDownCommand(sender, getConfig(), staffService, permissionManager, systemRepository));
+        getCommand("ablist").setExecutor(new AdminAddBlackListCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("abonusall").setExecutor(new AdminBonusAllCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("asecret").setExecutor(new AdminSetSecretCode(sender, getConfig(), staffService, permissionManager));
         getCommand("abonus").setExecutor(new AdminBonusCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("adel").setExecutor(new AdminDeleteCommand(sender, getConfig(), staffService, permissionManager));
+        getCommand("abdlist").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("aset").setExecutor(new AdminSetCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("aup").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
+
 
         // - | Console
         getCommand("cup").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
@@ -270,6 +273,8 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("abonusall").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("setsecret").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("asecret").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("abdlist").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("ablist").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("abonus").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("adown").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("adel").setTabCompleter(new MainTabCompleter(getConfig()));
