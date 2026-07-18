@@ -1,6 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.dao;
 
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface BlockDAO {
@@ -8,31 +9,31 @@ public interface BlockDAO {
     /* ABAN | 🧑‍🔬 */
     @SqlUpdate("""
                 INSERT INTO e1admin_aban
-                            (uuid, adminID, staffID, adminNick, staffNick, IP)
+                            (uuid, adminID, suspectID, adminNick, suspectNick, IP)
                 VALUES
-                            (:uuid, :adminID, :staffID, :adminNick, :staffNick, :IP
+                            (:uuid, :adminID, :suspectID, :adminNick, :suspectNick, :IP)
             """)
     void insertToABan(
             @Bind("uuid") String uuid,
             @Bind("adminID") String adminID,
-            @Bind("staffID") String staffID,
+            @Bind("suspectID") String suspectID,
             @Bind("adminNick") String adminNick,
-            @Bind("staffNick") String staffNick,
+            @Bind("suspectNick") String suspectNick,
             @Bind("IP") String IP
     );
 
     @SqlUpdate("""
-                DELETE FROM e1admin_aban WHERE uuid = :adminID
+                DELETE FROM e1admin_aban WHERE suspectID = :suspectID
             """)
     void delAdminABan(
-            @Bind("adminID") String adminID
+            @Bind("suspectID") String suspectID
     );
 
-    @SqlUpdate("""
-                DELETE FROM e1admin_aban WHERE uuid = :adminID
+    @SqlQuery("""
+                SELECT suspectID FROM e1admin_aban WHERE suspectID = :suspectID
             """)
-    boolean checkInABan(
-            @Bind("adminID") String adminID
+    String checkInABan(
+            @Bind("suspectID") String suspectID
     );
 
     /* BLOCKLIST | 🧑‍🔬 */
@@ -41,29 +42,29 @@ public interface BlockDAO {
                 INSERT INTO e1admin_block
                             (uuid, adminID, staffID, adminNick, staffNick, reason, IP)
                 VALUES
-                            (:uuid, :adminID, :staffID, :adminNick, :staffNick, :reason, :IP
+                            (:uuid, :adminID, :staffID, :adminNick, :staffNick, :reason, :IP)
             """)
     void insertToBlackList(
             @Bind("uuid") String uuid,
             @Bind("adminID") String adminID,
-            @Bind("staffID") String staffID,
+            @Bind("staffID") String suspectID,
             @Bind("adminNick") String adminNick,
-            @Bind("staffNick") String staffNick,
+            @Bind("staffNick") String suspectNick,
             @Bind("reason") String reason,
             @Bind("IP") String IP
     );
 
     @SqlUpdate("""
-                DELETE FROM e1admin_block WHERE uuid = :adminID
+                DELETE FROM e1admin_block WHERE adminID = :adminID
             """)
     void delAdminBlockList(
             @Bind("adminID") String adminID
     );
 
-    @SqlUpdate("""
-                DELETE FROM e1admin_block WHERE uuid = :adminID
+    @SqlQuery("""
+                SELECT adminID FROM e1admin_block WHERE adminID = :adminID
             """)
-    boolean checkInBlockList(
+    String checkInBlockList(
             @Bind("adminID") String adminID
     );
 }

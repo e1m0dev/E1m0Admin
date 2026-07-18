@@ -1,139 +1,146 @@
-# Мои дорогие сообщения, Вы - можете их разветвлять как в примере с несколькими сообщениями например как: teleportToAZ.
-# Так же - Вы можете полностью менять их структуру и выделять сообщения не одним пробелом а больше, здесь - Ваше место фантазии.
+# Dear server owners, you can split messages into multiple lines just like in the teleportToAZ example.
+# You are also free to completely redesign the message layout, add extra spacing, and customize everything however you like.
+# This configuration is your playground for creativity.
 Messages:
   teleportToAZ:
-    - "&aУспех! &7| &aУспешная операция"
-    - "&7Вы &aуспешно &7были телепортированы в &aадмин-зону&7!"
-    - "&aУспех! &7| &aУспешная операция"
+    - "&aSuccess! &7| &aOperation completed successfully"
+    - "&7You have &asuccessfully &7been teleported to the &aAdmin Zone&7!"
+    - "&aSuccess! &7| &aOperation completed successfully"
 
-  inviseOn: "&6Вы включили невидимку!"
-  inviseOff: "&7Вы отключили невидимку!"
+  inviseOn: "&6You have enabled vanish mode!"
+  inviseOff: "&7You have disabled vanish mode!"
 
-  secretCodeAccess: "&aВы — успешно авторизовались под своим именем в системе администрации!"
+  secretCodeAccess: "&aYou have successfully authenticated in the administration system under your account!"
 
-  reportTake: "&aВы успешно взяли репорт игрока&7: %player. Содержимое: %content"
-  reportMessagePlayerFast: "&aАдминистратор &6%admin &a— успешно взял ваш репорт в работу!"
+  reportTake: "&aYou have successfully taken player &7%player&a's report. Content: %content"
+  reportMessagePlayerFast: "&aAdministrator &6%admin &ahas successfully taken your report!"
 
-  adminBonusAll: "&7Администратор %staff выдал всем бонус: %bonus $!"
-  adminBonus: "&7Администратор %staff выдал Вам бонус: %bonus $! Сообщение: %message"
-  adminPay: "&7Вы получили админ зарплату в виде: %salary $!"
+  adminBonusAll: "&7Administrator %staff has given everyone a bonus: %bonus $!"
+  adminBonus: "&7Administrator %staff has given you a bonus of: %bonus $! Message: %message"
+  adminPay: "&7You have received your administrator salary: %salary $!"
 
-  successfulSetAdmin: "&aПоздравляем! Вы — были успешно назначены на пост администратора %level уровня, &6администратором %staff"
-  successfulSetStaff: "&6%admin &a— был успешно назначен на пост администратора &6%level &aуровня"
+  successfulSetAdmin: "&aCongratulations! You have successfully been appointed as a Level %level Administrator by &6%staff"
+  successfulSetStaff: "&6%admin &ahas successfully been appointed as a Level &6%level &aAdministrator"
 
-  successfulUpStaff: "&aВы успешно повысили администратора &6%admin"
-  successfulUpAdmin: "&aВы успешно были повышены администратором &6%staff"
+  successfulUpStaff: "&aYou have successfully promoted administrator &6%admin"
+  successfulUpAdmin: "&aYou have successfully been promoted by administrator &6%staff"
 
-  successfulDownStaff: "&aВы успешно понизили администратора &6%admin"
-  successfulDownAdmin: "&aВы были понижены администратором &6%staff.."
+  successfulDownStaff: "&aYou have successfully demoted administrator &6%admin"
+  successfulDownAdmin: "&aYou have been demoted by administrator &6%staff.."
 
-  successfulBlocked: "&aВы успешно заблокировали доступ администратору &6%target"
+  successfulBlocked: "&aYou have successfully blocked administrator &6%target&a's access"
 
-  changeCodeAdmin: "❗ &cВнимание! Вам сменили игровой код администратора! &6Тот кто сменил: %staff. &aНовый код: %code. &b&cНе потеряйте его!"
-  changeCodeStaff: "❗ &cВнимание! Вы сменили игровой код администратора %admin. &6Его новый код: %code!"
+  changeCodeAdmin: "❗ &cWarning! Your administrator secret code has been changed! &6Changed by: %staff. &aNew code: %code. &b&cDo not lose it!"
+  changeCodeStaff: "❗ &cWarning! You have changed administrator %admin's secret code. &6New code: %code!"
 
-  reportSended: "&aРепорт %report был успешно отправлен!"
-  reportAdminResponse: "&aВам ответил администратор &6%admin, &aс ответом: &6%response"
+  reportSended: "&aReport %report has been successfully submitted!"
+  reportAdminResponse: "&aAdministrator &6%admin &areplied to you: &6%response"
 
-  deleteAdminByStaff: "&cВы были сняты администратором &6%staff!"
-  successfulDeleteAdmin: "&aВы успешно сняли администратора &6%admin!"
+  deleteAdminByStaff: "&cYou have been removed from the administration team by &6%staff!"
+  successfulDeleteAdmin: "&aYou have successfully removed administrator &6%admin!"
 
-  unbannedSystem: "&aАдминистратор &6%staff &aуспешно вернул Вам доступ к системам, старайтесь не попадать под систему сливов."
-  successfulUnbannedSystem: "&aАдминистратору &6%admin &aуспешно разблокированы возможности 😛."
+  unbannedSystem: "&aAdministrator &6%staff &ahas successfully restored your access to the administration system. Please avoid triggering the leak protection system again."
+  successfulUnbannedSystem: "&aAdministrator &6%admin &ahas been successfully unblocked 😛."
 
-  bannedSystem: "&aАдминистратор &6%staff &cзаблокировал Вам админ-доступ!."
-  successfulBannedSystem: "&aАдминистратору &6%admin &aуспешно заблокированы возможности 😛."
+  bannedSystem: "&aAdministrator &6%staff &chas blocked your administrator access!."
+  successfulBannedSystem: "&aAdministrator &6%admin &ahas been successfully blocked 😛."
 
-  newCompliment: "&b&aОго! &6Вам — &aбыл отправлен комплимент за хорошую работу от игрока: %player. Кол-во Ваших «Сбер-Cпасибо» сейчас - &6%compliments &a🤭"
-  successfulSendCompliment: "&aПохвала администратору — была успешно отправлена, спасибо, за то что следите за качеством администрации!"
+  newCompliment: "&b&aWow! &6You &ahave received a compliment for your excellent work from player: %player. Your current amount of «Admin Thanks» is &6%compliments &a🤭"
+  successfulSendCompliment: "&aYour compliment has been successfully sent to the administrator. Thank you for helping us maintain the quality of the administration!"
 
   # CONSOLE ACTIONS
-  successfulAdminSetSecret: "&fЛОГ &7| &aАдминистратору успешно выставлен секретный код!"
-  successfulAdminDelete: "&fЛОГ &7| &aАдминистратор успешно удален!"
-  successfulAdminDown: "&fЛОГ &7| &aАдминистратор успешно понижен!"
-  successfulAdminSet: "&fЛОГ &7| &aАдминистратор успешно поставлен!"
-  successfulAdminUp: "&fЛОГ &7| &aАдминистратор успешно повышен!"
+  successfulAdminSetSecret: "&fLOG &7| &aAdministrator secret code has been successfully set!"
+  successfulAdminDelete: "&fLOG &7| &aAdministrator has been successfully removed!"
+  successfulAdminDown: "&fLOG &7| &aAdministrator has been successfully demoted!"
+  successfulAdminSet: "&fLOG &7| &aAdministrator has been successfully appointed!"
+  successfulAdminUp: "&fLOG &7| &aAdministrator has been successfully promoted!"
 
   Errors:
-    notCode: "&cВам еще не установили приватный код!"
-    notAdmin: "&cЭтот игрок - не является администратором..."
-    nullPlayer: "&cТакого игрока не существует..."
-    lengthError: "&cНеправильное использование команды!"
-    consoleError: "Консоли нельзя.."
-    adminNotBanned: "&cАдминистратор &6&admin &cне был забанен системой.."
+    notCode: "&cYou have not been assigned a secret code yet!"
+    notAdmin: "&cThis player is not an administrator..."
+    nullPlayer: "&cThat player does not exist..."
+    lengthError: "&cIncorrect command usage!"
+    consoleError: "This command cannot be executed from the console."
+    adminNotBanned: "&cAdministrator &6%admin &chas not been blocked by the system."
 
-    permissionError: "&cУ вас нет доступа к данной команде!"
+    permissionError: "&cYou do not have permission to use this command!"
 
-    secretCodeNotInput: "&6Внимание! &7| &cВы еще не получили права администратора своего уровня, просим Вас подтвердите статус администратора: &a/aaccess!"
-    secretCodeIsWrong: "&cВы ввели неправильный код! Попробуйте снова!"
+    secretCodeNotInput: "&6Warning! &7| &cYou have not yet verified your administrator status. Please confirm your administrator access using: &a/aaccess!"
+    secretCodeIsWrong: "&cThe secret code you entered is incorrect! Please try again."
 
-    reportSizeIsMax: "&cИзвините! Все администраторы сейчас перегружены репортами, попробуйте пожалуйста, позже!"
-    reportLengthError: "&cМинимальный набор репорта составляет &6%len &cсимволов!"
+    reportSizeIsMax: "&cSorry! All administrators are currently busy handling reports. Please try again later!"
+    reportLengthError: "&cA report must contain at least &6%len &ccharacters!"
 
-    invalidSkullMethod: "Неизвестный метод указана в отделе GUI SecretCode.."
-    configSkullGuiError: "Внимание консоли! У Вас не обьявлена переменная в конфиге под названием 'skull_owner' но указана 'PLAYER_HEAD' посмотрите новые версии конфига!"
+    invalidSkullMethod: "Unknown skull method specified in the SecretCode GUI section."
+    configSkullGuiError: "Console warning! The 'skull_owner' variable is missing from your configuration while 'PLAYER_HEAD' is being used. Please check the latest version of the config!"
 
-    youAdminAccessIsBlocked: "&cУ вас заблокирован админ-доступ по подозрению в сливе!" # | https://cdn2.botanichka.ru/wp-content/uploads/2011/07/plum-4-01.jpg
+    youAdminAccessIsBlocked: "&cYour administrator access has been blocked due to suspected account compromise!"
 
-    cooldownErrorCompliment: "&cОшибка! Вы — уже отправляли похвалу администратору, подождите немного чтобы отправить следующую."
+    cooldownErrorCompliment: "&cError! You have already sent a compliment to this administrator. Please wait before sending another one."
 
     # STAFF
-    staffPermissionError: "&cУ вас нет печати: &6Старшего администратора!"
+    staffPermissionError: "&cYou do not have the &6Senior Administrator &cpermission!"
 
-    setAdminWeightIsNull: "&cВыдаваемый ранг — должен быть больше 0!"
-    setAdminWeightNotFound: "&cВведенный ранг — НЕ найден.."
+    setAdminWeightIsNull: "&cThe administrator level must be greater than 0!"
+    setAdminWeightNotFound: "&cThe specified administrator level was not found."
 
-    downAdminLevelError: "&cАдминистратор уже находится на минимальном уровне!"
-    downAdminWeightError: "&cВы — не можете понизить данного администратора!"
+    downAdminLevelError: "&cThis administrator is already at the lowest level!"
+    downAdminWeightError: "&cYou cannot demote this administrator!"
 
-    delAdminWeightError: "&cВы — не можете уволить данного администратора!"
+    delAdminWeightError: "&cYou cannot remove this administrator!"
 
-    upAdminWeightError: "&cВы — не можете повысить данного администратора!"
-    upAdminLevelError: "&cАдминистратор уже находится на максимальном уровне!"
-    upAdminSelfError: "&cВы не можете повысить себя!"
+    upAdminWeightError: "&cYou cannot promote this administrator!"
+    upAdminLevelError: "&cThis administrator is already at the highest level!"
+    upAdminSelfError: "&cYou cannot promote yourself!"
 
-    setSecretAdminWeightError: "&cВы — не можете повысить данного администратора!"
-    manyWrongAttemptsSecret: "&cВам была выдана блокировка админ-прав, из-за того что Вы слишком много не правильно вводили код!"
-    secretCodeHasInputted: "&cВы уже вводили секретный пин!"
-    setAdminCodeIsWrong: "&cВы не правильно ввели новый код для администратора, &6пример кода: 7777"
+    setSecretAdminWeightError: "&cYou cannot change the secret code of this administrator!"
+    manyWrongAttemptsSecret: "&cYour administrator permissions have been blocked because you entered the secret code incorrectly too many times!"
+    secretCodeHasInputted: "&cYou have already entered your secret PIN!"
+    setAdminCodeIsWrong: "&cThe new administrator code is invalid. &6Example: 7777"
 
-    reoffNullError: "&cВы не за кем не следите и не можете отключится!"
+    selfRewatchError: "&cYou cannot watch to yourself!"
+    reoffNullError: "&cYou are not monitoring anyone and therefore cannot stop monitoring!"
 
-    playerHaveReport: "&cУ вас уже есть репорт!"
-    noReportsInMemory: "&cДоступных репортов сейчас нет!"
-    adminSendReportToAdmins: "&cВы же администратор.. Как можно отправлять репорты &6самому себе?"
+    playerHaveReport: "&cYou already have an active report!"
+    noReportsInMemory: "&cThere are currently no available reports!"
+    adminSendReportToAdmins: "&cYou're an administrator... Why would you send a report to yourself?"
 
-    adminBlockInternalError: "&cВнутренняя ошибка при блокировке! Администратор уже находится в блоке!"
+    adminBlockInternalError: "&cInternal error while blocking administrator access! This administrator has already been blocked."
 
-    setAdminInBlackList: "&cОшибка! Администратор которого Вы указали — находится в Черном Списке Администрации (ЧСА)"
-    blacklistWeightError: "&cВаш вес администратора — слишком мал чтобы занести данного администратора в черный список!"
+    setAdminInBlackList: "&cError! The administrator you specified is already listed in the Administration Blacklist (ABL)."
+    adminNotInBlackList: "&cError! The administrator noy is already listed in the Administration Blacklist (ABL)."
+    blacklistWeightError: "&cYour administrator level is too low to blacklist this administrator!"
 
     # CONSOLE ACTIONS
-    adminBanned: "&fЛОГ &7| &cУ Администратора указанного в команде — уже весит блокировка!"
+    adminBanned: "&fLOG &7| &cThe specified administrator has already been blocked!"
 
-    leakSoundIsNotFound: "&сОшибка! &7| &cОшибка в конфиге в строке: LeakSound. Такого звука — не существует в Вашей версии Minecraft. Пример звука: ENTITY_ENDER_DRAGON_DEATH."
+    leakSoundIsNotFound: "&cError! &7| &cConfiguration error at 'LeakSound'. This sound does not exist in your current Minecraft version. Example: ENTITY_ENDER_DRAGON_DEATH."
 
-    upAdminNotAdminError: "&fЛОГ &7| &cАдминистратора указанного в команде — не существует в базе."
+    upAdminNotAdminError: "&fLOG &7| &cThe specified administrator does not exist in the database."
 
-    setAdminIsAdminError: "&fЛОГ &7| &cЧеловек уже есть в базе данных!"
-    setAdminWeightError: "&fЛОГ &7| &cАдминистратор НЕ поставлен — Ошибка weight!"
+    setAdminIsAdminError: "&fLOG &7| &cThis player is already registered in the database!"
+    setAdminWeightError: "&fLOG &7| &cAdministrator was NOT appointed — invalid administrator level!"
 
-    successfulRemoveBlockList: "&aВы успешно вынесли игрока %admin из черного списка администрации (ЧСА)"
-    successfulAddBlockList: "&aВы успешно внесли админа %admin, в черный список администрации (ЧСА)"
-    adminInBlackList: "&cОшибка! Администратор уже в черном списке! | (ЧСА)"
+    successfulRemoveBlockList: "&aYou have successfully removed administrator %admin from the Administration Blacklist (ABL)."
+    successfulAddBlockList: "&aYou have successfully added administrator %admin to the Administration Blacklist (ABL)."
+    adminInBlackList: "&cError! This administrator is already blacklisted! | (ABL)"
 
   ConsoleLogs:
-    aHelpLog: "&fЛОГ &7| &7Администратор &6%admin пробил команду /ahelp 🗺️."
-    accessLog: "&fЛОГ &7| &7Администратор &6%admin успешно авторизовался в системе ✅."
-    inviseLog: "&fЛОГ &7| &7Администратор &6%admin зашел в невидимку 👻.."
-    reportLog: "&fЛОГ &7| &7Администратор &6%admin успешно взялся за репорты с формой %response 🧑‍💻"
-    ABlockLog: "&fЛОГ &7| &4⚠️ ВАЖНО: АДМИНИСТРАТОР &6%admin ИСПОЛЬЗОВАЛ АДМИНСКИЙ БЛОК НА АДМИНИСТРАТОРА %target! ⚠️."
-    rewatchLog: "&fЛОГ &7| &7Администратор &6%admin зашел в слежку за игроком %player 🎥 — 💺🛏️..." # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfj3K8zuo7Zp77tu-YACPa7PGuxYOasedpEVRPj1WEVpRcKpFKhEzVBVY&s=10
+    aHelpLog: "&fLOG &7| &7Administrator &6%admin &7used the /ahelp command 🗺️."
+    accessLog: "&fLOG &7| &7Administrator &6%admin &7has successfully authenticated in the administration system ✅."
+    inviseLog: "&fLOG &7| &7Administrator &6%admin &7enabled vanish mode 👻."
+    reportLog: "&fLOG &7| &7Administrator &6%admin &7has taken a report with response type: %response 🧑‍💻"
+    ABlockLog: "&fLOG &7| &4⚠️ IMPORTANT: ADMINISTRATOR &6%admin &4USED THE ADMIN BLOCK ON ADMINISTRATOR &6%target&4! ⚠️"
+    rewatchLog: "&fLOG &7| &7Administrator &6%admin &7started monitoring player &6%player &7🎥 — 💺🛏️..."
 
     Leak:
-      wrongSecret: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался ввести код максимальное кол-во раз и был заблокирован ❗"
-      upAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался повысить администратора %admin который выше его по рангу ❗"
-      delAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался снять администратора %admin который выше его по рангу ❗"
-      blacklistWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался занести администратора %admin в черный список, но был ниже его по рангу! ❗"
-      downAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался понизить администратора %admin который выше его по рангу ❗"
-      setSecretAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался поставить секретный код администратору %admin который выше его по рангу ❗"
+      wrongSecret:
+        - "❗"
+        - "&4SECURITY ALERT &7| &7Administrator &6%leak &7entered an incorrect secret code too many times and has been automatically blocked ❗"
+        - "❗"
+
+      upAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to promote administrator &6%admin &7who has a higher rank ❗"
+      delAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to remove administrator &6%admin &7who has a higher rank ❗"
+      blacklistWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to blacklist administrator &6%admin &7despite having a lower rank ❗"
+      downAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to demote administrator &6%admin &7who has a higher rank ❗"
+      setSecretAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to change the secret code of administrator &6%admin &7who has a higher rank ❗"

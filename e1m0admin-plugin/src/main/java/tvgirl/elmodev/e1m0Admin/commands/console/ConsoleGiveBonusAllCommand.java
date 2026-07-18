@@ -30,7 +30,7 @@ public class ConsoleGiveBonusAllCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
         if (strings.length < 1) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 
@@ -39,12 +39,12 @@ public class ConsoleGiveBonusAllCommand implements CommandExecutor {
         int sum = Integer.parseInt(strings[0]);
 
         if (message.isEmpty()) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 
         if (sum < 0) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 

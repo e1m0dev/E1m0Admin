@@ -63,9 +63,9 @@ public class DatabaseManager {
                     CREATE TABLE IF NOT EXISTS e1admin_aban (
                         uuid VARCHAR(36) NOT NULL,
                         adminID VARCHAR(36),
-                        staffID VARCHAR(36) NOT NULL,
+                        suspectID VARCHAR(36) NOT NULL,
                         adminNick VARCHAR(24),
-                        staffNick VARCHAR(24) NOT NULL,
+                        suspectNick VARCHAR(24) NOT NULL,
                         IP VARCHAR(32) NOT NULL,
                         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     

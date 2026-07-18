@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.checkerframework.checker.units.qual.C;
 import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0admin.api.gui.SecretCodeGuiAPI;
@@ -101,9 +102,10 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
             // Достаю все нужное из конфига по кастом ключам.
             if (materialString.equalsIgnoreCase("PLAYER_HEAD")) {
-
                 String method = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".method");
+
                 if (method.equalsIgnoreCase("base64")) {
+
                     // | Если это base64
                     SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
                     String configBase64 = cfg.getString("Admin.GUI.SecretGUI.items." + s + ".base64");

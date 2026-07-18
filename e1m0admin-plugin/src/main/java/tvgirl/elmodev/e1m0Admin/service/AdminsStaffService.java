@@ -27,7 +27,6 @@ public class AdminsStaffService implements StaffServiceAPI {
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
-
     public AdminsStaffService(SecretCodeRepository secretCodeRepository, AdminSessionManager adminSessionManager, AdminStaffRepository staffRepository, AdminSystemRepository systemRepository, SecretCodeManager secretCodeManager, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
         this.adminSessionManager = adminSessionManager;
@@ -344,14 +343,25 @@ public class AdminsStaffService implements StaffServiceAPI {
 
     @Override
     public void adminUnBanSystem(UUID adminID, UUID staffID) {
+        boolean isBlockedStaff = staffRepository.checkAdminABan(staffID);
         boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
+        Bukkit.getLogger().warning("blockStaff " + isBlockedStaff);
+        Bukkit.getLogger().warning("blockStaff " + isBlockedAdmin);
+
+        if (isBlockedStaff) {
+            sender.sendPath(staff, "Messages.Errors.youAdminAccessIsBlocked");
+            return;
+        }
+
         if (isBlockedAdmin) {
             staffRepository.delAdminABan(adminID);
         } else {
-            sender.sendPath(staff, "Messages.Errors.adminNotBanned");
+            sender.sendPath(staff, "Messages.Errors.adminNotBanned",
+                    "%admin", admin.getName());
+            return;
         }
 
         sender.sendPath(admin, "Messages.unbannedSystem",
@@ -405,10 +415,9 @@ public class AdminsStaffService implements StaffServiceAPI {
         Player admin = Bukkit.getPlayer(adminID);
         Player staff = Bukkit.getPlayer(staffID);
 
-        if (inBlockList) {
-            sender.sendPath(staff, "Messages.Errors.adminInBlackList",
+        if (!inBlockList) {
+            sender.sendPath(staff, "Messages.Errors.adminNotInBlackList",
                     "%admin", admin.getName());
-
             return;
         }
 

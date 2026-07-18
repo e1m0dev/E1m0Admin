@@ -21,7 +21,7 @@ public class AdminDelListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onAdminRegistered(AdminDelEvent e) {
+    public void onAdminDeleted(AdminDelEvent e) {
         systemService.autoDelAdmin(e.getAdminID(), e.getStaffID());
     }
 }

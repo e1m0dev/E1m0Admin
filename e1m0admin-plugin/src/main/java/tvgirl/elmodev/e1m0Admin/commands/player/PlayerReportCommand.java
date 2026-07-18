@@ -30,7 +30,7 @@ public class PlayerReportCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
@@ -79,9 +79,6 @@ public class PlayerReportCommand implements CommandExecutor {
         }
 
         if(command.getName().toLowerCase().equalsIgnoreCase("report")) {
-            Bukkit.getLogger().info("RepMessage: " + reportMessage);
-            Bukkit.getLogger().info("Минималка: " + minLength);
-
             if(reportMessage.length() < minLength) {
                 sender.sendPath(player, "Messages.Errors.reportLengthError",
                         "%len", String.valueOf(minLength));

@@ -137,9 +137,12 @@ public class AdminSystemService implements SystemServiceAPI {
 
         // 2 - | Инициализация.
         Player admin = Bukkit.getPlayer(adminID);
-        Player staff = Bukkit.getPlayer(staffID);
+        Player leak = Bukkit.getPlayer(staffID);
 
-        // 3 - | Проверки и подготовка.
+        // 3 - | Первичное исполнение.
+        staffRepository.setAdminABan(staffID, adminID); // StaffID -> It's leak, adminID - higher rank
+
+        // 4 - | Проверки и подготовка.
         String cfgSound = cfg.getString("Admin.Leak.LeakSound");
         Sound sound = Sound.valueOf(cfgSound);
 
@@ -157,7 +160,7 @@ public class AdminSystemService implements SystemServiceAPI {
 
         leakActions.stream()
                 .map(str -> str
-                        .replace("%leak", staff.getName()
+                        .replace("%leak", leak.getName()
                                 .replace("%admin", admin.getName())))
 
                 .forEach(perm -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), perm));
@@ -182,11 +185,9 @@ public class AdminSystemService implements SystemServiceAPI {
     @Override
     public void autoSetAdmin(UUID adminID, UUID staffID, int weight) {
         // 1 - | Проверки.
+        Bukkit.getLogger().info("УСПЕШНО ДОШЕЛ СЕРВИС"); // ТЕСТЕР
         boolean permissionIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetPermissions.enable");
         if (!permissionIsEnable) return;
-
-        boolean skinsIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetSkins.enable");
-        if (!skinsIsEnable) return;
 
         // 2 - | Инициализация.
         Player admin = Bukkit.getPlayer(adminID);
@@ -197,7 +198,15 @@ public class AdminSystemService implements SystemServiceAPI {
 
         /* ❗ | PERMISSIONS */
         for (String s : permissionSections.getKeys(false)) {
-            int cfgWeight = cfg.getInt("Admin.AutoSetAdmin.autoSetPermissions.permissionInWeight." + s);
+            Bukkit.getLogger().warning("Keys cfg " + s); // ТЕСТЕР
+            int cfgWeight = Integer.parseInt(s);
+
+            Bukkit.getLogger().warning("Weight cfg " + cfgWeight); // ТЕСТЕР
+            Bukkit.getLogger().warning("Weight " + weight); // ТЕСТЕР
+            if (weight != cfgWeight) continue;
+
+            Bukkit.getLogger().warning("Прошел"); // ТЕСТЕР
+
             if (weight != cfgWeight) continue;
 
             // 3 - | Проверки и подготовка.
@@ -211,9 +220,18 @@ public class AdminSystemService implements SystemServiceAPI {
         }
 
         /* ❗ | SKINS */
+        boolean skinsIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetSkins.enable");
+        if (!skinsIsEnable) return;
+
         for (String s : permissionSections.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight." + s);
+
+            Bukkit.getLogger().warning("Weight cfg " + cfgWeight); // ТЕСТЕР
+            Bukkit.getLogger().warning("Weight " + weight); // ТЕСТЕР
+
             if (weight != cfgWeight) continue;
+
+            Bukkit.getLogger().warning("Прошел"); // ТЕСТЕР
 
             // 3 - | Проверки и подготовка.
             List<String> skins = cfg.getStringList("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight." + s + ".skins");
@@ -231,9 +249,6 @@ public class AdminSystemService implements SystemServiceAPI {
         // 1 - | Проверки.
         boolean permissionIsEnable = cfg.getBoolean("Admin.AutoDelAdmin.autoDelPermissions.enable");
         if (!permissionIsEnable) return;
-
-        boolean skinsIsEnable = cfg.getBoolean("Admin.AutoDelAdmin.autoDelSkins.enable");
-        if (!skinsIsEnable) return;
 
         // 2 - | Инициализация.
         Player admin = Bukkit.getPlayer(adminID);
@@ -255,6 +270,10 @@ public class AdminSystemService implements SystemServiceAPI {
         }
 
         /* ❗ | SKINS */
+
+        boolean skinsIsEnable = cfg.getBoolean("Admin.AutoDelAdmin.autoDelSkins.enable");
+        if (!skinsIsEnable) return;
+
         for (String s : permissionSections.getKeys(false)) {
             // 3 - | Подготовка.
             List<String> skins = cfg.getStringList("Admin.AutoDelAdmin.autoDelSkins.skinsInWeight." + s + ".skins");
@@ -269,48 +288,38 @@ public class AdminSystemService implements SystemServiceAPI {
 
     @Override
     public void handleReportAccept(UUID adminID, UUID reportID) {
+        Bukkit.getLogger().warning("ДОШЕЛ ДО СЕРВИСА" + reportID); // ТЕСТЕР
 
         for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
+            if (reportKey.getValue().getUuid() != reportID) continue;
+            Report report = reportKey.getValue();
 
-            if (reportKey.getValue().getUuid() == reportID) {
-                Report report = reportKey.getValue();
+            Player admin = Bukkit.getPlayer(adminID);
+            Player player = Bukkit.getPlayer(report.getPlayerID());
+            String response = cfg.getString("Admin.Report.fastTakeReportMessage");
 
-                Player admin = Bukkit.getPlayer(adminID);
-                Player player = Bukkit.getPlayer(report.getPlayerID());
-                String response = cfg.getString("Admin.Report.fastTakeReportMessage");
+            Report newReport = new Report(
+                    report.getUuid(),
+                    adminID,
+                    report.getPlayerID(),
+                    admin.getName(),
+                    player.getName(),
+                    report.getReport(),
+                    response,
+                    report.getStatus(),
+                    report.getCreatedAt()
+            );
 
-                Report newReport = new Report(
-                        report.getUuid(),
-                        adminID,
-                        report.getPlayerID(),
-                        admin.getName(),
-                        player.getName(),
-                        report.getReport(),
-                        response,
-                        report.getStatus(),
-                        report.getCreatedAt()
-                );
+            sender.sendPath(admin, "Messages.reportTake",
+                    "%content", report.getReport(),
+                    "%player", report.getPlayerNick());
 
-                sender.sendPath(admin, "Messages.reportTake",
-                        "%content", report.getReport(),
-                        "%player", report.getPlayerNick());
+            sender.sendPath(player, "Messages.reportMessagePlayerFast",
+                    "%content", report.getReport(),
+                    "%admin", admin.getName());
 
-                sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast"),
-                        "%content", report.getReport(),
-                        "%admin", admin.getName());
-
-                reportRepository.gameReportSend(newReport);
-                playerReportCache.remove(report.getPlayerID());
-            } else {
-                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!"); // ЛОГ.
-
-                for (Map.Entry<UUID, Report> reportKeyOff : playerReportCache.entrySet()) {
-                    if (reportKey.getValue().getUuid() == reportID) {
-                        Report report = reportKey.getValue();
-                        playerReportCache.remove(report.getPlayerID());
-                    }
-                }
-            }
+            reportRepository.gameReportSend(newReport);
+            playerReportCache.remove(report.getPlayerID());
         }
     }
 }

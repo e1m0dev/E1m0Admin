@@ -33,11 +33,12 @@ public class ReportAcceptController implements CommandExecutor {
         }
 
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("arepaccept")) {
+            Bukkit.getLogger().warning("ДОШЕЛ ДО СЕРВИСА"); // ТЕСТЕР
             service.handleReportAccept(admin.getUniqueId(), id);
         }
 

@@ -13,12 +13,12 @@ Settings:
   mainLanguage: "ru_ru.yml"
 
   consoleLogActive: true      # Сообщения | Будут ли логироватся действия администратора?
-  consolePrefix: "CONSOLE"    # Сообщения | Как будет отображатся префикс консоли? Terminal, E1m0, Console, Бог - Вам решать.
-  prefixEnable: true          # Сообщения | Будет ли показыватся префикс? Пример: E1m0-Admin - Внимание | У Вас - нет на это права!
+  consolePrefix: "CONSOLE"    # Сообщения | Как будет отображаться префикс консоли? Terminal, E1m0, Console, Бог - Вам решать.
+  prefixEnable: true          # Сообщения | Будет ли показываться префикс? Пример: E1m0-Admin - Внимание | У Вас - нет на это права!
   prefix: "&cE1m0-Admin |"    # Сообщения | Префикс при системных сообщениях. Пример: ADM | У вас нет на это прав!
   world: "world"              # Мир       | В папке с Вашим сервером, у Вас есть в server.properties название Вашего мира.
 
-  # | Комплименты | Сколько в МИНУТАХ будет длится задержка перед следующей возможностью кинуть похвалу администратору.
+  # | Комплименты | Сколько в МИНУТАХ будет длиться задержка перед следующей возможностью кинуть похвалу администратору.
   complimentCooldown: 1440 # ❓ | Почему 1440 минут (24 часа в переводе)? - Потому что 1 раз в день обычный игрок отправляет репорт.
 
   # PIN-Код   | Максимальное кол-во попыток ввода секретного кода до блокировки админ-прав?
@@ -30,23 +30,23 @@ Settings:
 
     rewatchTick: 1 # Слежка |❗ Опасная настройка, только для знающих людей с уровнем допуска DEV Рекомендуемое значение: 10+.
     # ❓- Сколько тиков будет длиться один кадр слежки? Меньше тиков = больше плавности == БОЛЬШЕ нагрузка на сервер! Если у Вас тпс ниже 20 - Не советую.
-    rewatchVectorX: 1 # Слежка | На сколько "отдаленно" будет камера у администратора?
-    rewatchVectorY: 1 # Слежка | На сколько высоко будет камера у администратора?
-    rewatchVectorZ: 1 # Слежка | На сколько "глубоко" будет камера у администратора?
+    rewatchVectorX: 0 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    rewatchVectorY: 2 # Слежка | На сколько высоко будет камера у администратора?
+    rewatchVectorZ: 0 # Слежка | На сколько "глубоко" будет камера у администратора?
 
-    # ПРЕСЕТЫ REWATCH | Если Вам хочется взять готовый пресет настроек и не игратся с ними, прошу:
+    # ПРЕСЕТЫ REWATCH | Если Вам хочется взять готовый пресет настроек и не играться с ними, прошу:
     # | Поближе
-    #    rewatchVectorX: 1 # Слежка | На сколько "отдаленно" будет камера у администратора?
-    #    rewatchVectorY: 1 # Слежка | На сколько высоко будет камера у администратора?
+    #    rewatchVectorX: 0 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    #    rewatchVectorY: 2 # Слежка | На сколько высоко будет камера у администратора?
     #    rewatchVectorZ: 1 # Слежка | На сколько "глубоко" будет камера у администратора?
 
     # | Средне
-    #    rewatchVectorX: 2 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    #    rewatchVectorX: 0 # Слежка | На сколько "отдаленно" будет камера у администратора?
     #    rewatchVectorY: 2 # Слежка | На сколько высоко будет камера у администратора?
     #    rewatchVectorZ: 2 # Слежка | На сколько "глубоко" будет камера у администратора?
 
     # | Подальше
-    #    rewatchVectorX: 3 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    #    rewatchVectorX: 1 # Слежка | На сколько "отдаленно" будет камера у администратора?
     #    rewatchVectorY: 3 # Слежка | На сколько высоко будет камера у администратора?
     #    rewatchVectorZ: 3 # Слежка | На сколько "глубоко" будет камера у администратора?
 
@@ -222,8 +222,10 @@ Admin:
       - "&a/adel &7— Уволить администратора."
       - "&a/adown &7— Понизить администратора."
       - "&a/aset &7— Поставить администратора."
+      - "&a/ablist &7— Выдать ЧС администрации."
       - "&a/abonus &7— Выдать бонус администратору."
       - "&a/aunban &7— Выдать администратору доступ если он в бане."
+      - "&a/abdlist &7— Снять ЧС администрации."
       - "&a/abonusall &7— Выдать бонус администраторам."
       - "&a/asetsecret &7— Выдать секретный код."
       - ""
@@ -250,18 +252,33 @@ Admin:
             - "lp user %admin permission set e1admin.rewatch"
             - "lp user %admin permission set e1admin.arep"
             - "lp user %admin permission set e1admin.aban"
-        2: # | У меня - Это администратор. Смотрим AdminRanks..
+        2: # | У меня - Это администратор. Смотрим AdminRanks.. Выдаю уровень 1, и добавляю 2.
           permissions:
+            - "lp user %admin permission set e1admin.admin"
+            - "lp user %admin permission set e1admin.invise"
+            - "lp user %admin permission set e1admin.rewatch"
+            - "lp user %admin permission set e1admin.arep"
+            - "lp user %admin permission set e1admin.aban"
+
             - "lp user %admin permission set e1admin.adminbonus"
             - "lp user %admin permission set e1admin.adminbonusall"
-        3: # | У меня - Это старший администратор. Смотрим AdminRanks..
+        3: # | У меня - Это старший администратор. Смотрим AdminRanks.. Выдаю ВСЕ права.
           permissions:
-            - "lp user %admin permission set e1admin.staff"
+            - "lp user %admin permission set e1admin.admin"
+            - "lp user %admin permission set e1admin.invise"
+            - "lp user %admin permission set e1admin.rewatch"
+            - "lp user %admin permission set e1admin.arep"
+            - "lp user %admin permission set e1admin.aban"
+
+            - "lp user %admin permission set e1admin.adminbonus"
+            - "lp user %admin permission set e1admin.adminbonusall"
+
             - "lp user %admin permission set e1admin.asecret"
             - "lp user %admin permission set e1admin.downadmin"
             - "lp user %admin permission set e1admin.deladmin"
             - "lp user %admin permission set e1admin.setadmin"
             - "lp user %admin permission set e1admin.upadmin"
+            - "lp user %admin permission set e1admin.ablocklist"
             -
             # - | Здесь автоматически Вы сами можете настроить скины.
     autoSetSkins:
@@ -297,12 +314,15 @@ Admin:
             - "lp user %admin permission unset e1admin.adminbonusall"
         3: # | У меня - Это младший администратор. Смотрим AdminRanks..
           permissions:
+            - "lp user %admin permission unset e1admin.admin"
             - "lp user %admin permission unset e1admin.staff"
+
             - "lp user %admin permission unset e1admin.asecret"
             - "lp user %admin permission unset e1admin.downadmin"
             - "lp user %admin permission unset e1admin.deladmin"
             - "lp user %admin permission unset e1admin.setadmin"
             - "lp user %admin permission unset e1admin.upadmin"
+            - "lp user %admin permission unset e1admin.ablocklist"
 
     # - | Здесь автоматически Вы сами можете настроить скины, а точнее их удаление.
     autoDelSkins:
@@ -383,7 +403,6 @@ Admin:
       - "&aНажмите чтобы взять ❤️"
       - "&cРепорт&7: %content"
       - "&aСтатус&7: %status"
-      - "&4Принял&7: %admin"
       - ""
       - "&aОтправил&7: %player"
       - "&7Дата: %date"
@@ -407,6 +426,7 @@ Admin:
     ReportItem:
       NAME: "%content"
       ITEM: "PAPER"
+      SIZE: 54
       LORE: # Форма как будет выглядеть репорт при наведении | Или же - его лор.
         - "&7Репорт: %content"
         - "&7Статус: %status"
@@ -502,8 +522,7 @@ Admin:
         close:
           slot: 49
           name: "&cЗакрыть."
-          item: "PLAYER_HEAD"
+          item: "BARRIER"
           action: "CLOSE" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
           lore:
             - "&7Нажмите чтобы &cзакрыть."

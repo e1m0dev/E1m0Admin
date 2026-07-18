@@ -77,26 +77,43 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     }
 
     @Override
-    public void setAdminABan(UUID adminID, UUID staffID) {
+    public void setAdminABan(UUID suspectID, UUID adminID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
 
         String transactionID = UUID.randomUUID().toString();
+        Player suspect = Bukkit.getPlayer(suspectID);
         Player admin = Bukkit.getPlayer(adminID);
-        Player staff = Bukkit.getPlayer(staffID);
 
-        blockDAO.insertToABan(transactionID, adminID.toString(), staffID.toString(), admin.getName(), staff.getName(), admin.getAddress().toString());
+        blockDAO.insertToABan(transactionID, adminID.toString(), suspectID.toString(), admin.getName(), suspect.getName(), admin.getAddress().toString());
+    }
+
+    @Override
+    public void setAdminABanConsole(UUID adminID, UUID staffID) {
+        BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
+
+        String transactionID = UUID.randomUUID().toString();
+        Player suspect = Bukkit.getPlayer(adminID);
+
+        blockDAO.insertToABan(transactionID, staffID.toString(), adminID.toString(), "CONSOLE", suspect.getName(), suspect.getAddress().toString());
     }
 
     @Override
     public void delAdminABan(UUID adminID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
+
+        Bukkit.getLogger().warning("3333");
+
         blockDAO.delAdminABan(adminID.toString());
     }
 
     @Override
-    public boolean checkAdminABan(UUID adminID) {
+    public boolean checkAdminABan(UUID suspectID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
-        return blockDAO.checkInABan(adminID.toString());
+
+        Bukkit.getLogger().warning(suspectID.toString());
+        Bukkit.getLogger().warning(blockDAO.checkInABan(suspectID.toString()));
+
+        return blockDAO.checkInABan(suspectID.toString()) != null;
     }
 
     @Override
@@ -119,6 +136,6 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     @Override
     public boolean checkAdminBlockList(UUID adminID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
-        return blockDAO.checkInBlockList(adminID.toString());
+        return blockDAO.checkInBlockList(adminID.toString()) != null;
     }
 }

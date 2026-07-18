@@ -15,13 +15,11 @@ import java.util.UUID;
 public class ConsoleDownAdminCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
-    private final FileConfiguration cfg;
     private final ConsoleService consoleService;
 
     private UUID consoleID = UUID.fromString("77777777-7777-7777-7777-777777777777");
 
-    public ConsoleDownAdminCommand(E1m0Sender sender, FileConfiguration cfg, ConsoleService consoleService) {
-        this.cfg = cfg;
+    public ConsoleDownAdminCommand(E1m0Sender sender, ConsoleService consoleService) {
         this.sender = sender;
         this.consoleService = consoleService;
     }
@@ -30,14 +28,14 @@ public class ConsoleDownAdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (strings.length != 1) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 
         Player admin = Bukkit.getPlayer(strings[0]);
 
         if (admin == null) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.nullPlayer"));
+            sender.sendConsole(commandSender, "Messages.Errors.nullPlayer");
             return false;
         }
 

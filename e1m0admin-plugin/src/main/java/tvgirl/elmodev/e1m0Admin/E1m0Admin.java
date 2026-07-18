@@ -146,10 +146,11 @@ public final class E1m0Admin extends JavaPlugin {
 
         // 📋 | Config
         saveDefaultConfig();
+        createMessagesConfig();
         getConfig().options().copyDefaults();
 
         // 💬 | UTILS
-        sender = new E1m0Sender(messageConfig);
+        sender = new E1m0Sender(getConfig(), messageConfig);
         color = new E1m0Color();
 
         // ⚙️ | Database
@@ -177,12 +178,12 @@ public final class E1m0Admin extends JavaPlugin {
         // 🧑‍🔬 | Service
         consoleService = new ConsoleService(secretCodeRepository, sessionManager, systemRepository, staffRepository, secretCodeManager, getConfig(), sender);
 
-        reportService = new ReportSystemService(sender, getConfig(), playerReportCache, reportSystemRepository);
+        reportService = new ReportSystemService(sender, getConfig(), playerReportCache, staffRepository, reportSystemRepository);
         secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, attemptsInputCode, secretCodeManager, permissionManager, getConfig(), sender);
 
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
         staffService = new AdminsStaffService(secretCodeRepository, sessionManager, staffRepository, systemRepository, secretCodeManager, getConfig(), sender);
-        gameService = new AdminGameService(reportSystemRepository, staffRepository, gameRepository, thanksPlayersCache, secretCodeGui, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, reportGui, sender, this);
+        gameService = new AdminGameService(reportSystemRepository, staffRepository, gameRepository, thanksPlayersCache, secretCodeGui, color, inviseCache, rewatchTasksCache, playerReportCache, reconCache, getConfig(), permissionManager, reportGui, sender, this);
 
         // 🌐 | GUI
         secretCodeGui = new SecretCodeGui(secretCodeService, secretKey, getConfig(), sender, color);
@@ -191,11 +192,12 @@ public final class E1m0Admin extends JavaPlugin {
         // - | Listeners - E1m0
         lManager.registerEvents(new AdminAccessListener(sender, getConfig()), this);
 
-        lManager.registerEvents(new AdminLeakListener(sender, getConfig(), systemService, secretCodeManager), this);
-        lManager.registerEvents(new AdminSetListener(sender, getConfig(), systemService), this);
-        lManager.registerEvents(new AdminDelListener(sender, getConfig(), systemService), this);
+        lManager.registerEvents(new AdminLeakListener(sender, getConfig(), messageConfig, systemService, secretCodeManager), this);
 
         lManager.registerEvents(new AdminComplimentListener(sender, getConfig(), systemService), this);
+
+        lManager.registerEvents(new AdminSetListener(sender, getConfig(), systemService), this);
+        lManager.registerEvents(new AdminDelListener(sender, getConfig(), systemService), this);
 
         // 🗣️ | Listeners - Bukkit
         lManager.registerEvents(new JoinListener(sender, getConfig(), sessionManager), this);
@@ -219,7 +221,7 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("reoff").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("are").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
         getCommand("re").setExecutor(new RewatchCommand(sender, getConfig(), gameService, permissionManager));
-        getCommand("ablock").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
+        getCommand("aban").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
         getCommand("ahelp").setExecutor(new AHelpCommand(sender, getConfig(), gameService));
         getCommand("aban").setExecutor(new ABlockCommand(sender, getConfig(), gameService));
 
@@ -241,30 +243,32 @@ public final class E1m0Admin extends JavaPlugin {
 
 
         // - | Console
-        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
-        getCommand("cset").setExecutor(new ConsoleUpAdminCommand(sender, getConfig(), consoleService));
-        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(sender, getConfig(), consoleService));
-        getCommand("cban").setExecutor(new ConsoleBanAdminCommand(sender, getConfig(), consoleService));
-        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(sender, getConfig(), consoleService));
-        getCommand("cunban").setExecutor(new ConsoleUnBanAdminCommand(sender, getConfig(), consoleService));
+        getCommand("cdel").setExecutor(new ConsoleDelAdminCommand(sender, consoleService));
+        getCommand("cban").setExecutor(new ConsoleBanAdminCommand(sender, consoleService));
 
-        getCommand("cbonus").setExecutor(new ConsoleGiveBonusCommand(sender, getConfig(), consoleService));
-        getCommand("cbonusall").setExecutor(new ConsoleGiveBonusCommand(sender, getConfig(), consoleService));
+        getCommand("cup").setExecutor(new ConsoleUpAdminCommand(sender, consoleService));
+        getCommand("cset").setExecutor(new ConsoleUpAdminCommand(sender, consoleService));
+        getCommand("cdown").setExecutor(new ConsoleDownAdminCommand(sender, consoleService));
+        getCommand("cunban").setExecutor(new ConsoleUnBanAdminCommand(sender, consoleService));
 
-        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(sender, getConfig(), consoleService));
-        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(sender, getConfig(), consoleService));
+        getCommand("cbonus").setExecutor(new ConsoleGiveBonusCommand(sender, consoleService));
+        getCommand("cbonusall").setExecutor(new ConsoleGiveBonusCommand(sender, consoleService));
+
+        getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(sender, consoleService));
+        getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(sender, consoleService));
 
         // ❓ | Tab-Completer.
         getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("rec").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("rep").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("acc").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("arep").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("ainv").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("aban").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("ahelp").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("recon").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("reoff").setTabCompleter(new MainTabCompleter(getConfig()));
-        getCommand("ablock").setTabCompleter(new MainTabCompleter(getConfig()));
+        getCommand("aban").setTabCompleter(new MainTabCompleter(getConfig()));
 
         getCommand("thanks").setTabCompleter(new MainTabCompleter(getConfig()));
         getCommand("report").setTabCompleter(new MainTabCompleter(getConfig()));
@@ -301,6 +305,8 @@ public final class E1m0Admin extends JavaPlugin {
             Bukkit.getLogger().warning("config -> mainLanguage: en_en.yml");
         } else {
             saveResource("lang/" + lang, false);
+            Bukkit.getLogger().info("Конфиг установлен: " + lang);
+            Bukkit.getLogger().info("Config has set: " + lang);
         }
 
         messageConfig = YamlConfiguration.loadConfiguration(messages);

@@ -12,9 +12,9 @@ softdepend:
 # TODO
 commands:
   # | ADMIN
-  rep:
+  arep:
     description: "Команда ответа на репорт"
-    aliases: [ arep, reps ]
+    aliases: [ rep, reps ]
 
   ainv:
     description: "Команда сокрытия администратора"
@@ -45,7 +45,7 @@ commands:
 
   aban:
     description: "Заблокировать доступ администратору при сливе"
-    aliases: [ aban ]
+    aliases: [ ablock ]
 
   # | PLAYER
   thanks:
@@ -92,8 +92,11 @@ commands:
   cdel:
     description: "Снять администратора | Удаленно ❗"
 
-  cbun:
+  cban:
     description: "Заблокировать доступ администратору | Удаленно ❗"
+
+  cunban:
+    description: "Разблокировать доступ администратору | Удаленно ❗"
 
   cdown:
     description: "Понизить администратора | Удаленно ❗"

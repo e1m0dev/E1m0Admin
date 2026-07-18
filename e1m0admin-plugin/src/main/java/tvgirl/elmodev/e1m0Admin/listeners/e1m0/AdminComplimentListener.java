@@ -23,7 +23,7 @@ public class AdminComplimentListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onAdminRegistered(AdminComplimentEvent e) {
+    public void onPlayerSendCompliment(AdminComplimentEvent e) {
         Player admin = Bukkit.getPlayer(e.getAdminID());
         Player player = Bukkit.getPlayer(e.getPlayerID());
         String compliments = String.valueOf(e.getCompliments());

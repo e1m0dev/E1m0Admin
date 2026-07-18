@@ -12,6 +12,8 @@ public interface SecretCodeRepositoryAPI {
     /* SYSTEM | 💾 */
     void systemSetSecretCode(UUID adminID, int code); // | Устанавливает SecretCode от КОНСОЛИ/СИСТЕМЫ, а не от администратора.
 
+    void systemUpdateSecretCode(UUID adminID, int code); // | Меняет SecretCode от КОНСОЛИ/СИСТЕМЫ, а не от администратора.
+
     void systemDeleteAdmin(UUID adminID); // | Удаляет секретный код администратора, обычно вместе с администратором на момент Commit 1.10 -> 1.0-BETA Version
 
     boolean checkSecretCode(UUID adminID); // | Просто получает ответ есть ли Secret из Базы Данных по UUID администратора.

@@ -25,7 +25,7 @@ public class ThanksCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
@@ -41,7 +41,7 @@ public class ThanksCommand implements CommandExecutor {
         }
 
         if (strings.length != 1) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 

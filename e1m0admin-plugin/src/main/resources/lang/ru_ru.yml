@@ -64,7 +64,7 @@ Messages:
     nullPlayer: "&cТакого игрока не существует..."
     lengthError: "&cНеправильное использование команды!"
     consoleError: "Консоли нельзя.."
-    adminNotBanned: "&cАдминистратор &6&admin &cне был забанен системой.."
+    adminNotBanned: "&cАдминистратор &6%admin &cне был забанен системой.."
 
     permissionError: "&cУ вас нет доступа к данной команде!"
 
@@ -101,6 +101,7 @@ Messages:
     secretCodeHasInputted: "&cВы уже вводили секретный пин!"
     setAdminCodeIsWrong: "&cВы не правильно ввели новый код для администратора, &6пример кода: 7777"
 
+    selfRewatchError: "&cВы не можете следить за собой же.."
     reoffNullError: "&cВы не за кем не следите и не можете отключится!"
 
     playerHaveReport: "&cУ вас уже есть репорт!"
@@ -109,7 +110,9 @@ Messages:
 
     adminBlockInternalError: "&cВнутренняя ошибка при блокировке! Администратор уже находится в блоке!"
 
-    blacklistWeightError: "&cВаш вес администратора — слишком мал чтобы занести данного администратора в черный список!"
+    setAdminInBlackList: "&cОшибка, администратор УЖЕ находится в черном списке администрации (ЧСА)!"
+    adminNotInBlackList: "&cОшибка, администратор еще не находится в черном списке администрации (ЧСА)!"
+    blacklistWeightError: "&cYour administrator level is too low to blacklist this administrator!"
 
     # CONSOLE ACTIONS
     adminBanned: "&fЛОГ &7| &cУ Администратора указанного в команде — уже весит блокировка!"
@@ -130,7 +133,11 @@ Messages:
     rewatchLog: "&fЛОГ &7| &7Администратор &6%admin зашел в слежку за игроком %player 🎥 — 💺🛏️..." # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfj3K8zuo7Zp77tu-YACPa7PGuxYOasedpEVRPj1WEVpRcKpFKhEzVBVY&s=10
 
     Leak:
-      wrongSecret: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался ввести код максимальное кол-во раз и был заблокирован ❗"
+      wrongSecret:
+        - "❗"
+        - "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался ввести код максимальное кол-во раз и был заблокирован ❗"
+        - "❗"
+
       upAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался повысить администратора %admin который выше его по рангу ❗"
       delAdminWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался снять администратора %admin который выше его по рангу ❗"
       blacklistWeightError: "&сПОДОЗРЕНИЯ НА СЛИВ АДМ &7| &7Администратор &6%leak попытался занести администратора %admin в черный список, но был ниже его по рангу! ❗"

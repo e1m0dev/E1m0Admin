@@ -60,13 +60,18 @@ public class ReportGUI implements ReportGuiAPI {
         List<Report> reportList = new ArrayList<>();
         ReportHolder holder = new ReportHolder("report_holder", adm, response);
 
-        ConfigurationSection reportGui = cfg.getConfigurationSection("Admin.Report.GUI.ReportGUI.items");
+        ConfigurationSection reportGui = cfg.getConfigurationSection("Admin.GUI.ReportGUI.items");
 
-        int size = cfg.getInt("Admin.Report.GUI.ReportGUI.SIZE");
-        String nameMenu = cfg.getString("Admin.Report.GUI.ReportGUI.NAME");
+        int size = cfg.getInt("Admin.GUI.ReportGUI.SIZE");
+
+        Bukkit.getLogger().warning("Size: " + size);
+
+        String nameMenu = cfg.getString("Admin.GUI.ReportGUI.NAME");
         String finalNameMenu = PlainTextComponentSerializer.plainText().serialize(color.parse(nameMenu));
 
         Inventory inv = Bukkit.createInventory(holder, size, finalNameMenu);
+
+        Bukkit.getLogger().warning("2"); // ТЕСТЕР
 
         // ⌚ | Репорты
         Bukkit.getScheduler().runTask(plugin, () -> {
@@ -102,6 +107,8 @@ public class ReportGUI implements ReportGuiAPI {
             }
         });
 
+        Bukkit.getLogger().warning("3"); // ТЕСТЕР
+
         // ▶️ | Кнопки
         for(String s : reportGui.getKeys(false)) {
             ItemStack item = new ItemStack(Material.valueOf(cfg.getString("Admin.GUI.ReportGUI.items." + s + ".item")));
@@ -119,6 +126,8 @@ public class ReportGUI implements ReportGuiAPI {
             item.setItemMeta(meta);
             inv.setItem(itemSlot, item);
         }
+
+        Bukkit.getLogger().warning("4"); // ТЕСТЕР
 
         adm.openInventory(inv);
     }

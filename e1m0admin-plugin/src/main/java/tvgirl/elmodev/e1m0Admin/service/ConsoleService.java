@@ -40,8 +40,14 @@ public class ConsoleService implements ConsoleServiceAPI {
     public void setSecretConsole(UUID adminID, UUID consoleID, int code) {
         Player admin = Bukkit.getPlayer(adminID);
 
+        if (secretCodeRepository.checkSecretCode(adminID)) {
+            secretCodeRepository.systemUpdateSecretCode(adminID, code);
+        } else {
+            secretCodeRepository.systemSetSecretCode(adminID, code);
+        }
+
         secretCodeRepository.systemSetSecretCode(adminID, code);
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminSetSecret"));
+        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulAdminSetSecret");
 
         sender.sendPath(admin, "Messages.changeCodeAdmin",
                 "%staff", cfg.getString("Settings.consolePrefix"),
@@ -54,7 +60,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         Player admin = Bukkit.getPlayer(adminID);
 
         if (systemRepository.checkAdminInBase(adminID)) {
-            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.setAdminIsAdminError"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminIsAdminError");
             return;
         }
 
@@ -66,32 +72,31 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         // ConfigSection | Как обычно перебираю конфиг секции.
         for (String key : ranksSection.getKeys(false)) {
+            Bukkit.getLogger().warning("Console Key: " + key);
+
             // ConfigSection | Нахожу по weight ранг - и работаю с его ключом.
-            if (cfg.getInt("Admin.AdminRanks." + key + ".weight") == weight) {
+            if (cfg.getInt("Admin.AdminRanks." + key + ".weight") != weight) continue;
 
-                // Определяю зарплату и префикс
-                int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
-                String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
+            // Определяю зарплату и префикс
+            int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
+            String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
-                // Отправляю в репо + закрепляю в кэше + ивент.
-                adminSessionManager.update(adminID, prefix, weight, salary);
-                Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, consoleID, weight));
-                staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
-                sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminSet"));
-            } else {
-                sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.setAdminWeightError"));
-            }
-            return;
+            // Отправляю в репо + закрепляю в кэше + ивент.
+            adminSessionManager.update(adminID, prefix, weight, salary);
+            Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, consoleID, weight));
+            staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulAdminSet");
         }
     }
 
     @Override
     public void consoleBanAdminAccess(UUID adminID, UUID consoleID) {
         Player admin = Bukkit.getPlayer(adminID);
+
         boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
 
         if (!isBlockedAdmin) {
-            staffRepository.setAdminABan(adminID, consoleID);
+            staffRepository.setAdminABanConsole(adminID, consoleID);
         } else {
             sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminBanned");
         }
@@ -106,13 +111,14 @@ public class ConsoleService implements ConsoleServiceAPI {
     @Override
     public void consoleUnBanAdminAccess(UUID adminID, UUID consoleID) {
         Player admin = Bukkit.getPlayer(adminID);
-
         boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
 
         if (isBlockedAdmin) {
             staffRepository.delAdminABan(adminID);
         } else {
-            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminNotBanned");
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminNotBanned",
+                    "%admin", admin.getName());
+            return;
         }
 
         sender.sendPath(admin, "Messages.unbannedSystem",
@@ -132,7 +138,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
-            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.upAdminNotAdminError"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.upAdminNotAdminError");
             return;
         }
 
@@ -157,12 +163,14 @@ public class ConsoleService implements ConsoleServiceAPI {
         int targetWeight = rankWeight + 1;
         int currentWeight = 0;
 
-
         for (String key : ranksSection.getKeys(false)) {
             if (cfg.getInt("Admin.AdminRanks." + key + ".weight") == targetWeight) {
                 currentKey = key;
                 currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
+            } else {
+                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminWeightError");
+                continue;
             }
         }
 
@@ -176,7 +184,7 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         adminSessionManager.update(adminID, newPrefix, newWeight, newSalary);
         staffRepository.upAdminStatus(adminID, newPrefix, newWeight, newSalary);
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminUp"));
+        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulAdminUp");
     }
 
     @Override
@@ -189,7 +197,7 @@ public class ConsoleService implements ConsoleServiceAPI {
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
         if (weightBase == -1 || salaryBase == -1 || prefixBase.equalsIgnoreCase("NULL")) {
-            sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.Errors.upAdminNotAdminError"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.upAdminNotAdminError");
             return;
         }
 
@@ -204,6 +212,9 @@ public class ConsoleService implements ConsoleServiceAPI {
                 rankKey = key;
                 rankWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
+            } else {
+                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminWeightError");
+                continue;
             }
         }
 
@@ -226,6 +237,9 @@ public class ConsoleService implements ConsoleServiceAPI {
                 currentKey = key;
                 currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
+            } else {
+                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminWeightError");
+                continue;
             }
         }
 
@@ -239,7 +253,7 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         adminSessionManager.update(adminID, newPrefix, newWeight, newSalary);
         staffRepository.downAdminStatus(adminID, newPrefix, newWeight, newSalary);
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminDown"));
+        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulAdminDown");
     }
 
     @Override
@@ -291,6 +305,6 @@ public class ConsoleService implements ConsoleServiceAPI {
         secretCodeRepository.systemDeleteAdmin(adminID);
         staffRepository.systemDeleteAdminStatusLog(adminID, consoleID, reason);
         Bukkit.getPluginManager().callEvent(new AdminDelEvent(adminID, consoleID));
-        sender.sendConsole(Bukkit.getConsoleSender(), cfg.getString("Messages.successfulAdminDelete"));
+        sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulAdminDelete");
     }
 }

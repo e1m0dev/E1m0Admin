@@ -15,7 +15,9 @@ public interface StaffRepositoryAPI {
 
     void giveBonusLog(UUID adminID, UUID staffID, int sum, String message); // | Отправить лог о выданном бонусе администратору в базу данных.
 
-    void setAdminABan(UUID adminID, UUID staffID); // Занести в базу информацию о предположительном сливщике админ-поста и отобрать права.
+    void setAdminABan(UUID suspectID, UUID adminID); // Занести в базу информацию о предположительном сливщике админ-поста и отобрать права.
+
+    void setAdminABanConsole(UUID adminID, UUID staffID); // Занести в базу информацию о предположительном сливщике админ-поста и отобрать права системно
 
     void delAdminABan(UUID adminID); // Вынести из базы подозрений по поводу слива админки.
 

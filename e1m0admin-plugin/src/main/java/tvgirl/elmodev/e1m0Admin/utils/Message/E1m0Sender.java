@@ -12,11 +12,13 @@ import java.util.List;
 
 public class E1m0Sender {
 
-    private final FileConfiguration cfg;
+    private final FileConfiguration mainCfg;
+    private final FileConfiguration messageCfg;
     private final E1m0Color color = new E1m0Color();
 
-    public E1m0Sender(FileConfiguration cfg) {
-        this.cfg = cfg;
+    public E1m0Sender(FileConfiguration mainCfg, FileConfiguration messageCfg) {
+        this.mainCfg = mainCfg;
+        this.messageCfg = messageCfg;
     }
 
     public void sendStringList(@NotNull Player player, @NotNull List<String> messageList, @Nullable String... replacements) {
@@ -26,28 +28,39 @@ public class E1m0Sender {
     }
 
     public void sendPath(@NotNull Player player, @NotNull String path, @Nullable String... replacements) {
-
-        if (cfg.isString(path)) {
-            sendMessage(player, cfg.getString(path), replacements);
+        if (messageCfg.isString(path)) {
+            sendMessage(player, messageCfg.getString(path), replacements);
             return;
         }
 
-        if (cfg.isList(path)) {
-            for (String message : cfg.getStringList(path)) {
+        if (messageCfg.isList(path)) {
+            for (String message : messageCfg.getStringList(path)) {
+                sendMessage(player, message, replacements);
+            }
+        }
+    }
+
+    public void sendPathCfg(@NotNull Player player, @NotNull String path, @Nullable String... replacements) {
+        if (mainCfg.isString(path)) {
+            sendMessage(player, mainCfg.getString(path), replacements);
+            return;
+        }
+
+        if (mainCfg.isList(path)) {
+            for (String message : mainCfg.getStringList(path)) {
                 sendMessage(player, message, replacements);
             }
         }
     }
 
     public void sendConsole(@NotNull CommandSender sender, @NotNull String path, @Nullable String... replacements) {
-
-        if (cfg.isString(path)) {
-            sendConsoleMessage(sender, cfg.getString(path), replacements);
+        if (messageCfg.isString(path)) {
+            sendConsoleMessage(sender, messageCfg.getString(path), replacements);
             return;
         }
 
-        if (cfg.isList(path)) {
-            for (String message : cfg.getStringList(path)) {
+        if (messageCfg.isList(path)) {
+            for (String message : messageCfg.getStringList(path)) {
                 sendConsoleMessage(sender, message, replacements);
             }
         }
@@ -67,8 +80,8 @@ public class E1m0Sender {
 
         message = PlaceholderAPI.setPlaceholders(player, message);
 
-        if (cfg.getBoolean("Settings.prefixEnable")) {
-            String prefix = cfg.getString("Settings.prefix", "");
+        if (mainCfg.getBoolean("Settings.prefixEnable")) {
+            String prefix = mainCfg.getString("Settings.prefix", "");
             message = prefix + " " + message;
         }
 

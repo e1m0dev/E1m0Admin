@@ -26,7 +26,7 @@ public class ABlockCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
@@ -46,29 +46,26 @@ public class ABlockCommand implements CommandExecutor {
             return false;
         }
 
-        Player targetAdmin = Bukkit.getPlayer(strings[0]);
+        Player suspectAdmin = Bukkit.getPlayer(strings[0]);
 
-        if (targetAdmin == null) {
+        if (suspectAdmin == null) {
             sender.sendPath(admin, "Messages.Errors.nullPlayer");
         }
 
         String permissionAdmin = cfg.getString("Permissions.admin");
-        if (!(targetAdmin.hasPermission(permissionAdmin))) {
+        if (!(suspectAdmin.hasPermission(permissionAdmin))) {
             sender.sendPath(admin, "Messages.Errors.notAdmin");
         }
 
-        Bukkit.getLogger().warning("!adminBlockAccess! / 1 "); // Тестер
-
-        if (command.getName().toLowerCase().equalsIgnoreCase("ablock")) {
-            service.adminBlockAccess(targetAdmin.getUniqueId(), admin.getUniqueId());
-            Bukkit.getLogger().warning("!adminBlockAccess! / 2 "); // Тестер
+        if (command.getName().toLowerCase().equalsIgnoreCase("aban")) {
+            service.adminBlockAccess(suspectAdmin.getUniqueId(), admin.getUniqueId());
 
             // CLS | Console Log
             boolean isActive = cfg.getBoolean("Settings.consoleLogActive");
             if (isActive) {
                 sender.sendConsole(Bukkit.getConsoleSender(), "Messages.ConsoleLogs.ABlockLog",
                         "%admin", admin.getName(),
-                        "%target", targetAdmin.getName()
+                        "%target", suspectAdmin.getName()
                 );
             }
         }

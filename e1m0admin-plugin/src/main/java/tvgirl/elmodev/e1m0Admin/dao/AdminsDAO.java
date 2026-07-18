@@ -85,19 +85,19 @@ public interface AdminsDAO {
 
     @SqlQuery("""
                 SELECT 
-                    uuid, nick, weight, salary, prefix, ip
+                        uuid, nick, weight, salary, prefix, ip
         FROM e1admin_admins
-                WHERE 
-                    uuid = :uuid
+                    WHERE 
+                        uuid = :uuid
     """)
     Admin findByUuid(@Bind("uuid") String uuid);
 
     @SqlQuery("""
-                SELECT 
-                    compliments
-                FROM e1admin_admins
-                WHERE 
-                    uuid = :uuid
+            SELECT 
+                compliments
+            FROM e1admin_admins
+            WHERE 
+                uuid = :uuid
             """)
     int getCompliments(@Bind("uuid") String uuid);
 }

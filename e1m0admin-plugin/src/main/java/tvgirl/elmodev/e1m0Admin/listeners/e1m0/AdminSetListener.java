@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.listeners.e1m0;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,8 +22,10 @@ public class AdminSetListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onAdminRegistered(AdminSetEvent e) {
+    public void onAdminSet(AdminSetEvent e) {
         int weight = e.getWeight();
+
+        Bukkit.getLogger().warning("ДОШЕЛ ДО ЛИСТЕНЕРА"); // ТЕСТЕР
 
         systemService.autoSetAdmin(e.getAdminID(), e.getStaffID(), weight);
     }

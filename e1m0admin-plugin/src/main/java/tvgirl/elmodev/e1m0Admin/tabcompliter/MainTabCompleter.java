@@ -28,6 +28,23 @@ public class MainTabCompleter implements TabCompleter {
         if (sender.hasPermission(cfg.getString("Permissions.admin"))) {
             switch (command.getName().toLowerCase()) {
 
+                case "report":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    } else if (strings.length == 2) {
+                        tab.add("Reason?");
+                    }
+
+                    break;
+
+                case "acc":
+                case "aaccess":
+                    if (strings.length == 1) {
+                        tab.add("");
+                    }
+
+                    break;
+
                 case "admins":
                 case "ahelp":
                     if (strings.length == 1) {
@@ -42,6 +59,8 @@ public class MainTabCompleter implements TabCompleter {
                 case "abdlist":
                     if (strings.length == 1) {
                         getOnlineAdmins(tab);
+                    } else if (strings.length == 2) {
+                        tab.add("Reason?");
                     }
 
                     break;
@@ -66,15 +85,6 @@ public class MainTabCompleter implements TabCompleter {
                 case "cban":
                     if (strings.length == 1) {
                         getOnlineAdmins(tab);
-                    }
-
-                    break;
-
-                case "report":
-                    if (strings.length == 1) {
-                        getOnlinePlayers(tab);
-                    } else if (strings.length == 2) {
-                        tab.add("Reason?");
                     }
 
                     break;
