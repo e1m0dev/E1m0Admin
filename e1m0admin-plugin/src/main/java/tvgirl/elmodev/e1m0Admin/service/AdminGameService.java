@@ -303,11 +303,11 @@ public class AdminGameService implements GameServiceAPI {
         }
 
         if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
-            sender.sendPath(admin, "Admin.AHelp.admin");
+            sender.sendPathCfg(admin, "Admin.AHelp.admin");
         }
 
         if (admin.hasPermission(cfg.getString("Permissions.staff"))) {
-            sender.sendPath(admin, "Admin.AHelp.staff");
+            sender.sendPathCfg(admin, "Admin.AHelp.staff");
         }
     }
 

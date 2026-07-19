@@ -37,58 +37,6 @@ public class MainTabCompleter implements TabCompleter {
 
                     break;
 
-                case "acc":
-                case "aaccess":
-                    if (strings.length == 1) {
-                        tab.add("");
-                    }
-
-                    break;
-
-                case "admins":
-                case "ahelp":
-                    if (strings.length == 1) {
-                        tab.add("Больше ничего не надо?");
-                        tab.add("Просто /admins");
-                        tab.add("Просто /ahelp");
-                    }
-
-                    break;
-
-                case "ablist":
-                case "abdlist":
-                    if (strings.length == 1) {
-                        getOnlineAdmins(tab);
-                    } else if (strings.length == 2) {
-                        tab.add("Reason?");
-                    }
-
-                    break;
-
-                case "rep":
-                case "reps":
-                case "arep":
-                    if (strings.length == 1) {
-                        tab.add("Answer?");
-                    }
-
-                    break;
-
-                case "thanks":
-                    if (strings.length == 1) {
-                        getOnlinePlayers(tab);
-                    }
-
-                case "cunban":
-                case "aunban":
-                case "aban":
-                case "cban":
-                    if (strings.length == 1) {
-                        getOnlineAdmins(tab);
-                    }
-
-                    break;
-
                 case "cbonus":
                 case "abonus":
                     if (strings.length == 1) {
@@ -111,6 +59,60 @@ public class MainTabCompleter implements TabCompleter {
                         tab.add("1000?");
                     } else if (strings.length == 2) {
                         tab.add("Message?");
+                    }
+
+                    break;
+
+                case "thanks":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    }
+
+                    break;
+
+                case "acc":
+                case "aaccess":
+                    if (strings.length == 1) {
+                        tab.add("");
+                    }
+
+                    break;
+
+                case "admins":
+                case "ahelp":
+                    if (strings.length == 1) {
+                        tab.add("Больше ничего не надо?");
+                        tab.add("Просто /admins");
+                        tab.add("Просто /ahelp");
+                    }
+
+                    break;
+
+                case "ablist":
+                case "abdlist":
+                    if (strings.length == 1) {
+                        getOnlinePlayers(tab);
+                    } else if (strings.length == 2) {
+                        tab.add("Reason?");
+                    }
+
+                    break;
+
+                case "rep":
+                case "reps":
+                case "arep":
+                    if (strings.length == 1) {
+                        tab.add("Answer?");
+                    }
+
+                    break;
+
+                case "cunban":
+                case "aunban":
+                case "aban":
+                case "cban":
+                    if (strings.length == 1) {
+                        getOnlineAdmins(tab);
                     }
 
                     break;

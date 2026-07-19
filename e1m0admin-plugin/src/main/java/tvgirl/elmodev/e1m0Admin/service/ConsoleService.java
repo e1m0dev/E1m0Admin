@@ -161,14 +161,11 @@ public class ConsoleService implements ConsoleServiceAPI {
         int currentWeight = 0;
 
         for (String key : ranksSection.getKeys(false)) {
-            if (cfg.getInt("Admin.AdminRanks." + key + ".weight") == targetWeight) {
-                currentKey = key;
-                currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-                break;
-            } else {
-                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminWeightError");
-                continue;
-            }
+            if (cfg.getInt("Admin.AdminRanks." + key + ".weight") != targetWeight) continue;
+
+            currentKey = key;
+            currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
+            break;
         }
 
         if (currentKey == null) {
@@ -205,14 +202,10 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-            if (weightBase == cfgWeight) {
+            if (weightBase != cfgWeight) continue;
                 rankKey = key;
                 rankWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
                 break;
-            } else {
-                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminWeightError");
-                continue;
-            }
         }
 
         if (rankKey == null) return;
@@ -229,14 +222,11 @@ public class ConsoleService implements ConsoleServiceAPI {
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
 
-            if (cfgWeight == targetWeight) {
-                currentKey = key;
-                currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-                break;
-            } else {
-                sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.setAdminWeightError");
-                continue;
-            }
+            if (cfgWeight != targetWeight) continue;
+
+            currentKey = key;
+            currentWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
+            break;
         }
 
         if (currentKey == null) {

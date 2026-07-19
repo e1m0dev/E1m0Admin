@@ -60,7 +60,6 @@ public final class E1m0Admin extends JavaPlugin {
     private HashMap<UUID, AdminSession> sessionsCache = new HashMap<>(); // Сессии кэша админов
 
     // 🌐 | CODE MEMORY
-    private HashSet<UUID> blockedAdmins = new HashSet<>(); // Кэширование заблокированных администраторов.
     private HashMap<UUID, Integer> attemptsInputCode = new HashMap<>(); // Отслеживание не верных попыток ввода секретного кода.
     private HashMap<UUID, SecretCodeState> codeCache = new HashMap<>(); // Кэширование игроков с кодом для utils.
 
@@ -170,17 +169,17 @@ public final class E1m0Admin extends JavaPlugin {
         gameRepository = new AdminGameRepository(databaseManager.getJdbi());
 
         // ♾️ | State
-        secretCodeManager = new SecretCodeManager(codeCache, blockedAdmins);
+        secretCodeManager = new SecretCodeManager(codeCache);
         sessionManager = new AdminSessionManager(systemRepository, sessionsCache);
 
         // ⌚ | Permissions
-        permissionManager = new E1m0Permission(systemRepository, secretCodeManager, blockedAdmins, getConfig(), sender);
+        permissionManager = new E1m0Permission(systemRepository, staffRepository, secretCodeManager, getConfig(), sender);
 
         // 🧑‍🔬 | Service
         consoleService = new ConsoleService(secretCodeRepository, sessionManager, systemRepository, staffRepository, secretCodeManager, getConfig(), sender);
 
         reportService = new ReportSystemService(sender, getConfig(), playerReportCache, staffRepository, reportSystemRepository);
-        secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, attemptsInputCode, secretCodeManager, permissionManager, getConfig(), sender);
+        secretCodeService = new SecretCodeService(codeCache, secretCodeRepository, attemptsInputCode, staffRepository, secretCodeManager, permissionManager, getConfig(), sender);
 
         systemService = new AdminSystemService(reportSystemRepository, sessionManager, systemRepository, staffRepository, playerReportCache, getConfig(), sender, this);
         staffService = new AdminsStaffService(secretCodeRepository, sessionManager, staffRepository, systemRepository, secretCodeManager, getConfig(), sender);
