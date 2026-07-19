@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.e1m0dev</groupId>
         <artifactId>e1m0admin-parent</artifactId>
-        <version>v3.0.0-RELEASE</version>
+        <version>v3.1.0-RELESE</version>
     </parent>
 
     <artifactId>e1m0admin-plugin</artifactId>

@@ -51,8 +51,6 @@ Messages:
   successfulAddBlockList: "&aYou successful added %admin in Administration Black List (ABL)"
   adminInBlackList: "&cError! Admin has in Administration Black List | (ABL)"
 
-  isAdminContainsData: "&cAdmin - already has in Admin DataBase!"
-
   # CONSOLE ACTIONS
   successfulAdminSetSecret: "&fLOG &7| &aAdministrator secret code has been successfully set!"
   successfulAdminDelete: "&fLOG &7| &aAdministrator has been successfully removed!"
@@ -132,6 +130,8 @@ Messages:
 
     setAdminIsAdminError: "&fLOG &7| &cThis player is already registered in the database!"
     setAdminWeightError: "&fLOG &7| &cAdministrator was NOT appointed — invalid administrator level!"
+
+    isAdminContainsData: "&cAdmin - already has in Admin DataBase!"
 
   ConsoleLogs:
     aHelpLog: "&fLOG &7| &7Administrator &6%admin &7used the /ahelp command 🗺️."

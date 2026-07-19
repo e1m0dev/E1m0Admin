@@ -55,7 +55,7 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-        if (weightBaseStaff <= weightBase) {
+        if (weightBaseStaff < weightBase) {
             sender.sendPath(staff, "Messages.Errors.upAdminWeightError");
 
             String leakMessage = "Messages.ConsoleLogs.Leak.upAdminWeightError";
@@ -141,7 +141,7 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-        if (weightBaseStaff <= weightBase) {
+        if (weightBaseStaff < weightBase) {
             sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
 
             String leakMessage = "Messages.ConsoleLogs.Leak.downAdminWeightError";
@@ -201,29 +201,26 @@ public class AdminsStaffService implements StaffServiceAPI {
         }
 
         for (String key : ranksSection.getKeys(false)) {
-            if(cfg.getInt("Admin.AdminRanks." + key + ".weight") == weight)  {
-                int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
-                String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
+            if (cfg.getInt("Admin.AdminRanks." + key + ".weight") != weight) continue;
+            int salary = cfg.getInt("Admin.AdminRanks." + key + ".salary");
+            String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
-                adminSessionManager.update(adminID, prefix, weight, salary);
-                Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, staffID, weight));
-                staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
+            adminSessionManager.update(adminID, prefix, weight, salary);
+            Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, staffID, weight));
+            staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
 
-                sender.sendPath(admin, "Messages.successfulSetAdmin",
-                        "%level", String.valueOf(weight),
-                        "%staff", staff.getName()
-                );
+            sender.sendPath(admin, "Messages.successfulSetAdmin",
+                    "%level", String.valueOf(weight),
+                    "%staff", staff.getName()
+            );
 
 
-                sender.sendPath(staff, "Messages.successfulSetStaff",
-                        "%level", String.valueOf(weight),
-                        "%admin", admin.getName()
-                );
+            sender.sendPath(staff, "Messages.successfulSetStaff",
+                    "%level", String.valueOf(weight),
+                    "%admin", admin.getName()
+            );
 
-                return;
-            } else {
-                sender.sendPath(staff, "Messages.Errors.setAdminWeightNotFound");
-            }
+            return;
         }
     }
 
@@ -238,7 +235,10 @@ public class AdminsStaffService implements StaffServiceAPI {
         // Сделать ли триггер на слив через снятие?
         // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff < weightBaseAdmin) {
-            sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+            sender.sendPath(staff, "Messages.Errors.delAdminWeightError",
+                    "%admin", admin.getName(),
+                    "%staff", staff.getName()
+            );
 
             String leakMessage = "Messages.ConsoleLogs.Leak.delAdminWeightError";
             Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
@@ -267,6 +267,8 @@ public class AdminsStaffService implements StaffServiceAPI {
             return;
         }
 
+        Bukkit.getLogger().warning("ВЫДАЧА");
+
         String action = cfg.getString("Admin.Bonus.giveBonus")
                 .replace("%admin", admin.getName())
                 .replace("%bonus", String.valueOf(sum));
@@ -286,6 +288,8 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         for (Player admin : Bukkit.getOnlinePlayers()) {
             if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;
+
+            Bukkit.getLogger().warning("ВЫДАЧА");
 
             String action = cfg.getString("Admin.Bonus.giveBonus")
                     .replace("%admin", admin.getName())

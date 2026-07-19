@@ -60,12 +60,6 @@ public class AdminDelBlackListCommand implements CommandExecutor {
         String reason = String.join(" ", message);
         Player admin = Bukkit.getPlayer(strings[0]);
 
-        String adminPermission = cfg.getString("Permissions.admin");
-        if (!admin.hasPermission(adminPermission)) {
-            sender.sendPath(staff, "Messages.Errors.notAdmin");
-            return false;
-        }
-
         if (command.getName().toLowerCase().equalsIgnoreCase("abdlist")) {
             staffService.adminDelBlackList(admin.getUniqueId(), staff.getUniqueId(), reason);
         }

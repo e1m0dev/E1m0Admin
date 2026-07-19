@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 import tvgirl.elmodev.e1m0Admin.event.AdminLeakEvent;
+import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0admin.api.service.gui.SecretCodeServiceAPI;
 import tvgirl.elmodev.e1m0Admin.event.AdminAccessEvent;
 import tvgirl.elmodev.e1m0Admin.repository.gui.SecretCodeRepository;
@@ -25,6 +26,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
     private final HashMap<UUID, SecretCodeState> secretCode;
     private final SecretCodeRepository secretCodeRepository;
     private final HashMap<UUID, Integer> attemptsInputCode;
+    private final AdminStaffRepository staffRepository;
     private final SecretCodeManager secretCodeManager;
     private final E1m0Permission e1m0Permission;
     private final FileConfiguration cfg;
@@ -32,10 +34,11 @@ public class SecretCodeService implements SecretCodeServiceAPI {
 
     private E1m0Color color = new E1m0Color();
 
-    public SecretCodeService(HashMap<UUID, SecretCodeState> secretCode, SecretCodeRepository secretCodeRepository, HashMap<UUID, Integer> attempsInputCode, SecretCodeManager secretCodeManager, E1m0Permission e1m0Permission, FileConfiguration cfg, E1m0Sender sender) {
+    public SecretCodeService(HashMap<UUID, SecretCodeState> secretCode, SecretCodeRepository secretCodeRepository, HashMap<UUID, Integer> attempsInputCode, AdminStaffRepository staffRepository, SecretCodeManager secretCodeManager, E1m0Permission e1m0Permission, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
         this.secretCodeManager = secretCodeManager;
         this.attemptsInputCode = attempsInputCode;
+        this.staffRepository = staffRepository;
         this.e1m0Permission = e1m0Permission;
         this.secretCode = secretCode;
         this.sender = sender;
@@ -96,7 +99,8 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             if(cfg.getBoolean("Admin.SecretCode.accessCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
-                        sender.sendPathCfg(adm, "Admin.SecretCode.adminAccessNotify");
+                        sender.sendPathCfg(adm, "Admin.SecretCode.adminAccessNotify",
+                                "%admin", adm.getName());
                     }
                 }
 
@@ -132,7 +136,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
 
             if (attempt >= maxSecretCodeInputWrong) {
                 sender.sendPath(admin, "Messages.Errors.manyWrongAttemptsSecret");
-                secretCodeManager.addBlockAdmin(admin.getUniqueId());
+                staffRepository.setAdminABanConsole(admin.getUniqueId(), consoleID);
 
                 Bukkit.getPluginManager().callEvent(new AdminLeakEvent(admin.getUniqueId(), consoleID, "Messages.ConsoleLogs.wrongSecret"));
             }
@@ -140,7 +144,8 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             if(cfg.getBoolean("Admin.SecretCode.wrongCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
-                        sender.sendPathCfg(adm, "Admin.SecretCode.wrongCodeNotify");
+                        sender.sendPathCfg(adm, "Admin.SecretCode.wrongCodeNotify",
+                                "%admin", adm.getName());
                     }
                 }
 
@@ -155,7 +160,6 @@ public class SecretCodeService implements SecretCodeServiceAPI {
 
             secretCode.remove(id);
             user.closeInventory();
-            Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(user.getPlayer(), "WRONG CODE"));
         }
     }
 

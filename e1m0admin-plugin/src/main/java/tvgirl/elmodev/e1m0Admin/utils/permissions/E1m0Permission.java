@@ -2,6 +2,7 @@ package tvgirl.elmodev.e1m0Admin.utils.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0admin.api.state.secretcode.SecretCodeState;
 import tvgirl.elmodev.e1m0admin.api.utils.PermissionsManagerAPI;
@@ -13,14 +14,14 @@ import java.util.UUID;
 
 public class E1m0Permission implements PermissionsManagerAPI {
     private final AdminSystemRepository systemRepository;
+    private final AdminStaffRepository staffRepository;
     private final SecretCodeManager codeManager;
-    private final HashSet<UUID> blockedAdmins;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
-    public E1m0Permission(AdminSystemRepository systemRepository, SecretCodeManager codeManager, HashSet<UUID> blockedAdmins, FileConfiguration cfg, E1m0Sender sender) {
+    public E1m0Permission(AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, SecretCodeManager codeManager, FileConfiguration cfg, E1m0Sender sender) {
         this.systemRepository = systemRepository;
-        this.blockedAdmins = blockedAdmins;
+        this.staffRepository = staffRepository;
         this.codeManager = codeManager;
         this.sender = sender;
         this.cfg = cfg;
@@ -28,7 +29,8 @@ public class E1m0Permission implements PermissionsManagerAPI {
 
     @Override
     public boolean checkSystem(UUID id) {
-        if (blockedAdmins.contains(id)) {
+        boolean isBlocked = staffRepository.checkAdminABan(id);
+        if (isBlocked) {
             sender.sendPath(Bukkit.getPlayer(id), "Messages.Errors.youAdminAccessIsBlocked");
             return false;
         }

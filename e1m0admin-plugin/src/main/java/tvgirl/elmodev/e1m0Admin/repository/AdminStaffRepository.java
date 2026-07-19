@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class AdminStaffRepository implements StaffRepositoryAPI {
 
+    private UUID consoleID = UUID.fromString("77777777-7777-7777-7777-777777777777");
     private final Jdbi jdbi;
 
     public AdminStaffRepository(Jdbi jdbi) {
@@ -73,7 +74,12 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
         Player admin = Bukkit.getPlayer(adminID);
         Player staff = Bukkit.getPlayer(staffID);
 
-        bonusDAO.insert(UUID.randomUUID().toString(), staffID.toString(), adminID.toString(), admin.getName(), staff.getName(), sum, message);
+        if (staff != null) {
+            bonusDAO.insert(UUID.randomUUID().toString(), consoleID.toString(), adminID.toString(), admin.getName(), "CONSOLE", sum, message);
+        } else {
+            bonusDAO.insert(UUID.randomUUID().toString(), staffID.toString(), adminID.toString(), admin.getName(), staff.getName(), sum, message);
+
+        }
     }
 
     @Override

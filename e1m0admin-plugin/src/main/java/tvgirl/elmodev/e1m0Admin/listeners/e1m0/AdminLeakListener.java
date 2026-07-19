@@ -29,12 +29,12 @@ public class AdminLeakListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onSecurityNotify(AdminLeakEvent e) {
-        Player leak = Bukkit.getPlayer(e.getStaffID());
-        Player admin = Bukkit.getPlayer(e.getAdminID());
+        Player leak = Bukkit.getPlayer(e.getAdminID());
+        Player staff = Bukkit.getPlayer(e.getStaffID());
 
         sender.sendConsole(Bukkit.getConsoleSender(), messageCfg.getString(e.getLeakMessage()), // | Отправляю лог в CLS
                 "%leak", leak.getName(),
-                "%admin", admin.getName());
+                "%admin", staff.getName());
 
         systemService.autoLeakActions(e.getAdminID(), e.getStaffID()); // | Выполняю действия из конфига к админу (ам)
         secretCodeManager.takeAdminAccess(e.getStaffID()); // | Отбираю доступ у администратора за попытку вмешательства.

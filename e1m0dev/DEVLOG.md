@@ -2019,3 +2019,57 @@ resources:
 
 e1m0dev:
 💚 TODO.md | Новые идеи для TODO list 4.0
+
+Version 3.1.0 - Commit 3.1.0: Big fix new && old functions and users feedback.
+
+Command:
+💜 AccessCommand | Решена проблема с правами у AdminAccessCommand
+💜 AccessCommand | Решена проблема с багом не правильных вводов пароля!
+
+💜 ThanksCommand | Решена проблема с багом не верного Permissions
+
+💜 ConsoleBonusAllCommand | Решена проблема с выводом в Database.
+
+💜 AdminBonusAllCommand | Решена проблема с выводом средств для игроков, теперь команда все нормально пропускает.
+💜 AdminBonusCommand | Решена проблема с выводом средств для игроков, теперь команда все нормально пропускает.
+
+💜 AdminBonusAllCommand | Решена проблема с большим length для пропуска команды.
+💜 AdminBonusCommand | Решена проблема с большим length для пропуска команды.
+
+💜 AdminDelBlackListCommand | Удалено админ условие, чтобы вынести из ЧС человек не обязательно должен быть админом.
+
+Service:
+💜 AdminsStaffService | Решена проблема фикса условий weight в AdminUp
+💜 AdminsStaffService | Решена проблема фикса условий weight в AdminSet
+💜 AdminsStaffService | Решена проблема фикса условий weight в AdminDel
+💜 AdminsStaffService | Решена проблема фикса условий weight в AdminDown
+
+💜 AdminsStaffService | Решена проблема deleteAdmin в его плейсхолдерах условий.
+
+💜 ConsoleService | Были решены пробелы по условиям for по weight, замена на новые условия без бесячего логирования.
+
+Repository:
+💜 AdminStaffRepository | Логика giveBonusLog была разделена на два слоя для консоли и лога staff.
+
+State:
+💜 SecretCodeManager | Убраны методы старого кэщирования - больше не используется!
+
+TabCompleter:
+💜 MainTabCompleter | Пофикшена проблема с "thanks"
+
+utils:
+💜 E1m0Permission | Решена проблема с старым кэшированием, замена на новый лад.
+
+resources:
+💜 messages.yml | Решена проблема с патчем isAdminContainsData из конфига.
+
+💜 messages.yml | Решена проблема с патчем isAdminContainsData из конфига.
+💜 messages.yml | Решена проблема с патчем wrongCodeNotify а точнее с его placeholders.
+
+💜 config.yml | В Server добавлен новый вентиль: complement для закрытия бага с командой
+
+💜 config.yml | В Server'е переименован вентиль: adminbonus на abonus для закрытия бага с командой
+💜 config.yml | В Server'е переименован вентиль: adminbonusall на abonusall для закрытия бага с командой
+
+💜 config.yml | Решена проблема с патчем AdminHelp.admin из конфига.
+💜 config.yml | Решена проблема с патчем AdminHelp.staff из конфига.
