@@ -96,7 +96,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             if(cfg.getBoolean("Admin.SecretCode.accessCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
-                        sender.sendPath(adm, "Admin.SecretCode.adminAccessNotify");
+                        sender.sendPathCfg(adm, "Admin.SecretCode.adminAccessNotify");
                     }
                 }
 
@@ -140,7 +140,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             if(cfg.getBoolean("Admin.SecretCode.wrongCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
-                        sender.sendPath(adm, "Admin.SecretCode.wrongCodeNotify");
+                        sender.sendPathCfg(adm, "Admin.SecretCode.wrongCodeNotify");
                     }
                 }
 

@@ -100,24 +100,17 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     @Override
     public void delAdminABan(UUID adminID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
-
-        Bukkit.getLogger().warning("3333");
-
         blockDAO.delAdminABan(adminID.toString());
     }
 
     @Override
     public boolean checkAdminABan(UUID suspectID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
-
-        Bukkit.getLogger().warning(suspectID.toString());
-        Bukkit.getLogger().warning(blockDAO.checkInABan(suspectID.toString()));
-
         return blockDAO.checkInABan(suspectID.toString()) != null;
     }
 
     @Override
-    public void setAdminBlockList(UUID adminID, UUID staffID, String reason) {
+    public void setAdminBlackList(UUID adminID, UUID staffID, String reason) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
 
         String transactionID = UUID.randomUUID().toString();
@@ -128,13 +121,13 @@ public class AdminStaffRepository implements StaffRepositoryAPI {
     }
 
     @Override
-    public void delAdminBlockList(UUID adminID) {
+    public void delAdminBlackList(UUID adminID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
         blockDAO.delAdminBlockList(adminID.toString());
     }
 
     @Override
-    public boolean checkAdminBlockList(UUID adminID) {
+    public boolean checkAdminBlackList(UUID adminID) {
         BlockDAO blockDAO = jdbi.onDemand(BlockDAO.class);
         return blockDAO.checkInBlockList(adminID.toString()) != null;
     }

@@ -23,9 +23,9 @@ public interface StaffRepositoryAPI {
 
     boolean checkAdminABan(UUID adminID); // Есть ли человек в базе подозреваемых по сливу?
 
-    void setAdminBlockList(UUID adminID, UUID staffID, String reason); // Занести в базу информацию о пользователе в Черном Списке Администрации (ЧСА)
+    void setAdminBlackList(UUID adminID, UUID staffID, String reason); // Занести в базу информацию о пользователе в Черном Списке Администрации (ЧСА)
 
-    void delAdminBlockList(UUID adminID); // Вынести из Черного Списка Администрации
+    void delAdminBlackList(UUID adminID); // Вынести из Черного Списка Администрации
 
-    boolean checkAdminBlockList(UUID adminID); // Проверить, находится ли человек в Черном Списке Администрации?
+    boolean checkAdminBlackList(UUID adminID); // Проверить, находится ли человек в Черном Списке Администрации?
 }

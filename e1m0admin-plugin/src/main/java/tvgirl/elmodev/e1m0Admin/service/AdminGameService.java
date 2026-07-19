@@ -199,8 +199,6 @@ public class AdminGameService implements GameServiceAPI {
                         String argContent = report.getReport();
                         String argPlayer = report.getPlayerNick();
 
-                        Bukkit.getLogger().warning("РЕПОРТ БЫЛ ОТППРАВЛЕН!!");  // ТЕСТЕР
-
                         sender.sendPathCfg(adm, "Admin.Report.NewReport.reportMessage",
                                 "%player", argPlayer,
                                 "%content", argContent);
@@ -284,8 +282,6 @@ public class AdminGameService implements GameServiceAPI {
             return;
         }
 
-        Bukkit.getLogger().warning("adminBlockAccess! / 1.2"); // ТЕСТЕР
-
         staffRepository.setAdminABan(adminID, suspectID); // Таргету - блокирует доступ админ, потому что он использовал /aban, а вот самому админу, блокирует доступ СИСТЕМА, потому что это ТОЖЕ элемент защиты.
         staffRepository.setAdminABanConsole(adminID, consoleID);
 
@@ -327,8 +323,6 @@ public class AdminGameService implements GameServiceAPI {
 
         List<String> finalMessage = new ArrayList<>();
         List<String> cfgAdminList = cfg.getStringList("Admin.AdminList");
-
-        Bukkit.getLogger().warning("getAdminList / 1!"); // ТЕСТЕР
 
         for (Player admin : Bukkit.getOnlinePlayers()) {
             if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;

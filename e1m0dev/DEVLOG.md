@@ -1967,3 +1967,55 @@ E1m0DEV:
 🧑‍💻 E1m0DEV: 5-6 часов тестов и исправлений за два подхода и это даже не все, в прицнипе, не о чем не жалею, завтра уже
 думаю идем на релиз если бог даст, много чего не записал в деблог каких фиксов, но я думаю уже не важно, больше
 отлаживал
+
+Version 3.0.0 - Commit 3.4.0: Release, last tests, fix, and remove testers branch
+
+API:
+🩷 StaffServiceAPI | adminAddBlockList -> adminAddBlackList - Уменьшает путаницу для других разработчиков.
+🩷 StaffServiceAPI | adminAddBlockList -> adminAddBlackList - Уменьшает путаницу для других разработчиков.
+
+GUI:
+💜 SecretCodeGUI | Были пофикшены головы, слава богу 5.5 нашел то что я не сохранил meta.
+
+Command:
+❗ ALL CONSOLE COMMAND | Добавил новое условие для того чтобы игроки не использовали консольные команды.
+
+💛 AdminAddBlackListCommand | Перевод на blAckList вместо blOckList.
+💛 AdminDelBlackListCommand | Перевод на blAckList вместо blOckList.
+
+Service:
+🩷 StaffService | ..blockList -> ..blackList - Уменьшает путаницу для других разработчиков.
+🩷 StaffService | adminAddBlockList -> adminAddBlackList - Уменьшает путаницу для других разработчиков.
+
+💜 SecretCodeService | Исправил несколько путей благодаря новому отладчику, не жалею что он появился.
+
+💜 AdminsStaffService | Исправил баг с путем в конфиге до "Message.Error.." -> "MessageS.Error.."
+💜 ConsoleService | Исправил баг с путем в конфиге до     "Message.Error.." -> "MessageS.Error.."
+
+💜 ConsoleService | Исправил баг c двойным вызовом репо из-за чего два раза выбивало ключ setSecret.
+
+💜 AdminStaffService | Исправил баг с путем в конфиге до "Messages.successfulAddBlockList"
+💜 AdminStaffService | Исправил баг с путем в конфиге до "Messages.successfulRemoveBlackList"
+
+Repository:
+🩷 AdminStaffRepository | adminAddBlockList -> adminAddBlackList - Важное переименование, для улучшения читаемости
+систем.
+
+Utils:
+💚 E1m0Sender | Добавлены новые проверки логических интернлов, и ошибок path.
+
+E1m0Admin:
+💜 E1m0Admin | Исправил баг с регистрацией команды и ее навеса: ReportAcceptController
+💜 E1m0Admin | Исправил баг с регистрацией навеса: AdminDelBlackListCommand
+
+resources:
+💚 messages.yml en -> ru | Были добавлены, исправлены, переведены некоторые сообщения.
+
+💚 messages.yml | sendInternalError - Новое сообщение, отвечает за внутреннюю ошибку поиска сообщения.
+💚 messages.yml | playerConsoleError - Новое сообщение, отвечает за внутреннюю ошибку для использующего консольную
+команду в игре.
+
+🧑‍💻 E1m0DEV: Добавил кучу тесторов, не забыть убрать.
+
+e1m0dev:
+💚 TODO.md | Новые идеи для TODO list 4.0

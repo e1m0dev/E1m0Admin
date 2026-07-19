@@ -64,14 +64,10 @@ public class ReportGUI implements ReportGuiAPI {
 
         int size = cfg.getInt("Admin.GUI.ReportGUI.SIZE");
 
-        Bukkit.getLogger().warning("Size: " + size);
-
         String nameMenu = cfg.getString("Admin.GUI.ReportGUI.NAME");
         String finalNameMenu = PlainTextComponentSerializer.plainText().serialize(color.parse(nameMenu));
 
         Inventory inv = Bukkit.createInventory(holder, size, finalNameMenu);
-
-        Bukkit.getLogger().warning("2"); // ТЕСТЕР
 
         // ⌚ | Репорты
         Bukkit.getScheduler().runTask(plugin, () -> {
@@ -107,8 +103,6 @@ public class ReportGUI implements ReportGuiAPI {
             }
         });
 
-        Bukkit.getLogger().warning("3"); // ТЕСТЕР
-
         // ▶️ | Кнопки
         for(String s : reportGui.getKeys(false)) {
             ItemStack item = new ItemStack(Material.valueOf(cfg.getString("Admin.GUI.ReportGUI.items." + s + ".item")));
@@ -126,8 +120,6 @@ public class ReportGUI implements ReportGuiAPI {
             item.setItemMeta(meta);
             inv.setItem(itemSlot, item);
         }
-
-        Bukkit.getLogger().warning("4"); // ТЕСТЕР
 
         adm.openInventory(inv);
     }

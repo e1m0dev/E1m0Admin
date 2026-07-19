@@ -71,8 +71,6 @@ public class PlayerReportCommand implements CommandExecutor {
 
         if (reportList != null) {
             if (reportList.size() >= maxSize) {
-                Bukkit.getLogger().info(String.valueOf(reportList.size() >= maxSize));
-
                 sender.sendPath(player, "Messages.Errors.reportSizeIsMax");
                 return false;
             }

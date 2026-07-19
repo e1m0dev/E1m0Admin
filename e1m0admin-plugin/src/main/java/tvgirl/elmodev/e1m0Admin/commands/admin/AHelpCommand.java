@@ -36,8 +36,6 @@ public class AHelpCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().warning("ahelp / 1!"); // ТЕСТЕР
-
         if (command.getName().toLowerCase().equalsIgnoreCase("ahelp")) {
             service.adminHelp(admin.getUniqueId());
 

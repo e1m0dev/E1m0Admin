@@ -13,6 +13,7 @@ import tvgirl.elmodev.e1m0Admin.commands.player.AdminsCommand;
 import tvgirl.elmodev.e1m0Admin.commands.player.PlayerReportCommand;
 import tvgirl.elmodev.e1m0Admin.commands.player.ThanksCommand;
 import tvgirl.elmodev.e1m0Admin.commands.staff.*;
+import tvgirl.elmodev.e1m0Admin.commands.system.ReportAcceptController;
 import tvgirl.elmodev.e1m0Admin.gui.controller.report.ReportController;
 import tvgirl.elmodev.e1m0Admin.gui.controller.secretcode.SecretCodeController;
 import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
@@ -237,7 +238,7 @@ public final class E1m0Admin extends JavaPlugin {
         getCommand("asecret").setExecutor(new AdminSetSecretCode(sender, getConfig(), staffService, permissionManager));
         getCommand("abonus").setExecutor(new AdminBonusCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("adel").setExecutor(new AdminDeleteCommand(sender, getConfig(), staffService, permissionManager));
-        getCommand("abdlist").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
+        getCommand("abdlist").setExecutor(new AdminDelBlackListCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("aset").setExecutor(new AdminSetCommand(sender, getConfig(), staffService, permissionManager));
         getCommand("aup").setExecutor(new AdminUpCommand(sender, getConfig(), staffService, permissionManager));
 
@@ -256,6 +257,9 @@ public final class E1m0Admin extends JavaPlugin {
 
         getCommand("csetadmin").setExecutor(new ConsoleSetAdminCommand(sender, consoleService));
         getCommand("csetsecret").setExecutor(new ConsoleSetSecretCommand(sender, consoleService));
+
+        // - | System
+        getCommand("arepaccept").setExecutor(new ReportAcceptController(sender, getConfig(), systemService));
 
         // ❓ | Tab-Completer.
         getCommand("re").setTabCompleter(new MainTabCompleter(getConfig()));
@@ -305,8 +309,6 @@ public final class E1m0Admin extends JavaPlugin {
             Bukkit.getLogger().warning("config -> mainLanguage: en_en.yml");
         } else {
             saveResource("lang/" + lang, false);
-            Bukkit.getLogger().info("Конфиг установлен: " + lang);
-            Bukkit.getLogger().info("Config has set: " + lang);
         }
 
         messageConfig = YamlConfiguration.loadConfiguration(messages);

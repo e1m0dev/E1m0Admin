@@ -67,7 +67,7 @@ public class AdminAddBlackListCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("ablist")) {
-            staffService.adminAddBlockList(admin.getUniqueId(), staff.getUniqueId(), reason);
+            staffService.adminAddBlackList(admin.getUniqueId(), staff.getUniqueId(), reason);
         }
 
         return true;

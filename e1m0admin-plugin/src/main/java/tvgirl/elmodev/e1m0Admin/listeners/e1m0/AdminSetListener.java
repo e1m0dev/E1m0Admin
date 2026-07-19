@@ -24,9 +24,6 @@ public class AdminSetListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAdminSet(AdminSetEvent e) {
         int weight = e.getWeight();
-
-        Bukkit.getLogger().warning("ДОШЕЛ ДО ЛИСТЕНЕРА"); // ТЕСТЕР
-
         systemService.autoSetAdmin(e.getAdminID(), e.getStaffID(), weight);
     }
 }

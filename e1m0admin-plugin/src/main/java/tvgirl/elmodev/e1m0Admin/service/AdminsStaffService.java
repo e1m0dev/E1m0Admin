@@ -159,12 +159,8 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         int targetWeight = weightBase - 1;
 
-        Bukkit.getLogger().info("Target Weight" + targetWeight);
-        Bukkit.getLogger().info("Base Weight" + weightBase);
-
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-            Bukkit.getLogger().info("CFG Weight" + cfgWeight);
             if (targetWeight == cfgWeight) {
                 currentKey = key;
                 break;
@@ -195,13 +191,12 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         if (systemRepository.checkAdminInBase(adminID)) {
             sender.sendPath(staff, "Messages.Errors.isAdminContainsData");
-            Bukkit.getLogger().warning("Человек уже есть в базе данных!");
             return;
         }
 
-        boolean inBlackList = staffRepository.checkAdminBlockList(adminID);
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
         if (inBlackList) {
-            sender.sendPath(staff, "Message.Errors.setAdminInBlackList");
+            sender.sendPath(staff, "Messages.Errors.adminInBlackList");
             return;
         }
 
@@ -261,8 +256,6 @@ public class AdminsStaffService implements StaffServiceAPI {
         secretCodeRepository.systemDeleteAdmin(adminID); // Удаляем доступ к командам
         staffRepository.deleteAdminStatusLog(staffID, adminID, reason); // Лог об удалении
         Bukkit.getPluginManager().callEvent(new AdminDelEvent(adminID, staffID)); // Создаем ивент об увольнении
-
-        Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /adel. Команда прошла sendRepo.");
     }
 
     @Override
@@ -348,9 +341,6 @@ public class AdminsStaffService implements StaffServiceAPI {
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        Bukkit.getLogger().warning("blockStaff " + isBlockedStaff);
-        Bukkit.getLogger().warning("blockStaff " + isBlockedAdmin);
-
         if (isBlockedStaff) {
             sender.sendPath(staff, "Messages.Errors.youAdminAccessIsBlocked");
             return;
@@ -372,13 +362,13 @@ public class AdminsStaffService implements StaffServiceAPI {
     }
 
     @Override
-    public void adminAddBlockList(UUID adminID, UUID staffID, String reason) {
-        boolean inBlockList = staffRepository.checkAdminBlockList(adminID);
+    public void adminAddBlackList(UUID adminID, UUID staffID, String reason) {
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
         boolean isAdmin = systemRepository.checkAdminInBase(adminID);
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (inBlockList) {
+        if (inBlackList) {
             sender.sendPath(staff, "Messages.Errors.adminInBlackList");
             return;
         }
@@ -403,27 +393,27 @@ public class AdminsStaffService implements StaffServiceAPI {
             deleteAdmin(adminID, staffID, reason);
         }
 
-        sender.sendPath(staff, "Messages.Errors.successfulAddBlockList",
+        sender.sendPath(staff, "Messages.successfulAddBlockList",
                 "%admin", admin.getName());
 
-        staffRepository.setAdminBlockList(adminID, staffID, reason);
+        staffRepository.setAdminBlackList(adminID, staffID, reason);
     }
 
     @Override
-    public void adminDelBlockList(UUID adminID, UUID staffID, String reason) {
-        boolean inBlockList = staffRepository.checkAdminBlockList(adminID);
+    public void adminDelBlackList(UUID adminID, UUID staffID, String reason) {
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
         Player admin = Bukkit.getPlayer(adminID);
         Player staff = Bukkit.getPlayer(staffID);
 
-        if (!inBlockList) {
+        if (!inBlackList) {
             sender.sendPath(staff, "Messages.Errors.adminNotInBlackList",
                     "%admin", admin.getName());
             return;
         }
 
-        sender.sendPath(staff, "Messages.Errors.successfulRemoveBlockList",
+        sender.sendPath(staff, "Messages.successfulRemoveBlackList",
                 "%admin", admin.getName());
 
-        staffRepository.delAdminBlockList(adminID);
+        staffRepository.delAdminBlackList(adminID);
     }
 }

@@ -35,25 +35,17 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().warning("0.1"); // ТЕСТЕР
-
         boolean isAllowed = cfg.getBoolean("Server.report");
         if (!isAllowed) {
             return false;
         }
-
-        Bukkit.getLogger().warning("0.2"); // ТЕСТЕР
 
         if (strings.length < 1) {
             sender.sendPath(admin, "Messages.Errors.lengthError");
             return false;
         }
 
-        Bukkit.getLogger().warning("0.3"); // ТЕСТЕР
-
         if (!permissionManager.checkSystem(admin.getUniqueId())) return false;
-
-        Bukkit.getLogger().warning("0.4"); // ТЕСТЕР
 
         boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
         if (!checkPermission) {
@@ -61,21 +53,16 @@ public class ReportCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().warning("0.5"); // ТЕСТЕР
-
         String permission = cfg.getString("Permissions.arep");
         if (!admin.hasPermission(permission)) {
             sender.sendPath(admin, "Messages.Errors.permissionError");
             return false;
         }
 
-        Bukkit.getLogger().warning("0.6"); // ТЕСТЕР
-
         String response = String.join(" ", strings);
 
         // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
         if (command.getName().toLowerCase().equalsIgnoreCase("arep")) {
-            Bukkit.getLogger().warning("1"); // ТЕСТЕР
 
             reportGUI.openReportGUI(admin.getUniqueId(), response);
 

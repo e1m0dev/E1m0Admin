@@ -46,7 +46,6 @@ public class ConsoleService implements ConsoleServiceAPI {
             secretCodeRepository.systemSetSecretCode(adminID, code);
         }
 
-        secretCodeRepository.systemSetSecretCode(adminID, code);
         sender.sendConsole(Bukkit.getConsoleSender(), "Messages.successfulAdminSetSecret");
 
         sender.sendPath(admin, "Messages.changeCodeAdmin",
@@ -64,16 +63,14 @@ public class ConsoleService implements ConsoleServiceAPI {
             return;
         }
 
-        boolean inBlackList = staffRepository.checkAdminBlockList(adminID);
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
         if (inBlackList) {
-            sender.sendConsole(Bukkit.getServer().getConsoleSender(), "Message.Errors.setAdminInBlackList");
+            sender.sendConsole(Bukkit.getServer().getConsoleSender(), "Messages.Errors.setAdminInBlackList");
             return;
         }
 
         // ConfigSection | Как обычно перебираю конфиг секции.
         for (String key : ranksSection.getKeys(false)) {
-            Bukkit.getLogger().warning("Console Key: " + key);
-
             // ConfigSection | Нахожу по weight ранг - и работаю с его ключом.
             if (cfg.getInt("Admin.AdminRanks." + key + ".weight") != weight) continue;
 
@@ -231,7 +228,6 @@ public class ConsoleService implements ConsoleServiceAPI {
 
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-            Bukkit.getLogger().info("Config Weight: " + cfgWeight);
 
             if (cfgWeight == targetWeight) {
                 currentKey = key;

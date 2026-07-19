@@ -28,16 +28,23 @@ public class E1m0Sender {
     }
 
     public void sendPath(@NotNull Player player, @NotNull String path, @Nullable String... replacements) {
+        String message = messageCfg.getString(path);
+        List<String> messages = messageCfg.getStringList(path);
+
         if (messageCfg.isString(path)) {
-            sendMessage(player, messageCfg.getString(path), replacements);
+            sendMessage(player, message, replacements);
             return;
         }
 
         if (messageCfg.isList(path)) {
-            for (String message : messageCfg.getStringList(path)) {
-                sendMessage(player, message, replacements);
+            for (String string : messages) {
+                sendMessage(player, string, replacements);
             }
+            return;
         }
+
+        sendMessage(player, messageCfg.getString("Messages.Errors.sendInternalError"),
+                "%path", path);
     }
 
     public void sendPathCfg(@NotNull Player player, @NotNull String path, @Nullable String... replacements) {

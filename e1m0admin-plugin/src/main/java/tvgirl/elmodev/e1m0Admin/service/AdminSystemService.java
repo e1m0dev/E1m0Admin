@@ -185,7 +185,6 @@ public class AdminSystemService implements SystemServiceAPI {
     @Override
     public void autoSetAdmin(UUID adminID, UUID staffID, int weight) {
         // 1 - | Проверки.
-        Bukkit.getLogger().info("УСПЕШНО ДОШЕЛ СЕРВИС"); // ТЕСТЕР
         boolean permissionIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetPermissions.enable");
         if (!permissionIsEnable) return;
 
@@ -198,15 +197,7 @@ public class AdminSystemService implements SystemServiceAPI {
 
         /* ❗ | PERMISSIONS */
         for (String s : permissionSections.getKeys(false)) {
-            Bukkit.getLogger().warning("Keys cfg " + s); // ТЕСТЕР
             int cfgWeight = Integer.parseInt(s);
-
-            Bukkit.getLogger().warning("Weight cfg " + cfgWeight); // ТЕСТЕР
-            Bukkit.getLogger().warning("Weight " + weight); // ТЕСТЕР
-            if (weight != cfgWeight) continue;
-
-            Bukkit.getLogger().warning("Прошел"); // ТЕСТЕР
-
             if (weight != cfgWeight) continue;
 
             // 3 - | Проверки и подготовка.
@@ -226,12 +217,7 @@ public class AdminSystemService implements SystemServiceAPI {
         for (String s : permissionSections.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight." + s);
 
-            Bukkit.getLogger().warning("Weight cfg " + cfgWeight); // ТЕСТЕР
-            Bukkit.getLogger().warning("Weight " + weight); // ТЕСТЕР
-
             if (weight != cfgWeight) continue;
-
-            Bukkit.getLogger().warning("Прошел"); // ТЕСТЕР
 
             // 3 - | Проверки и подготовка.
             List<String> skins = cfg.getStringList("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight." + s + ".skins");
@@ -288,10 +274,9 @@ public class AdminSystemService implements SystemServiceAPI {
 
     @Override
     public void handleReportAccept(UUID adminID, UUID reportID) {
-        Bukkit.getLogger().warning("ДОШЕЛ ДО СЕРВИСА" + reportID); // ТЕСТЕР
-
         for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
-            if (reportKey.getValue().getUuid() != reportID) continue;
+
+            if (!reportKey.getValue().getUuid().equals(reportID)) continue;
             Report report = reportKey.getValue();
 
             Player admin = Bukkit.getPlayer(adminID);

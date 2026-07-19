@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,11 @@ public class ConsoleUpAdminCommand implements CommandExecutor {
     // $cdel E1m0 1
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (!(commandSender instanceof ConsoleCommandSender)) {
+            sender.sendConsole(commandSender, "Messages.Errors.playerConsoleError");
+            return false;
+        }
 
         if (strings.length != 1) {
             sender.sendConsole(commandSender, "Messages.Errors.lengthError");

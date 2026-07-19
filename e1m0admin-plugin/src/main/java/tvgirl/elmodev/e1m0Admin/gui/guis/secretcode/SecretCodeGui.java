@@ -119,6 +119,7 @@ public class SecretCodeGui implements SecretCodeGuiAPI {
 
                     profile.setProperty(new ProfileProperty("textures", configBase64));
                     skullMeta.setPlayerProfile(profile);
+                    item.setItemMeta(skullMeta);
 
                     i.setItem(slot, creteSkullItem(name, action, item, lore));
                 } else if (method.equalsIgnoreCase("owner")) {

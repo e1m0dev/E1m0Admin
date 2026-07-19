@@ -1,6 +1,5 @@
 # Dear server owners, you can split messages into multiple lines just like in the teleportToAZ example.
-# You are also free to completely redesign the message layout, add extra spacing, and customize everything however you like.
-# This configuration is your playground for creativity.
+# You are also free to completely redesign the message layout, add extra spacing, and customize everything however you like. This configuration is your playground for creativity.
 Messages:
   teleportToAZ:
     - "&aSuccess! &7| &aOperation completed successfully"
@@ -48,6 +47,12 @@ Messages:
   newCompliment: "&b&aWow! &6You &ahave received a compliment for your excellent work from player: %player. Your current amount of «Admin Thanks» is &6%compliments &a🤭"
   successfulSendCompliment: "&aYour compliment has been successfully sent to the administrator. Thank you for helping us maintain the quality of the administration!"
 
+  successfulRemoveBlackList: "&aYou successful removed %admin in Administration Black List (ABL)"
+  successfulAddBlockList: "&aYou successful added %admin in Administration Black List (ABL)"
+  adminInBlackList: "&cError! Admin has in Administration Black List | (ABL)"
+
+  isAdminContainsData: "&cAdmin - already has in Admin DataBase!"
+
   # CONSOLE ACTIONS
   successfulAdminSetSecret: "&fLOG &7| &aAdministrator secret code has been successfully set!"
   successfulAdminDelete: "&fLOG &7| &aAdministrator has been successfully removed!"
@@ -62,6 +67,7 @@ Messages:
     lengthError: "&cIncorrect command usage!"
     consoleError: "This command cannot be executed from the console."
     adminNotBanned: "&cAdministrator &6%admin &chas not been blocked by the system."
+    playerConsoleError: "&cYou - Not a console!"
 
     permissionError: "&cYou do not have permission to use this command!"
 
@@ -111,6 +117,12 @@ Messages:
     adminNotInBlackList: "&cError! The administrator noy is already listed in the Administration Blacklist (ABL)."
     blacklistWeightError: "&cYour administrator level is too low to blacklist this administrator!"
 
+    successfulRemoveBlackList: "&aYou have successfully removed administrator %admin from the Administration Blacklist (ABL)."
+    successfulAddBlockList: "&aYou have successfully added administrator %admin to the Administration Blacklist (ABL)."
+    adminInBlackList: "&cError! This administrator is already blacklisted! | (ABL)"
+
+    sendInternalError: "&cInternal Error (Path) %path plugin E1m0API | E1m0Sender.. Send this message and action to developer! Code: 4435"
+
     # CONSOLE ACTIONS
     adminBanned: "&fLOG &7| &cThe specified administrator has already been blocked!"
 
@@ -120,10 +132,6 @@ Messages:
 
     setAdminIsAdminError: "&fLOG &7| &cThis player is already registered in the database!"
     setAdminWeightError: "&fLOG &7| &cAdministrator was NOT appointed — invalid administrator level!"
-
-    successfulRemoveBlockList: "&aYou have successfully removed administrator %admin from the Administration Blacklist (ABL)."
-    successfulAddBlockList: "&aYou have successfully added administrator %admin to the Administration Blacklist (ABL)."
-    adminInBlackList: "&cError! This administrator is already blacklisted! | (ABL)"
 
   ConsoleLogs:
     aHelpLog: "&fLOG &7| &7Administrator &6%admin &7used the /ahelp command 🗺️."

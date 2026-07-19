@@ -42,8 +42,6 @@ public class ReportSystemService implements ReportSystemServiceAPI {
         for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
             boolean f = reportID.equals(reportKey);
 
-            Bukkit.getLogger().warning("Boolean: " + f);
-
             if (reportKey.getValue().getUuid().equals(reportID)) {
 
                 Report report = reportKey.getValue();
@@ -74,7 +72,6 @@ public class ReportSystemService implements ReportSystemServiceAPI {
                 reportRepository.gameReportSend(newReport);
                 playerReportCache.remove(report.getPlayerID());
             } else {
-                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!");
                 admin.closeInventory();
 
                 for (Map.Entry<UUID, Report> reportKeyOff : playerReportCache.entrySet()) {

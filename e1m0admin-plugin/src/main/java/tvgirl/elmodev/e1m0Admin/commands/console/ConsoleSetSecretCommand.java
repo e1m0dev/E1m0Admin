@@ -1,6 +1,7 @@
 package tvgirl.elmodev.e1m0Admin.commands.console;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,6 +28,12 @@ public class ConsoleSetSecretCommand implements CommandExecutor {
     // $csetsecret E1m0 6969
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (!(commandSender instanceof ConsoleCommandSender)) {
+            sender.sendConsole(commandSender, "Messages.Errors.playerConsoleError");
+            return false;
+        }
+
 
         if (strings.length != 2) {
             sender.sendConsole(commandSender, "Messages.Errors.lengthError");

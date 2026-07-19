@@ -67,7 +67,7 @@ public class AdminDelBlackListCommand implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("abdlist")) {
-            staffService.adminDelBlockList(admin.getUniqueId(), staff.getUniqueId(), reason);
+            staffService.adminDelBlackList(admin.getUniqueId(), staff.getUniqueId(), reason);
         }
 
         return true;

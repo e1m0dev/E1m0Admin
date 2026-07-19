@@ -19,9 +19,9 @@ public class ReportAcceptController implements CommandExecutor {
     private final AdminSystemService service;
 
     public ReportAcceptController(E1m0Sender sender, FileConfiguration cfg, AdminSystemService service) {
+        this.service = service;
         this.sender = sender;
         this.cfg = cfg;
-        this.service = service;
     }
 
     @Override
@@ -38,7 +38,6 @@ public class ReportAcceptController implements CommandExecutor {
         }
 
         if (command.getName().toLowerCase().equalsIgnoreCase("arepaccept")) {
-            Bukkit.getLogger().warning("ДОШЕЛ ДО СЕРВИСА"); // ТЕСТЕР
             service.handleReportAccept(admin.getUniqueId(), id);
         }
 

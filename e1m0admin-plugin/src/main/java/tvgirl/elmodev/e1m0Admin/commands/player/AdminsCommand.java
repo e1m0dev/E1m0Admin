@@ -40,8 +40,6 @@ public class AdminsCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getLogger().warning("getAdminList / 0!"); // ТЕСТЕР
-
         if (command.getName().toLowerCase().equalsIgnoreCase("admins")) {
             service.getAdminList(player.getUniqueId());
         }
