@@ -1,6 +1,8 @@
 package tvgirl.elmodev.e1m0Admin.service;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -16,6 +18,7 @@ import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0Admin.utils.Message.E1m0Sender;
 import tvgirl.elmodev.e1m0admin.api.state.report.Report;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,11 +38,11 @@ public class AdminSystemService implements SystemServiceAPI {
     private E1m0Color c = new E1m0Color();
 
     public AdminSystemService(ReportSystemRepository reportRepository, AdminSessionManager sessionManager, AdminSystemRepository systemRepository, AdminStaffRepository staffRepository, Map<UUID, Report> playerReportCache, FileConfiguration cfg, E1m0Sender sender, E1m0Admin plugin) {
+        this.playerReportCache = playerReportCache;
         this.reportRepository = reportRepository;
         this.systemRepository = systemRepository;
         this.staffRepository = staffRepository;
         this.sessionManager = sessionManager;
-        this.playerReportCache = playerReportCache;
         this.sender = sender;
         this.plugin = plugin;
         this.cfg = cfg;
@@ -127,49 +130,181 @@ public class AdminSystemService implements SystemServiceAPI {
     }
 
     @Override
+    public void autoLeakActions(UUID adminID, UUID staffID) {
+        // 1 - | Проверки.
+        boolean leakActionsIsEnable = cfg.getBoolean("Admin.Leak.enable");
+        if (!leakActionsIsEnable) return;
+
+        // 2 - | Инициализация.
+        Player admin = Bukkit.getPlayer(adminID);
+        Player leak = Bukkit.getPlayer(staffID);
+
+        // 3 - | Первичное исполнение.
+        staffRepository.setAdminABan(staffID, adminID); // StaffID -> It's leak, adminID - higher rank
+
+        // 4 - | Проверки и подготовка.
+        String cfgSound = cfg.getString("Admin.Leak.LeakSound");
+        Sound sound = Sound.valueOf(cfgSound);
+
+        if (sound == null) {
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.leakSoundIsNotFound");
+            return;
+        }
+
+        List<String> leakActions = cfg.getStringList("Admin.Leak.LeakActions");
+
+        // ❗ - | Исполнение.
+        Bukkit.getOnlinePlayers().stream()
+                .filter(adm -> adm.hasPermission(cfg.getString("Permissions.admin")))
+                .forEach(adm -> adm.playSound(adm.getLocation(), sound, 1.0f, 1.0f));
+
+        leakActions.stream()
+                .map(str -> str
+                        .replace("%leak", leak.getName()
+                                .replace("%admin", admin.getName())))
+
+                .forEach(perm -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), perm));
+    }
+
+    @Override
+    public void autoComplimentActions(UUID adminID) {
+        boolean isWork = cfg.getBoolean("Admin.Compliment.enable");
+        if (!isWork) return;
+
+
+        Player admin = Bukkit.getPlayer(adminID);
+        List<String> runActions = cfg.getStringList("Admin.Compliment.Actions");
+
+        runActions
+                .stream()
+                .map(string -> string.replace("%admin", admin.getName()))
+                .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
+                .forEach(cmd -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd));
+    }
+
+    @Override
+    public void autoSetAdmin(UUID adminID, UUID staffID, int weight) {
+        // 1 - | Проверки.
+        boolean permissionIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetPermissions.enable");
+        if (!permissionIsEnable) return;
+
+        // 2 - | Инициализация.
+        Player admin = Bukkit.getPlayer(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
+
+        ConfigurationSection skinsSections = cfg.getConfigurationSection("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight");
+        ConfigurationSection permissionSections = cfg.getConfigurationSection("Admin.AutoSetAdmin.autoSetPermissions.permissionInWeight");
+
+        /* ❗ | PERMISSIONS */
+        for (String s : permissionSections.getKeys(false)) {
+            int cfgWeight = Integer.parseInt(s);
+            if (weight != cfgWeight) continue;
+
+            // 3 - | Проверки и подготовка.
+            List<String> permissions = cfg.getStringList("Admin.AutoSetAdmin.autoSetPermissions.permissionInWeight." + s + ".permissions");
+
+            // ❗ - | Исполнение.
+            permissions.stream()
+                    .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
+                    .forEach(perm -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), perm));
+        }
+
+        /* ❗ | SKINS */
+        boolean skinsIsEnable = cfg.getBoolean("Admin.AutoSetAdmin.autoSetSkins.enable");
+        if (!skinsIsEnable) return;
+
+        for (String s : permissionSections.getKeys(false)) {
+            int cfgWeight = cfg.getInt("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight." + s);
+
+            if (weight != cfgWeight) continue;
+
+            // 3 - | Проверки и подготовка.
+            List<String> skins = cfg.getStringList("Admin.AutoSetAdmin.autoSetSkins.skinsInWeight." + s + ".skins");
+
+            // ❗ - | Исполнение.
+            skins.stream()
+                    .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
+                    .forEach(skin -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), skin));
+        }
+    }
+
+    @Override
+    public void autoDelAdmin(UUID adminID, UUID staffID) {
+        // 1 - | Проверки.
+        boolean permissionIsEnable = cfg.getBoolean("Admin.AutoDelAdmin.autoDelPermissions.enable");
+        if (!permissionIsEnable) return;
+
+        // 2 - | Инициализация.
+        Player admin = Bukkit.getPlayer(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
+
+        ConfigurationSection skinsSections = cfg.getConfigurationSection("Admin.AutoDelAdmin.autoDelSkins.skinsInWeight");
+        ConfigurationSection permissionSections = cfg.getConfigurationSection("Admin.AutoDelAdmin.autoDelPermissions.permissionInWeight");
+
+        /* ❗ | PERMISSIONS */
+        for (String s : permissionSections.getKeys(false)) {
+            // 3 - | Подготовка.
+            List<String> permissions = cfg.getStringList("Admin.AutoDelAdmin.autoDelPermissions.permissionInWeight." + s + ".permissions");
+
+            // ❗ - | Исполнение.
+            permissions.stream()
+                    .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
+                    .forEach(perm -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), perm));
+        }
+
+        /* ❗ | SKINS */
+
+        boolean skinsIsEnable = cfg.getBoolean("Admin.AutoDelAdmin.autoDelSkins.enable");
+        if (!skinsIsEnable) return;
+
+        for (String s : permissionSections.getKeys(false)) {
+            // 3 - | Подготовка.
+            List<String> skins = cfg.getStringList("Admin.AutoDelAdmin.autoDelSkins.skinsInWeight." + s + ".skins");
+
+            // ❗ - | Исполнение.
+            skins.stream()
+                    .map(str -> str.replace("%admin", admin.getName()))
+                    .map(placeholder -> PlaceholderAPI.setPlaceholders(admin, placeholder))
+                    .forEach(skin -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), skin));
+        }
+    }
+
+    @Override
     public void handleReportAccept(UUID adminID, UUID reportID) {
-
         for (Map.Entry<UUID, Report> reportKey : playerReportCache.entrySet()) {
-            if (reportKey.getValue().getUuid() == reportID) {
 
-                Report report = reportKey.getValue();
+            if (!reportKey.getValue().getUuid().equals(reportID)) continue;
+            Report report = reportKey.getValue();
 
-                Player admin = Bukkit.getPlayer(adminID);
-                Player player = Bukkit.getPlayer(report.getPlayerID());
-                String response = cfg.getString("Admin.Report.fastTakeReportMessage");
+            Player admin = Bukkit.getPlayer(adminID);
+            Player player = Bukkit.getPlayer(report.getPlayerID());
+            String response = cfg.getString("Admin.Report.fastTakeReportMessage");
 
-                Report newReport = new Report(
-                        report.getUuid(),
-                        adminID,
-                        report.getPlayerID(),
-                        admin.getName(),
-                        player.getName(),
-                        report.getReport(),
-                        response,
-                        report.getStatus(),
-                        report.getCreatedAt()
-                );
+            Report newReport = new Report(
+                    report.getUuid(),
+                    adminID,
+                    report.getPlayerID(),
+                    admin.getName(),
+                    player.getName(),
+                    report.getReport(),
+                    response,
+                    report.getStatus(),
+                    report.getCreatedAt()
+            );
 
-                sender.sendPath(admin, "Messages.reportTake",
-                        "%content", report.getReport(),
-                        "%player", report.getPlayerNick());
+            sender.sendPath(admin, "Messages.reportTake",
+                    "%content", report.getReport(),
+                    "%player", report.getPlayerNick());
 
-                sender.sendPath(player, cfg.getString("Messages.reportMessagePlayerFast"),
-                        "%content", report.getReport(),
-                        "%admin", admin.getName());
+            sender.sendPath(player, "Messages.reportMessagePlayerFast",
+                    "%content", report.getReport(),
+                    "%admin", admin.getName());
 
-                reportRepository.gameReportSend(newReport);
-                playerReportCache.remove(report.getPlayerID());
-            } else {
-                Bukkit.getLogger().warning("Репорт: " + reportID + " НЕ ДЕЙСТВИТЕЛЕН, ОПАСНАЯ НЕ ОПРЕДЕЛЕННОСТЬ!");
-
-                for (Map.Entry<UUID, Report> reportKeyOff : playerReportCache.entrySet()) {
-                    if (reportKey.getValue().getUuid() == reportID) {
-                        Report report = reportKey.getValue();
-                        playerReportCache.remove(report.getPlayerID());
-                    }
-                }
-            }
+            reportRepository.gameReportSend(newReport);
+            playerReportCache.remove(report.getPlayerID());
         }
     }
 }

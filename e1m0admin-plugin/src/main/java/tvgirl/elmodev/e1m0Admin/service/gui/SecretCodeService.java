@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
+import tvgirl.elmodev.e1m0Admin.event.AdminLeakEvent;
 import tvgirl.elmodev.e1m0admin.api.service.gui.SecretCodeServiceAPI;
 import tvgirl.elmodev.e1m0Admin.event.AdminAccessEvent;
 import tvgirl.elmodev.e1m0Admin.repository.gui.SecretCodeRepository;
@@ -19,20 +20,24 @@ import java.util.UUID;
 
 public class SecretCodeService implements SecretCodeServiceAPI {
 
+    private UUID consoleID = UUID.fromString("77777777-7777-7777-7777-777777777777");
+
     private final HashMap<UUID, SecretCodeState> secretCode;
     private final SecretCodeRepository secretCodeRepository;
+    private final HashMap<UUID, Integer> attemptsInputCode;
+    private final SecretCodeManager secretCodeManager;
     private final E1m0Permission e1m0Permission;
-    private final SecretCodeManager manager;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
 
     private E1m0Color color = new E1m0Color();
 
-    public SecretCodeService(HashMap<UUID, SecretCodeState> secretCode, SecretCodeRepository secretCodeRepository, E1m0Permission e1m0Permission, SecretCodeManager manager, FileConfiguration cfg, E1m0Sender sender) {
+    public SecretCodeService(HashMap<UUID, SecretCodeState> secretCode, SecretCodeRepository secretCodeRepository, HashMap<UUID, Integer> attempsInputCode, SecretCodeManager secretCodeManager, E1m0Permission e1m0Permission, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
+        this.secretCodeManager = secretCodeManager;
+        this.attemptsInputCode = attempsInputCode;
         this.e1m0Permission = e1m0Permission;
         this.secretCode = secretCode;
-        this.manager = manager;
         this.sender = sender;
         this.cfg = cfg;
     }
@@ -91,7 +96,7 @@ public class SecretCodeService implements SecretCodeServiceAPI {
             if(cfg.getBoolean("Admin.SecretCode.accessCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
-                        sender.sendPath(adm, "Admin.SecretCode.adminAccessNotify");
+                        sender.sendPathCfg(adm, "Admin.SecretCode.adminAccessNotify");
                     }
                 }
 
@@ -113,17 +118,29 @@ public class SecretCodeService implements SecretCodeServiceAPI {
 
             // Вот тут - Админ имеет *ВЕС*, именно по этому действия уже с фактом системы, а не надуманным мной действием.
             user.closeInventory();
-            manager.addAdminAccess(state);
-            Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user));
+            secretCodeManager.addAdminAccess(state);
+            Bukkit.getPluginManager().callEvent(new AdminAccessEvent(user.getUniqueId()));
 
-
-            SecretCodeState stateCheck = manager.getAdminByID(id);
-            boolean f = stateCheck != null;
+            if (attemptsInputCode.containsKey(admin.getUniqueId())) {
+                attemptsInputCode.remove(admin.getUniqueId());
+            }
         } else {
+            attemptsInputCode.put(admin.getUniqueId(), attemptsInputCode.getOrDefault(admin.getUniqueId(), 0) + 1);
+
+            int maxSecretCodeInputWrong = cfg.getInt("Settings.maxSecretCodeInputWrong");
+            int attempt = attemptsInputCode.get(admin.getUniqueId());
+
+            if (attempt >= maxSecretCodeInputWrong) {
+                sender.sendPath(admin, "Messages.Errors.manyWrongAttemptsSecret");
+                secretCodeManager.addBlockAdmin(admin.getUniqueId());
+
+                Bukkit.getPluginManager().callEvent(new AdminLeakEvent(admin.getUniqueId(), consoleID, "Messages.ConsoleLogs.wrongSecret"));
+            }
+
             if(cfg.getBoolean("Admin.SecretCode.wrongCodeTrigger")) {
                 for (Player adm : Bukkit.getOnlinePlayers()) {
                     if (adm.hasPermission("Permission.admin")) {
-                        sender.sendPath(adm, "Admin.SecretCode.wrongCodeNotify");
+                        sender.sendPathCfg(adm, "Admin.SecretCode.wrongCodeNotify");
                     }
                 }
 

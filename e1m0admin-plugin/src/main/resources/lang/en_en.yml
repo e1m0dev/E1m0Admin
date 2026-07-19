@@ -1,0 +1,154 @@
+# Dear server owners, you can split messages into multiple lines just like in the teleportToAZ example.
+# You are also free to completely redesign the message layout, add extra spacing, and customize everything however you like. This configuration is your playground for creativity.
+Messages:
+  teleportToAZ:
+    - "&aSuccess! &7| &aOperation completed successfully"
+    - "&7You have &asuccessfully &7been teleported to the &aAdmin Zone&7!"
+    - "&aSuccess! &7| &aOperation completed successfully"
+
+  inviseOn: "&6You have enabled vanish mode!"
+  inviseOff: "&7You have disabled vanish mode!"
+
+  secretCodeAccess: "&aYou have successfully authenticated in the administration system under your account!"
+
+  reportTake: "&aYou have successfully taken player &7%player&a's report. Content: %content"
+  reportMessagePlayerFast: "&aAdministrator &6%admin &ahas successfully taken your report!"
+
+  adminBonusAll: "&7Administrator %staff has given everyone a bonus: %bonus $!"
+  adminBonus: "&7Administrator %staff has given you a bonus of: %bonus $! Message: %message"
+  adminPay: "&7You have received your administrator salary: %salary $!"
+
+  successfulSetAdmin: "&aCongratulations! You have successfully been appointed as a Level %level Administrator by &6%staff"
+  successfulSetStaff: "&6%admin &ahas successfully been appointed as a Level &6%level &aAdministrator"
+
+  successfulUpStaff: "&aYou have successfully promoted administrator &6%admin"
+  successfulUpAdmin: "&aYou have successfully been promoted by administrator &6%staff"
+
+  successfulDownStaff: "&aYou have successfully demoted administrator &6%admin"
+  successfulDownAdmin: "&aYou have been demoted by administrator &6%staff.."
+
+  successfulBlocked: "&aYou have successfully blocked administrator &6%target&a's access"
+
+  changeCodeAdmin: "❗ &cWarning! Your administrator secret code has been changed! &6Changed by: %staff. &aNew code: %code. &b&cDo not lose it!"
+  changeCodeStaff: "❗ &cWarning! You have changed administrator %admin's secret code. &6New code: %code!"
+
+  reportSended: "&aReport %report has been successfully submitted!"
+  reportAdminResponse: "&aAdministrator &6%admin &areplied to you: &6%response"
+
+  deleteAdminByStaff: "&cYou have been removed from the administration team by &6%staff!"
+  successfulDeleteAdmin: "&aYou have successfully removed administrator &6%admin!"
+
+  unbannedSystem: "&aAdministrator &6%staff &ahas successfully restored your access to the administration system. Please avoid triggering the leak protection system again."
+  successfulUnbannedSystem: "&aAdministrator &6%admin &ahas been successfully unblocked 😛."
+
+  bannedSystem: "&aAdministrator &6%staff &chas blocked your administrator access!."
+  successfulBannedSystem: "&aAdministrator &6%admin &ahas been successfully blocked 😛."
+
+  newCompliment: "&b&aWow! &6You &ahave received a compliment for your excellent work from player: %player. Your current amount of «Admin Thanks» is &6%compliments &a🤭"
+  successfulSendCompliment: "&aYour compliment has been successfully sent to the administrator. Thank you for helping us maintain the quality of the administration!"
+
+  successfulRemoveBlackList: "&aYou successful removed %admin in Administration Black List (ABL)"
+  successfulAddBlockList: "&aYou successful added %admin in Administration Black List (ABL)"
+  adminInBlackList: "&cError! Admin has in Administration Black List | (ABL)"
+
+  isAdminContainsData: "&cAdmin - already has in Admin DataBase!"
+
+  # CONSOLE ACTIONS
+  successfulAdminSetSecret: "&fLOG &7| &aAdministrator secret code has been successfully set!"
+  successfulAdminDelete: "&fLOG &7| &aAdministrator has been successfully removed!"
+  successfulAdminDown: "&fLOG &7| &aAdministrator has been successfully demoted!"
+  successfulAdminSet: "&fLOG &7| &aAdministrator has been successfully appointed!"
+  successfulAdminUp: "&fLOG &7| &aAdministrator has been successfully promoted!"
+
+  Errors:
+    notCode: "&cYou have not been assigned a secret code yet!"
+    notAdmin: "&cThis player is not an administrator..."
+    nullPlayer: "&cThat player does not exist..."
+    lengthError: "&cIncorrect command usage!"
+    consoleError: "This command cannot be executed from the console."
+    adminNotBanned: "&cAdministrator &6%admin &chas not been blocked by the system."
+    playerConsoleError: "&cYou - Not a console!"
+
+    permissionError: "&cYou do not have permission to use this command!"
+
+    secretCodeNotInput: "&6Warning! &7| &cYou have not yet verified your administrator status. Please confirm your administrator access using: &a/aaccess!"
+    secretCodeIsWrong: "&cThe secret code you entered is incorrect! Please try again."
+
+    reportSizeIsMax: "&cSorry! All administrators are currently busy handling reports. Please try again later!"
+    reportLengthError: "&cA report must contain at least &6%len &ccharacters!"
+
+    invalidSkullMethod: "Unknown skull method specified in the SecretCode GUI section."
+    configSkullGuiError: "Console warning! The 'skull_owner' variable is missing from your configuration while 'PLAYER_HEAD' is being used. Please check the latest version of the config!"
+
+    youAdminAccessIsBlocked: "&cYour administrator access has been blocked due to suspected account compromise!"
+
+    cooldownErrorCompliment: "&cError! You have already sent a compliment to this administrator. Please wait before sending another one."
+
+    # STAFF
+    staffPermissionError: "&cYou do not have the &6Senior Administrator &cpermission!"
+
+    setAdminWeightIsNull: "&cThe administrator level must be greater than 0!"
+    setAdminWeightNotFound: "&cThe specified administrator level was not found."
+
+    downAdminLevelError: "&cThis administrator is already at the lowest level!"
+    downAdminWeightError: "&cYou cannot demote this administrator!"
+
+    delAdminWeightError: "&cYou cannot remove this administrator!"
+
+    upAdminWeightError: "&cYou cannot promote this administrator!"
+    upAdminLevelError: "&cThis administrator is already at the highest level!"
+    upAdminSelfError: "&cYou cannot promote yourself!"
+
+    setSecretAdminWeightError: "&cYou cannot change the secret code of this administrator!"
+    manyWrongAttemptsSecret: "&cYour administrator permissions have been blocked because you entered the secret code incorrectly too many times!"
+    secretCodeHasInputted: "&cYou have already entered your secret PIN!"
+    setAdminCodeIsWrong: "&cThe new administrator code is invalid. &6Example: 7777"
+
+    selfRewatchError: "&cYou cannot watch to yourself!"
+    reoffNullError: "&cYou are not monitoring anyone and therefore cannot stop monitoring!"
+
+    playerHaveReport: "&cYou already have an active report!"
+    noReportsInMemory: "&cThere are currently no available reports!"
+    adminSendReportToAdmins: "&cYou're an administrator... Why would you send a report to yourself?"
+
+    adminBlockInternalError: "&cInternal error while blocking administrator access! This administrator has already been blocked."
+
+    setAdminInBlackList: "&cError! The administrator you specified is already listed in the Administration Blacklist (ABL)."
+    adminNotInBlackList: "&cError! The administrator noy is already listed in the Administration Blacklist (ABL)."
+    blacklistWeightError: "&cYour administrator level is too low to blacklist this administrator!"
+
+    successfulRemoveBlackList: "&aYou have successfully removed administrator %admin from the Administration Blacklist (ABL)."
+    successfulAddBlockList: "&aYou have successfully added administrator %admin to the Administration Blacklist (ABL)."
+    adminInBlackList: "&cError! This administrator is already blacklisted! | (ABL)"
+
+    sendInternalError: "&cInternal Error (Path) %path plugin E1m0API | E1m0Sender.. Send this message and action to developer! Code: 4435"
+
+    # CONSOLE ACTIONS
+    adminBanned: "&fLOG &7| &cThe specified administrator has already been blocked!"
+
+    leakSoundIsNotFound: "&cError! &7| &cConfiguration error at 'LeakSound'. This sound does not exist in your current Minecraft version. Example: ENTITY_ENDER_DRAGON_DEATH."
+
+    upAdminNotAdminError: "&fLOG &7| &cThe specified administrator does not exist in the database."
+
+    setAdminIsAdminError: "&fLOG &7| &cThis player is already registered in the database!"
+    setAdminWeightError: "&fLOG &7| &cAdministrator was NOT appointed — invalid administrator level!"
+
+  ConsoleLogs:
+    aHelpLog: "&fLOG &7| &7Administrator &6%admin &7used the /ahelp command 🗺️."
+    accessLog: "&fLOG &7| &7Administrator &6%admin &7has successfully authenticated in the administration system ✅."
+    inviseLog: "&fLOG &7| &7Administrator &6%admin &7enabled vanish mode 👻."
+    reportLog: "&fLOG &7| &7Administrator &6%admin &7has taken a report with response type: %response 🧑‍💻"
+    ABlockLog: "&fLOG &7| &4⚠️ IMPORTANT: ADMINISTRATOR &6%admin &4USED THE ADMIN BLOCK ON ADMINISTRATOR &6%target&4! ⚠️"
+    rewatchLog: "&fLOG &7| &7Administrator &6%admin &7started monitoring player &6%player &7🎥 — 💺🛏️..."
+
+    Leak:
+      wrongSecret:
+        - "❗"
+        - "&4SECURITY ALERT &7| &7Administrator &6%leak &7entered an incorrect secret code too many times and has been automatically blocked ❗"
+        - "❗"
+
+      upAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to promote administrator &6%admin &7who has a higher rank ❗"
+      delAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to remove administrator &6%admin &7who has a higher rank ❗"
+      blacklistWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to blacklist administrator &6%admin &7despite having a lower rank ❗"
+      downAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to demote administrator &6%admin &7who has a higher rank ❗"
+      setSecretAdminWeightError: "&4SECURITY ALERT &7| &7Administrator &6%leak &7attempted to change the secret code of administrator &6%admin &7who has a higher rank ❗"

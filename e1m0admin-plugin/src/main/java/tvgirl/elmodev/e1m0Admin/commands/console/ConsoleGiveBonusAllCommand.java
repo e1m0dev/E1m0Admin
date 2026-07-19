@@ -3,6 +3,7 @@ package tvgirl.elmodev.e1m0Admin.commands.console;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.service.ConsoleService;
@@ -29,8 +30,13 @@ public class ConsoleGiveBonusAllCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
+        if (!(commandSender instanceof ConsoleCommandSender)) {
+            sender.sendConsole(commandSender, "Messages.Errors.playerConsoleError");
+            return false;
+        }
+
         if (strings.length < 1) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 
@@ -39,12 +45,12 @@ public class ConsoleGiveBonusAllCommand implements CommandExecutor {
         int sum = Integer.parseInt(strings[0]);
 
         if (message.isEmpty()) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 
         if (sum < 0) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 

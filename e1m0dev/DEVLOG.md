@@ -1485,3 +1485,537 @@ resources:
 
 TabCompleter:
 🤔 MainTabCompleter | Вижу баг, у aban - продолжается TabCompleter, а вот у других - нет.
+
+Version 3.0.0 - Commit 3.0.0: Events, adapters, listeners, and.. Events update && New protect, Leak systems..
+
+API:
+💚 SystemServiceAPI | Добавлен метод авто-обработки действий при постановлении void autoLeakActions
+💚 SystemServiceAPI | Добавлен метод авто-обработки действий при постановлении void autoSelAdmin
+💚 SystemServiceAPI | Добавлен метод авто-обработки действий при увольнении: void autoDelAdmin
+
+Events:
+❗ ALL | ВСЕ ИВЕНТЫ, были переведены с интерфейса Player на интерфейс UUID из соображений безопасности, груза, пакетного
+шлейфа и возможных проблем в дальнейшем из-за Bukkit.Player;
+
+💚 AdminAccessListener | Перевод на UUID.
+
+💚 AdminLeakEvent | Новый ивент который оповещает о том подозрениях в сливе администрации.
+
+💚 AdminSetEvent | Новый ивент который оповещает систему о том что администратор был поставлен, теперь я могу на него
+загрузить некоторую логику, но пока что оставлю как логику для autoSet
+💚 AdminDetEvent | Новый ивент который оповещает систему о том что администратор был снят, теперь я могу на него
+загрузить некоторую логику, но пока что оставлю как логику для autoDel
+
+Listeners:
+💚 e1m0/AdminAccessListener | Переведен в режим: MONITOR TO -> NORMAL
+
+💚 e1m0/AdminSetListener | Новый адаптер для слушания ивента о новом поставленном администраторе.
+💚 e1m0/AdminDelListener | Новый адаптер для слушания ивента о новом снятом администраторе.
+
+💚 e1m0/AdminLeakListener | Важный адаптер который распределяет задачи и отправляет логи с ивента о сливе (
+AdminLeakEvent)
+
+Service:
+❗ | Почему не в StaffService? Потому что это - уже последствие. Eсли бы я все пихал в один сервис, я бы торпедировался в
+окно после прочтения этого шедевра по типу войны и мира в одном сервисе который отправляет Hello; Print! [World], вместе
+с отправкой, обработкой, последствиями до и после и т.д
+💚 AdminSystemService | Добавлены обработчик и реализация к autoLeakActions, в процессе была улучшена.
+💚 AdminSystemService | Добавлены обработчик и реализация к autoSetAdmin, в процессе была улучшена.
+💚 AdminSystemService | Добавлены обработчик и реализация к autoDelAdmin, в процессе была улучшена.
+
+💚 AdminStaffService | Добавлен обработчик вызова AdminLeakEvent - Подозрения в сливе администрации.
+💚 AdminStaffService | Был добавлен в метод: setAdmin;
+💚 AdminStaffService | Был добавлен в метод: upstatus;
+💚 AdminStaffService | Был добавлен в метод: downStatus;
+💚 AdminStaffService | Был добавлен в метод: deleteAdmin;
+💚 AdminStaffService | Был добавлен в метод: setSecretPassword;
+💛 AdminStaffService | Некоторая часть обязанностей как CLS или админ-бан - перекочевали в listener.
+
+💚 AdminStaffService | Добавлен обработчик вызова AdminSetEvent
+💚 AdminStaffService | Добавлен обработчик вызова AdminDelEvent
+
+💚 ConsoleService | Добавлен обработчик вызова AdminSetEvent
+💚 ConsoleService | Добавлен обработчик вызова AdminDelEvent
+
+E1m0Admin:
+💚 E1m0Admin | Добавлен aliases $cset.
+
+💚 E1m0Admin | Зарегистрированы новые Listeners такие как:
+💚 AdminLeakListener | Отвечает за слушание ивента о сливе администрации.
+💚 AdminSetListener | Отвечает за слушание ивента о постановлении администратора.
+💚 AdminDelListener | Отвечает за слушание ивента о снятии с поста администратора.
+
+resources:
+💚 config.yml | Добавлен новый раздел: Admin.AutoSetAdmin это новая функция 3.0 для автоматического постановления и
+выдачи всех нужных прав для администрации, их скинов, их обработчиков и т.д.
+💚 | autoSetPermissions - Отвечает за автоматическую проработку permissions и выдачу их новому администратору.
+💚 | autoSetSkins - Отвечает за автоматическую проработку скина и выдачу его новому администратору.
+
+💚 config.yml | Добавлен новый раздел: Messages.ConsoleLogs.Leak - так же новая разработка и улучшение системы ивентов а
+так же улучшение безопасности сервера.
+💚 | Добавлено сообщение: upAdminWeightError - Подозрение в сливе от повышения админа который выше по рангу с целью
+нарушить систему.
+💚 | Добавлено сообщение: delAdminWeightError - Подозрение в сливе от СНЯТИЯ админа который выше по рангу с целью
+нарушить систему.
+💚 | Добавлено сообщение: downAdminWeightError - Подозрение в сливе от ПОНИЖЕНИЯ админа который выше по рангу с целью
+нарушить систему.
+💚 | Добавлено сообщение: setSecretAdminWeightError - Подозрение в сливе от назначения нового секретного кода админа
+который выше по рангу с целью нарушить систему.
+
+💚 config.yml | Был добавлен новый раздел Admin.Leak, который позволяет делать действия, которые связанные со сливом
+админки.
+💚 config.yml | В Admin.Leak, было добавлена новая настройка звука: LeakSound для администрации.
+💚 config.yml | В Admin.Leak, было добавлена новая настройка действий при сливе: LeakActions для нарушителя.
+
+💚 plugin.yml | К консольной команде $csetadmin был добален aliases $cset потому что да, это красивее и не так бьет мне
+по мозгам, хоть это и не полный смысл команды, но людям нужно покороче, а не мой полный смысл, да и мне тестить быстрее
+с фаст командом.
+
+e1m0dev:
+🧑‍💻 E1m0Dev | Утром пытался обмануть гребанную ракетку maven central с тем что он не любит SNAPSHOT о чем я успешно
+запамятовал, через depRoot и dependencyManager — не получилось.. 🥲
+
+💚 UPDATES.TXT | Новые нововведения были успешно добавлены.
+💚 CHECKLIST.MD | Закрыл по традиции чек лист переходя на новую версию.
+
+❤️ TODO.md | Был удален TODO: Добавить автовыдачу через заданный конфиг, командой например /sadmin автоматически
+выдается и setperm и setskin, адаптивную систему для всех | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.md | Был удален TODO: Добавить автовыдачу permissions через заданный конфиг, командой например /setperm Старший,
+адаптивную систему для всех | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.md | Был удален TODO: Добавить автовыдачу скинов через заданный конфиг, командой например /setskin skin,
+адаптивную систему для всех | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.md | Был удален TODO: Добавить новых ивентов в adminStaffService по TODO: // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
+из них | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.md | Был удален TODO: При постановлении администратора сделать факт действия. Скины, коды, сообщения | TODO:
+Отложено | Причина: Выполнен - 💚.
+
+❤️ TODO.md | Был удален под-TODO: Сделать от ивентов autoActions | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.md | Был удален под-TODO: Сделать от ивентов слива sound | TODO: Отложено | Причина: Выполнен - 💚.
+
+Version 3.0.0 - Commit 3.1.0: Review, new function compliment, system language, ban-unban console
+
+🧹 Review:
+🩷 E1m0Permissions | Небольшое ревью зависимостей, убираю от мусора что-бы было красиво;
+🩷 AdminAccessEvent | Небольшое ревью зависимостей, убираю от мусора что-бы было красиво;
+🩷 AdminDelListener | Небольшое ревью зависимостей, убираю от мусора что-бы было красиво;
+🩷 AdminSetListener | Небольшое ревью зависимостей, убираю от мусора что-бы было красиво;
+🩷 AdminLeakListener | Небольшое ревью зависимостей, убираю от мусора что-бы было красиво;
+
+PROJECT:
+❗ Добавлена папка lang - В ней находятся важные сообщения на разных языках для расширения рынка потребления плагина.
+💚 ru_ru.yml - Файл настроек на русском языке.
+💚 en_en.yml - Файл настроек на английском языке.
+
+API:
+💚 SystemServiceAPI | Был добавлен новый метод autoComplimentActions который исполняет действия конфига.
+
+💚 GameRepositoryAPI | Добавлен метод addCompliment: Позволяет добавить похвалу администратору.
+
+💚 ConsoleServiceAPI | Добавлен метод consoleBanAdminAccess: Отвечает за блокировку по API извне системы.
+💚 ConsoleServiceAPI | Добавлен метод consoleUnBanAdminAccess: Отвечает за разблокировку по API извне системы.
+
+DAO:
+💚 AdminsDAO | Был добавлен новый метод addCompliment, позволяет добавить похвалу администратору.
+💚 AdminsDAO | Был добавлен новый метод getCompliment, позволяет посмотреть кол-во похвал админа.
+
+Commands:
+💚 ThanksCommand | Новый класс отвечающий за адаптер к логике добавление compliment для администратора.
+💚 ConsoleBanAdminCommand | Новый класс отвечающий за адаптер к логике блокировки админ доступа администратору.
+💚 ConsoleUnBanAdminCommand | Новый класс отвечающий за адаптер к логике разблокировки админ доступа администратору.
+
+Events:
+💚 AdminComplimentEvent | Новый Event, публикует сообщения о том что администратора похвалили.
+
+GUI:
+💚 SecretCodeGui | Добавлена обработка BASE64 текстур через PlayerProfile
+
+Listeners
+💚 AdminComplimentListener | Новый слушатель для события о том что администратору была выдана похвала.
+
+Repository:
+💚 AdminGameRepository | Был наконец-то занят чем то 😇 Добавлен метод: addCompliment - Позволяет добавить похвалу
+администратору.
+
+Service:
+💚 AdminGameService | Добавлена реализация addComplement
+
+💚 SecretCodeService | "CONSOLE" -> Заменен на более адаптивную модель cfg.getString("Settings.consolePrefix").
+
+💚 SecretCodeService | Добавлен дамп памяти attemptsInputCode<UUID, Integer> для отслеживания попыток не правильного
+/acc.
+💚 SecretCodeService | Добавлена реализация для нового дампа, теперь действия будут примениться из конфига при
+множественных попытках.
+💚 SecretCodeService | Был добавлен ивент AdminLeakEvent для подозрений в сливе и уведомлении администрации, не верный
+код - тоже является триггером на слив.
+
+TabCompleter:
+💚 MainTabCompleter | Зарегистрирована команда: thanks - Позволяет отправлять благодарность администратору.
+
+💚 MainTabCompleter | Зарегистрирована команда: cban - Позволяет блокировать доступ администратору из вне.
+💚 MainTabCompleter | Зарегистрирована команда: cunban - Позволяет разблокировать доступ администратору из вне.
+
+E1m0Admin:
+💚 E1m0Admin | ДОБАВЛЕНЫ РЕАЛИЗАЦИИ РАЗНЫХ ЯЗЫКОВ ДЛЯ СЕРВЕРОВ.
+💚 E1m0Admin | Добавлены новые зависимости к классам по DI.
+
+💚 E1m0Admin | Добавлен дамп памяти attemptsInputCode<UUID, Integer> для отслеживания попыток не правильного /acc
+💚 E1m0Admin | Добавлен дамп памяти thanksPlayers<UUID> для отслеживания похвал от игроков и их КД.
+
+💚 E1m0Admin | Зарегистрирована команда: cban - Позволяет блокировать доступ администратору из вне.
+💚 E1m0Admin | Зарегистрирована команда: cunban - Позволяет разблокировать доступ администратору из вне.
+
+💚 E1m0Admin | Зарегистрирована команда: thanks - Позволяет отправлять благодарность администратору.
+
+💜 E1m0Admin | Вчера забыл добавить новую зависимость в E1m0LeakListener в связи с Actions.
+
+resources:
+💚 config.yml | В SecretCodeGUI была добавлена настройка позволяющая создавать BASE64 профили голов.
+
+💚 config.yml | Была добавлена новая настройка Settins.consolePrefix, я иногда называю консоль терминалом, и по этому
+сделал адаптивную модель которую можно настраивать и называть как угодно.
+
+💚 config.yml | К новым функция по типу autoSet, autoDel, Leak были добавлены комментарии.
+
+💚 config.yml | Была добавлена новая настройка - maxSecretCodeInputWrong: Отвечает за максимальное кол-во введенных не
+правильно пинов до того как админка блокируется.
+💚 config.yml | Было добавлено новое сообщение - manyWrongAttemptsSecret: Уведомление о блокировке за многочисленные
+промахи по пину.
+
+💚 messages.yml en/ru | Было добавлено новое сообщение - "Messages.newCompliment": Отвечает за отправку уведомления
+администратору который получил похвалу!
+💚 messages.yml en/ru | Было добавлено новое сообщение - "Messages.successfulSendCompliment": Отвечает за отправку
+уведомления игроку о том что похвала была отправлена!
+
+💚 messages.yml en/ru | Было добавлено новое сообщение - "Messages.Error.cooldownErrorCompliment": Отвечает за отправку
+ошибки cooldown /thanks
+💚 messages.yml en/ru | Было добавлено новое сообщение - "Messages.Error.invalidSkullMethod": Отвечает за ошибку не
+правильного выбора метода голов в меню.
+
+💚 plugin.yml | Зарегистрирована команда: cban - Позволяет блокировать доступ администратору из вне.
+💚 plugin.yml | Зарегистрирована команда: cunban - Позволяет разблокировать доступ администратору из вне.
+💚 plugin.yml | Зарегистрирована команда: thanks - Позволяет отправлять благодарность администратору.
+
+e1m0dev:
+💚 E1M0DEV.MD | Принята новая идея;
+💚 Улучшение читаемости;
+💛 Закрыты некоторые;
+💛 Обновлены статусы;
+
+💚 TODO.MD | Были добавлены новые принятые идеи.
+❤️ TODO.MD | Сделать систему выдачи Salary по минутно наверное, или сделать 23s, 32m, 4h | TODO: Отложено | Причина:
+Выполнен - 💚, еще в версии 2.0.0...
+❤️ TODO.MD | Сделать триггеры для сис админов в /aban | TODO: Отложено | Причина: Выполнен - 💚, еще в версии коммите
+3.0.0.
+❤️ TODO.MD | Добавить в GUI поддержку base-64 ссылки | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.MD | Триггеры на сливы [Доработка] | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.MD | Добавить /cunban для консоли | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.MD | Добавить /cban для консоли | TODO: Отложено | Причина: Выполнен - 💚.
+
+Version 3.0.0 - Commit 3.2.0: New DAO, new block systems, new black list systems
+
+❗ README.TXT - Были добавлены новые функции, в архитектуре были указаны новые команды, классы, ивенты, слушатели,
+триггеры и все о чем я зыбыл указать в прошлом 🤭
+
+API:
+💚 StaffServiceAPI | Добавлен новый метод adminDelBlockList - Позволяет убрать администратора из списка блокировки.
+💚 StaffServiceAPI | Добавлен новый метод adminAddBlockList - Позволяет добавить администратора в список блокировки.
+
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: setAdminABan - Занести в базу информацию о предположительном сливщике
+админ-поста и отобрать права.
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: delAdminABan - Вынести из базы подозрений по поводу слива админки.
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: checkAdminABan - Есть ли человек в базе подозреваемых по сливу?
+
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: setAdminBlockList - Занести в базу информацию о пользователе в Черном
+Списке Администрации (ЧСА)
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: delAdminBlockList - Вынести из ЧСА.
+💚 AdminStaffRepositoryAPI | Добавлен новый метод: checkAdminBlockList - Проверить, находится ли человек в ЧСА?
+
+DAO:
+💚 BlockDAO | Добавлен новый класс BlockDAO, я решил не делать ABanDAO, BlockListDAO, а просто выделить логическую
+основу: Блокировка админки, либо на входе, либо на выходе.
+/* ABAN | 🧑‍🔬 */        
+💚 BlockDAO | Был добавлен новый метод: insertToABan - Заливает человека в память /aban.
+💚 BlockDAO | Был добавлен новый метод: delAdminABan - Убирает человека из памяти /aban
+💚 BlockDAO | Был добавлен новый метод: checkInABan - Проверяет человека в памяти /aban.
+/* BLOCKLIST | 🧑‍🔬 */
+💚 BlockDAO | Был добавлен новый метод: insertToBlackList - Заливает человека в память /ablist.
+💚 BlockDAO | Был добавлен новый метод: delAdminBlockList - Заливает человека в память /ablist.
+💚 BlockDAO | Был добавлен новый метод: checkInBlockList - Проверяет человека в памяти /ablist.
+
+Database:
+💚 Добавлена новая таблица: ABAN - Позволяет хранить игроков, которые находятся в блокировке возможностей своей админки.
+💚 Добавлена новая таблица: BLOCKLIST - Позволяет хранить игроков, которые находятся в черном листе администрации
+сервера.
+
+Commands:
+💚 AdminAddBlackListCommand | Новый адаптер для занесения в черный список.
+💚 AdminDelBlackListCommand | Новый адаптер для вынесения из черного списка.
+
+Service:
+❓💚 ConsoleService | Добавлена реализация для consoleBanAdminAccess, я не знаю как я вчера сделал consoleUnBanAdminAccess
+а просто consoleBanAdminAccess пропустил.. Очень странные дела 🥲
+
+💚 AdminStaffService | Добавлена реализация к adminDelBlockList из StaffServiceAPI;
+💚 AdminStaffService | Добавлена реализация к adminAddBlockList из StaffServiceAPI;
+
+💚 AdminStaffService | Вся система adminBlockAccess - Была переведена с кэша, на Базу Данных;
+💚 AdminStaffService | Вся система adminBlockAccess - Была переведена с кэша, на Базу Данных;
+💚 ConsoleService | Вся система adminBlockAccess - Была переведена с кэша, на Базу Данных;
+
+💚 AdminStaffService | В методе setAdmin - Была добавлена проверка на черный список;
+💚 ConsoleService | В методе setAdminConsole - Была добавлена проверка на черный список;
+
+💚 AdminGameService | Была добавлена зависимость от AdminStaffRepository;
+❤️ AdminGameService | Была удалена зависимость от SecretCodeManager!
+
+Repository:
+💚 AdminStaffRepository | Добавлена реализация метода: setAdminABan, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: delAdminABan, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: checkAdminABan, из AdminStaffRepositoryAPI.
+
+💚 AdminStaffRepository | Добавлена реализация метода: setAdminBlockList, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: delAdminBlockList, из AdminStaffRepositoryAPI.
+💚 AdminStaffRepository | Добавлена реализация метода: checkAdminBlockList, из AdminStaffRepositoryAPI.
+
+TabCompleter:
+💚 MainTabCompleter | Добавлен новый Completer: ablist.
+💚 MainTabCompleter | Добавлен новый Completer: abdlist.
+
+E1m0Admin:
+💚 E1m0Admin | Зарегистрирована команда: ablist - Позволяет заносить человека в ЧС администрации.
+💚 E1m0Admin | Зарегистрирована команда: abdlist - Позволяет удалить человека из ЧС администрации.
+
+💚 E1m0Admin | Зависимости были подключены в команду ThanksCommand.
+
+resources:
+💚 messages.yml en/ru | Было добавлено новое сообщение: bannedSystem - Лог админу о том что у него заблокировали доступ.
+💚 messages.yml en/ru | Было добавлено новое сообщение: bannedSystem - Лог консоли об успешной блокировке доступа.
+
+💚 messages.yml en/ru | Было добавлено новое сообщение: blacklistWeightError - Лог от слива, о том что администратор
+пытается занести в ЧС человека который ниже его по уровню.
+💚 messages.yml en/ru | Было добавлено новое сообщение: adminBanned - Лог для консоли, что администратору уже
+заблокировали доступ
+
+💚 messages.yml en/ru | Было добавлено новое сообщение: adminInBlackList - Лог для того чтобы уведомить что администратор
+УЖЕ находится в черном списке администрации и занести его нельзя.
+💚 messages.yml en/ru | Было добавлено новое сообщение: setAdminInBlackList - Сообщение staff и лог одновременно о том
+что администратор находится в ЧСА!
+
+💚 plugin.yml | Зарегистрирована команда: ablist - Позволяет заносить человека в ЧС администрации.
+💚 plugin.yml | Зарегистрирована команда: abdlist - Позволяет удалить человека из ЧС администрации.
+
+e1m0dev:
+
+❤️ TODO.MD | Улучшить систему абана и довести до БД а не до кэша | TODO: Отложено | Причина: Выполнен - 💚.
+❤️ TODO.MD | Система ЧСА | TODO: Отложено | Причина: Выполнен - 💚.
+
+Version 3.0.0 - Commit 3.3.0: More tests, clear legacy logic, fix migrations aban, check functions, fix reports, add new
+messages, prepare tests to release
+
+API:
+❗ StaffRepositoryAPI | staffID -> suspectID - ВАЖНОЕ ПЕРЕИМЕНОВАНИЕ ВСЕЙ ЦЕПИ. В избежании потом проблем. Опять же, с
+начала логика - потом уточнения и красота.
+
+💚 StaffRepositoryAPI | Добавлен новый метод setAdminABanConsole, как бы не хотелось перенести на 4.0, но мне нужно
+исполнить запрос системно.
+
+💚 SecretCodeRepositoryAPI | Был добавлен новый метод systemUpdateSecretCode - Отвечает за обновление секретного кода
+администратора.
+
+Listener:
+💚 AdminLeakListener | Была добавлена зависимость от MessageConfig.
+💜 AdminLeakListener | Был исправлен баг связанный как раз с messageCFG, так как переход осуществляется я не могу знать в
+каким методах испозуется не тот конфиг, только проверками.
+
+Database:
+💚 DatabaseManager/aban | staffID -> suspectID - Важное переименование во избежании путаницы для администрации.
+💚 DatabaseManager/aban | staffNick -> staffNick - Важное переименование во избежании путаницы для администрации.
+
+Command:
+💜 RewatchCommand | Выводилось сообщение о том что человек уже вводил секретный код вместо того что у него нет
+доступа ._.
+
+💜 ABlockCommand | Искал баг не то что-бы долго, просто каких то 3 перезапуска ⚰️. Оказалось все в условии старого
+согласования: if (command.getName().toLowerCase().equalsIgnoreCase("ablock")) надо было: if (command.getName()
+.toLowerCase().equalsIgnoreCase("aban")) {
+
+💜 ConsoleUnBanAdminCommand | Машинальная память старых регламентов и норм привела к новым ошибкам и не согласованием
+передачи конструкт параметров в новом времени, исправлено, быть внимательнее.  
+💜 ConsoleBanAdminCommand | Машинальная память старых регламентов и норм привела к новым ошибкам и не согласованием
+передачи конструкт параметров в новом времени, исправлено, быть внимательнее.  
+💜 ConsoleDelAdminCommand | Исправлен баг с неверным использованием.
+
+ADMIN:
+
+    💚 ABlockCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AccessCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AHelpCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 InvisibilityCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ReportCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 RewatchCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+
+PLAYER:
+
+    💚 PlayerReportCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminsCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ThanksCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+
+STAFF:
+
+    💚 AdminDelBlackListCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminAddBlackListCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminBonusAllCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminSetSecretCode | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminDeleteCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminUnBanCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminBonusCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminDownCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminSetCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 AdminUpCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+
+CONSOLE:
+
+    💚 ConsoleGiveBonusAllCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleUnBanAdminCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleDownAdminCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleGiveBonusCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleSetSecretCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleSetAdminCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleDelAdminCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleBanAdminCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+    💚 ConsoleUpAdminCommand | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+
+SYSTEM:
+
+    💚 ReportAcceptController | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+
+Service:
+💚 AdminSystemService | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+💚 ConsoleService | Был переведен на "ключевую" основу отправки сообщений через конфиг.
+
+💚 ConsoleService | Обновлена логика смены секретного пина администратора.
+💚 ConsoleService | Были добавлены новые проверки логики от не существующих weight.
+
+💚 AdminGameService | fastReport - Было много что переделано и исправлено как например тот же парсер, или отправка
+сообщений или изменение структуры холдеров и т.д
+
+💚 AdminGameService | Добавлена новая система с StaffRepository - setAdminABanConsole в исполнитель adminBlockAccess,
+исправил до NULL POINTER
+💜 AdminGameService | Исправил проблему с UUID, жалоба консоли, очень жаль что S7-Y7-7S-7T-7E7M не получилось..
+
+💜 ConsoleService | Написал метод setAdminABanConsole, но не использовал его в методе на /cban - Исправлено.
+
+DAO
+💚 DatabaseManager/aban | staffID -> suspectID - Важное переименование во избежании путаницы для администрации.
+💚 DatabaseManager/aban | staffNick -> staffNick - Важное переименование во избежании путаницы для администрации.
+
+💚 SecretDAO: Был добавлен новый запрос systemUpdateSecretCode - Отвечает за обновление секретного кода администратора.
+💜 BlockDAO | Не правильные методы чека - приводили к не правильным проверкам, что я и не заметил, исправлено, быть
+начеку.
+
+💜 BlockDAO | При удалении исправил ошибку uuid -> AdminID;
+💜 BlockDAO | При удалении исправил ошибку adminID -> suspectID;
+
+💜 BlockDAO | Все же был прав, я искал в adminID, а надо было шарить в suspectID, слава богу что нашел баг, исправлено.
+
+💜 BlockDAO | Вместо SqlQuery стоял SqlUpdate, из-за этого мои проверки в setABan и unABan не работали..
+
+Repository:
+💚 SecretCodeRepository | Была добавлена новая реализация метода systemUpdateSecretCode - Отвечает за обновление
+секретного кода администратора.
+
+💚 AdminStaffRepository | Добавлена реализация setAdminABanConsole c StaffRepositoryAPI - Отвечает за выдачу абана
+системно.
+
+TabCompleter
+💚 MainTabCompleter | Добавил чуть чуть проверку нуля на acc, чтобы люди не путались
+
+Utils:
+💚 E1m0Sender | Добавлена зависимость от второго конфига, главного имею в виду.
+
+💚 E1m0Sender | cfg -> messageCFG. Переименовал ради красоты, приятно для глаза и профессионально.
+💚 E1m0Sender | cfg -> mainCFG. Переименовал ради красоты, приятно для глаза и профессионально.
+
+E1m0Admin:
+💜 E1m0Admin | Dependency Injection - Все DI команд консоли, переработаны, в некоторых больше не нужен конфиг
+💜 E1m0Admin | Шедевральный разработчик успешно забыл вызвать функцию createMessagesConfig при отсутствии которой он
+получал ошибку. NullPointerException - Love навсегда.
+
+💚 E1m0Admin | Была добавлена новая зависимость для E1m0Sender.
+
+resources:
+💚 messages.yml | adminNotInBlackList - Новое сообщение говорящее о том что администратора в черном списке - нет.
+
+💚 messages.yml en | Был полностью переведен!
+
+💚 config.yml | Забыл добавить SIZE в ReportGUI
+💜 config.yml | Исправлена ошибка путей в ReportGUI.
+
+💜 plugin.yml | Почему-то не дописал /cunban, исправлено.
+💜 plugin.yml | Почему-то не написал /cban, исправлено.
+
+💚 plugin.yml | Переношу ablock на aban, добавил aliases так как была ошибка связанная с названием.
+
+e1m0dev:
+💚 TODO.md | Новые идеи для TODO list 4.0
+
+E1m0DEV:
+🧑‍💻 E1m0DEV: Что могу сказать, я переименовал и переработал полностью цепь asetban и asetunban или что то такое
+специально для разработчиков, пока что - на рад, сижу на баге, походу ошибка где то в цепи, за то - разработчики больше
+не будут сидеть и думать что такое staffID и кто здесь админ а кто подозреваемый, им меньше гемора а я сильно не
+тороплюсь.
+🧑‍💻 E1m0DEV: 5-6 часов тестов и исправлений за два подхода и это даже не все, в прицнипе, не о чем не жалею, завтра уже
+думаю идем на релиз если бог даст, много чего не записал в деблог каких фиксов, но я думаю уже не важно, больше
+отлаживал
+
+Version 3.0.0 - Commit 3.4.0: Release, last tests, fix, and remove testers branch
+
+API:
+🩷 StaffServiceAPI | adminAddBlockList -> adminAddBlackList - Уменьшает путаницу для других разработчиков.
+🩷 StaffServiceAPI | adminAddBlockList -> adminAddBlackList - Уменьшает путаницу для других разработчиков.
+
+GUI:
+💜 SecretCodeGUI | Были пофикшены головы, слава богу 5.5 нашел то что я не сохранил meta.
+
+Command:
+❗ ALL CONSOLE COMMAND | Добавил новое условие для того чтобы игроки не использовали консольные команды.
+
+💛 AdminAddBlackListCommand | Перевод на blAckList вместо blOckList.
+💛 AdminDelBlackListCommand | Перевод на blAckList вместо blOckList.
+
+Service:
+🩷 StaffService | ..blockList -> ..blackList - Уменьшает путаницу для других разработчиков.
+🩷 StaffService | adminAddBlockList -> adminAddBlackList - Уменьшает путаницу для других разработчиков.
+
+💜 SecretCodeService | Исправил несколько путей благодаря новому отладчику, не жалею что он появился.
+
+💜 AdminsStaffService | Исправил баг с путем в конфиге до "Message.Error.." -> "MessageS.Error.."
+💜 ConsoleService | Исправил баг с путем в конфиге до     "Message.Error.." -> "MessageS.Error.."
+
+💜 ConsoleService | Исправил баг c двойным вызовом репо из-за чего два раза выбивало ключ setSecret.
+
+💜 AdminStaffService | Исправил баг с путем в конфиге до "Messages.successfulAddBlockList"
+💜 AdminStaffService | Исправил баг с путем в конфиге до "Messages.successfulRemoveBlackList"
+
+Repository:
+🩷 AdminStaffRepository | adminAddBlockList -> adminAddBlackList - Важное переименование, для улучшения читаемости
+систем.
+
+Utils:
+💚 E1m0Sender | Добавлены новые проверки логических интернлов, и ошибок path.
+
+E1m0Admin:
+💜 E1m0Admin | Исправил баг с регистрацией команды и ее навеса: ReportAcceptController
+💜 E1m0Admin | Исправил баг с регистрацией навеса: AdminDelBlackListCommand
+
+resources:
+💚 messages.yml en -> ru | Были добавлены, исправлены, переведены некоторые сообщения.
+
+💚 messages.yml | sendInternalError - Новое сообщение, отвечает за внутреннюю ошибку поиска сообщения.
+💚 messages.yml | playerConsoleError - Новое сообщение, отвечает за внутреннюю ошибку для использующего консольную
+команду в игре.
+
+🧑‍💻 E1m0DEV: Добавил кучу тесторов, не забыть убрать.
+
+e1m0dev:
+💚 TODO.md | Новые идеи для TODO list 4.0

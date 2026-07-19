@@ -10,10 +10,19 @@ Database:
 
 # Параметры плагина | Параметры самого плагина на которые он будет опираться в работе своих функций.
 Settings:
+  mainLanguage: "ru_ru.yml"
+
   consoleLogActive: true      # Сообщения | Будут ли логироватся действия администратора?
-  prefixEnable: true          # Сообщения | Будет ли показыватся префикс? Пример: E1m0-Admin - Внимание | У Вас - нет на это права!
+  consolePrefix: "CONSOLE"    # Сообщения | Как будет отображаться префикс консоли? Terminal, E1m0, Console, Бог - Вам решать.
+  prefixEnable: true          # Сообщения | Будет ли показываться префикс? Пример: E1m0-Admin - Внимание | У Вас - нет на это права!
   prefix: "&cE1m0-Admin |"    # Сообщения | Префикс при системных сообщениях. Пример: ADM | У вас нет на это прав!
   world: "world"              # Мир       | В папке с Вашим сервером, у Вас есть в server.properties название Вашего мира.
+
+  # | Комплименты | Сколько в МИНУТАХ будет длиться задержка перед следующей возможностью кинуть похвалу администратору.
+  complimentCooldown: 1440 # ❓ | Почему 1440 минут (24 часа в переводе)? - Потому что 1 раз в день обычный игрок отправляет репорт.
+
+  # PIN-Код   | Максимальное кол-во попыток ввода секретного кода до блокировки админ-прав?
+  maxSecretCodeInputWrong: 3
 
   Dev:
     salaryCheck: 60 # | ❗ Через сколько МИНУТ будет проходить проверка scheduler на зарплаты админов? Советую не трогать если не знаем что такое. Действия с базой там плотные.
@@ -21,23 +30,23 @@ Settings:
 
     rewatchTick: 1 # Слежка |❗ Опасная настройка, только для знающих людей с уровнем допуска DEV Рекомендуемое значение: 10+.
     # ❓- Сколько тиков будет длиться один кадр слежки? Меньше тиков = больше плавности == БОЛЬШЕ нагрузка на сервер! Если у Вас тпс ниже 20 - Не советую.
-    rewatchVectorX: 1 # Слежка | На сколько "отдаленно" будет камера у администратора?
-    rewatchVectorY: 1 # Слежка | На сколько высоко будет камера у администратора?
+    rewatchVectorX: 0 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    rewatchVectorY: 2 # Слежка | На сколько высоко будет камера у администратора?
     rewatchVectorZ: 1 # Слежка | На сколько "глубоко" будет камера у администратора?
 
-    # ПРЕСЕТЫ REWATCH | Если Вам хочется взять готовый пресет настроек и не игратся с ними, прошу:
+    # ПРЕСЕТЫ REWATCH | Если Вам хочется взять готовый пресет настроек и не играться с ними, прошу:
     # | Поближе
-    #    rewatchVectorX: 1 # Слежка | На сколько "отдаленно" будет камера у администратора?
-    #    rewatchVectorY: 1 # Слежка | На сколько высоко будет камера у администратора?
+    #    rewatchVectorX: 0 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    #    rewatchVectorY: 2 # Слежка | На сколько высоко будет камера у администратора?
     #    rewatchVectorZ: 1 # Слежка | На сколько "глубоко" будет камера у администратора?
 
     # | Средне
-    #    rewatchVectorX: 2 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    #    rewatchVectorX: 0 # Слежка | На сколько "отдаленно" будет камера у администратора?
     #    rewatchVectorY: 2 # Слежка | На сколько высоко будет камера у администратора?
     #    rewatchVectorZ: 2 # Слежка | На сколько "глубоко" будет камера у администратора?
 
     # | Подальше
-    #    rewatchVectorX: 3 # Слежка | На сколько "отдаленно" будет камера у администратора?
+    #    rewatchVectorX: 1 # Слежка | На сколько "отдаленно" будет камера у администратора?
     #    rewatchVectorY: 3 # Слежка | На сколько высоко будет камера у администратора?
     #    rewatchVectorZ: 3 # Слежка | На сколько "глубоко" будет камера у администратора?
 
@@ -51,7 +60,8 @@ Server:
   aban: true         # Админ-Блок | Включить ли возможность блокировать администраторам доступ при сливе?
 
   # - | PLAYER
-  admins: true       # Администрация | Включать ли возможность про
+  admins: true       # Администрация | Включать ли возможность просматривать админ-состав?
+  compliment: true   # Администрация | Включать ли возможность кидать админу /thanks, похвалы и другие комплименты?
   reportPlayer: true # Слежка за юзером | Включать ли возможность e1m0-rewatcher?
 
   # - | STAFF
@@ -64,6 +74,8 @@ Server:
   emergencyRep: true # Репорт | Будет ли оповещение в чате администрации при: Срочном репорте?
   donateReport: true # Репорт | Будет ли оповещение в чате администрации при: Донат репорте?
   newReport: true    # Репорт | Будет ли оповещение в чате администрации при: Новом репорте?
+
+  ablacklist: true # Администрация | Включить ли возможность заносить в черный список в игре?
 
   # PermissionManager:
   # При каких разрешениях у администраторов будут работать команды?
@@ -87,6 +99,7 @@ Permissions:
   adminbonusall: "e1admin.adminbonusall"   # Администрация | Какое разрешение у администратора для выдачи бонуса другим администраторАМ?
 
   # ❗ | STAFF:
+  ablocklist: "e1admin.ablocklist"         # Админ | Какое разрешение у высших адм на занесение в черный список администрации?
   secretcode: "e1admin.asecret"            # Админ | Какое разрешение у высших адм на установление секретного пароля?
   downadm: "e1admin.downadmin"             # Админ | Какое разрешение у высших адм на понижение других администраторов?
   deladm: "e1admin.deladmin"               # Админ | Какое разрешение у высших адм на удаление других администраторов?
@@ -189,12 +202,10 @@ Admin:
       - "&aКоманды для администрации: "
       - "&a/acc &7— Зарегистрироваться в системе."
       - ""
-      - ""
       - "&a/re [Игрок] &7— Слежка за целью от лица."
       - "&a/arep [Ответ] &7— Открыть меню репортов с Вашей формой."
       - "&a/ainv &7— Уйти в продвинутую невидимку."
       - "&a/aban [Админ] &7— При сливе отобрать доступ у администратора!"
-      - ""
       - ""
       - ""
       - "&6Сценарии их применения: "
@@ -211,11 +222,129 @@ Admin:
       - "&a/adel &7— Уволить администратора."
       - "&a/adown &7— Понизить администратора."
       - "&a/aset &7— Поставить администратора."
+      - "&a/ablist &7— Выдать ЧС администрации."
       - "&a/abonus &7— Выдать бонус администратору."
       - "&a/aunban &7— Выдать администратору доступ если он в бане."
+      - "&a/abdlist &7— Снять ЧС администрации."
       - "&a/abonusall &7— Выдать бонус администраторам."
       - "&a/asetsecret &7— Выдать секретный код."
       - ""
+
+  # Настройки комплиментов и их методов, здесь Вы можете заполнить дейсвтия например со своими админ коинами, своей валютой и в общем то чем либо своим
+  Compliment:
+    enable: true # | Будет ли работать функция?
+    Actions: # | При получении админом похвалы какие действия будут совершатся?
+      - "msg %admin 💚"
+      - "eco give %admin 77"
+      - "msg %admin 💚"
+      -
+      # - | Функция 3.0: Автоматическое заполнение администратора правами, командами, скинами, и всем нужным ему для работы.
+  AutoSetAdmin:
+
+    # - | Здесь автоматически Вы сами можете настроить права.
+    autoSetPermissions:
+      enable: true        # | Будет ли работать функция авто-заполнения?
+      permissionInWeight: # | Смотрите на weight своих рангов, у меня например они 1, 2, 3. Но так же, Вы можете добавить и 4, и 5, и 777, короче как то так.
+        1: # | У меня - Это младший администратор. Смотрим AdminRanks..
+          permissions:
+            - "lp user %admin permission set e1admin.admin"
+            - "lp user %admin permission set e1admin.invise"
+            - "lp user %admin permission set e1admin.rewatch"
+            - "lp user %admin permission set e1admin.arep"
+            - "lp user %admin permission set e1admin.aban"
+        2: # | У меня - Это администратор. Смотрим AdminRanks.. Выдаю уровень 1, и добавляю 2.
+          permissions:
+            - "lp user %admin permission set e1admin.admin"
+            - "lp user %admin permission set e1admin.invise"
+            - "lp user %admin permission set e1admin.rewatch"
+            - "lp user %admin permission set e1admin.arep"
+            - "lp user %admin permission set e1admin.aban"
+
+            - "lp user %admin permission set e1admin.adminbonus"
+            - "lp user %admin permission set e1admin.adminbonusall"
+        3: # | У меня - Это старший администратор. Смотрим AdminRanks.. Выдаю ВСЕ права.
+          permissions:
+            - "lp user %admin permission set e1admin.admin"
+            - "lp user %admin permission set e1admin.invise"
+            - "lp user %admin permission set e1admin.rewatch"
+            - "lp user %admin permission set e1admin.arep"
+            - "lp user %admin permission set e1admin.aban"
+
+            - "lp user %admin permission set e1admin.adminbonus"
+            - "lp user %admin permission set e1admin.adminbonusall"
+
+            - "lp user %admin permission set e1admin.asecret"
+            - "lp user %admin permission set e1admin.downadmin"
+            - "lp user %admin permission set e1admin.deladmin"
+            - "lp user %admin permission set e1admin.setadmin"
+            - "lp user %admin permission set e1admin.upadmin"
+            - "lp user %admin permission set e1admin.ablocklist"
+            -
+            # - | Здесь автоматически Вы сами можете настроить скины.
+    autoSetSkins:
+      enable: true
+      skinsInWeight:
+        1: # | У меня - Это младший администратор. Смотрим AdminRanks..
+          skin:
+            - "skin set ADMIN %admin" # | ❗ У МЕНЯ СТОИТ SKINS RESTORER ВЫ МОЖЕТЕ ДОБАВИТЬ СВОЙ АДАПТЕР СКИНОВ ПО КОМАНДЕ.
+        2: # | У меня - Это администратор. Смотрим AdminRanks..
+          skin:
+            - "skin set STAFF %admin" # | ❗ У МЕНЯ СТОИТ SKINS RESTORER ВЫ МОЖЕТЕ ДОБАВИТЬ СВОЙ АДАПТЕР СКИНОВ ПО КОМАНДЕ.
+        3: # | У меня - Это старший администратор. Смотрим AdminRanks..
+          skin:
+            - "skin set CONSOLE %admin" # | ❗ У МЕНЯ СТОИТ SKINS RESTORER ВЫ МОЖЕТЕ ДОБАВИТЬ СВОЙ АДАПТЕР СКИНОВ ПО КОМАНДЕ.
+
+  # - | Функция 3.0: Автоматическое удаление всего у администратора при его снятии.
+  AutoDelAdmin:
+
+    # - | Здесь автоматически Вы сами можете настроить снятие прав.
+    autoDelPermissions:
+      enable: true        # | Будет ли работать функция авто-удаления?
+      permissionInWeight: # | Смотрите на weight своих рангов, у меня например они 1, 2, 3. Но так же, Вы можете добавить и 4, и 5, и 777, короче как то так.
+        1: # | У меня - Это младший администратор. Смотрим AdminRanks..
+          permissions:
+            - "lp user %admin permission unset e1admin.admin"
+            - "lp user %admin permission unset e1admin.invise"
+            - "lp user %admin permission unset e1admin.rewatch"
+            - "lp user %admin permission unset e1admin.arep"
+            - "lp user %admin permission unset e1admin.aban"
+        2: # | У меня - Это младший администратор. Смотрим AdminRanks..
+          permissions:
+            - "lp user %admin permission unset e1admin.adminbonus"
+            - "lp user %admin permission unset e1admin.adminbonusall"
+        3: # | У меня - Это младший администратор. Смотрим AdminRanks..
+          permissions:
+            - "lp user %admin permission unset e1admin.admin"
+            - "lp user %admin permission unset e1admin.staff"
+
+            - "lp user %admin permission unset e1admin.asecret"
+            - "lp user %admin permission unset e1admin.downadmin"
+            - "lp user %admin permission unset e1admin.deladmin"
+            - "lp user %admin permission unset e1admin.setadmin"
+            - "lp user %admin permission unset e1admin.upadmin"
+            - "lp user %admin permission unset e1admin.ablocklist"
+
+    # - | Здесь автоматически Вы сами можете настроить скины, а точнее их удаление.
+    autoDelSkins:
+      enable: true   # | Будет ли работать функция авто-удаления?
+      skinsInWeight: # | Смотрите на weight своих рангов, у меня например они 1, 2, 3. Но так же, Вы можете добавить и 4, и 5, и 777, короче как то так.
+        1: # | У меня - Это старший администратор. Смотрим AdminRanks..
+          skin:
+            - "skin clear %admin"
+        2: # | У меня - Это старший администратор. Смотрим AdminRanks..
+          skin:
+            - "skin clear %admin"
+        3: # | У меня - Это старший администратор. Смотрим AdminRanks..
+          skin:
+            - "skin clear %admin"
+
+  # - | Новая функция 3.0: Триггер на слив, здесь Вы можете настроить параметры связанные по подозрению в сливе.
+  Leak:
+    enable: true # | Будет ли работать функция авто-удаления?
+    LeakSound: "ENTITY_ENDER_DRAGON_DEATH" # | Звук, который будет воспроизводиться всей администрации при снятии админ прав. Ирония с падшим ангелом у которого отобрали все что он имел.
+    LeakActions: # | Действия которые будут направлятся против сливщика.
+      #      - "ban %leak 777y Подозрения в сливе админ-прав."
+      - "kick %leak Подозрения в сливе админ-прав."
 
   # Репортики | Связанные с игрой администрации и игроков, контрольные слова, статусы, бонусы и прочее.
   #  Здесь можно настроить GUI, авто-ответы на репорты, бонусы за репорты и т.д:
@@ -256,7 +385,7 @@ Admin:
     # Репортики | Донат репорт, действия + звук для всей администрации?
     DonateReport:
       sound: "entity.ender_dragon.hurt"
-      permission: "e1admin_bypass"
+      permission: "e1admin.bypass"
       donateMessage:
         - ""
         - "<gradient:#FD1AB6:#6554B6>Внимание❗ Репорт от VIP клиента! %content. Отправитель: %player</gradient>"
@@ -271,10 +400,9 @@ Admin:
 
     # Репортики | Если навести на emergency report что будет показано?
     HoverReport:
-      - "&aНажмите чтобы взять ❤️"
+      - "&aНажмите чтобы взять ❤"
       - "&cРепорт&7: %content"
       - "&aСтатус&7: %status"
-      - "&4Принял&7: %admin"
       - ""
       - "&aОтправил&7: %player"
       - "&7Дата: %date"
@@ -297,7 +425,8 @@ Admin:
     # Репортики | Какой item в меню у ReportGUI? Он отдельно, потому что это не статический обьект + не постоянная форма, если объяснять разработчику: Я не могу отдавать в статику не стабильный Mutable state.
     ReportItem:
       NAME: "%content"
-      ITEM: PLAYER_HEAD
+      ITEM: "PAPER"
+      SIZE: 54
       LORE: # Форма как будет выглядеть репорт при наведении | Или же - его лор.
         - "&7Репорт: %content"
         - "&7Статус: %status"
@@ -314,7 +443,8 @@ Admin:
           name: "&aЦифра: 1"
           item: "PLAYER_HEAD"
           action: "BUTTON_ONE" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDJkNGE2OTkzN2UwYmVhZGMzODQyNmMwOTk0YjUwZDk1MDQwNmZkOGRhOWYzMWM1ODJkNDZmM2I5YmZjNGM1YiJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67112-chat-1
           lore:
             - "&7Нажмите чтобы &6ввести!"
         two:
@@ -322,7 +452,8 @@ Admin:
           name: "&aЦифра: 2"
           item: "PLAYER_HEAD"
           action: "BUTTON_TWO" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBhNmM3YTBkNjU4YmI5MGUyN2I1OTM0ZjYyYTVlMTVjYzljMTFjODdhZTE0NjRhNGU3OWVhNjY1MjNiYTM2MSJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67111-chat-2
           lore:
             - "&7Нажмите чтобы &6ввести."
         three:
@@ -330,7 +461,8 @@ Admin:
           name: "&aЦифра: 3"
           item: "PLAYER_HEAD"
           action: "BUTTON_THREE" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTYxYjMxYTg3Yjc4MjYyYzYzZTk0NzE0ZTU2MjRhMmFiNTk1MGY3NWRlZTMyY2MzMDI2YTVmYTc4MjM0NjhkZSJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67110-chat-3
           lore:
             - "&7Нажмите чтобы &6ввести."
         four:
@@ -338,7 +470,8 @@ Admin:
           name: "&aЦифра: 4"
           item: "PLAYER_HEAD"
           action: "BUTTON_FOUR" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FkZmQzYzk5OTY3ZDMyNzQ5MDJlY2I2ZTk4NjU4YWNmZGIzOTE4NzE3YjJlOTAzN2Y2MWMzYjRlMDllMmExIn19fQ==" # https://minecraft-heads.com/custom-heads/head/67109-chat-4
           lore:
             - "&7Нажмите чтобы &6ввести."
         five:
@@ -346,7 +479,8 @@ Admin:
           name: "&aЦифра: 5"
           item: "PLAYER_HEAD"
           action: "BUTTON_FIVE" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGJiYWYwMTkwOTIyMWI5YWJlOTQ1YWZlN2RmZGI3MmYzMTczMzExZTU2MjAxOTRkZDI3MDExYTZkNTU0ZmZjOCJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67108-chat-5
           lore:
             - "&7Нажмите чтобы &6ввести."
         six:
@@ -354,7 +488,8 @@ Admin:
           name: "&aЦифра: 6"
           item: "PLAYER_HEAD"
           action: "BUTTON_SIX" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTZhZTBmZTIyNTZhZTM1NmEyNWYxMzBhZTcxY2Y0NDMxNTE1N2M1ZmFlOTFkNjJhNGZmYjU4NWIxNjQ4NjM3MyJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67107-chat-6
           lore:
             - "&7Нажмите чтобы &6ввести."
         seven:
@@ -362,7 +497,8 @@ Admin:
           name: "&aЦифра: 7"
           item: "PLAYER_HEAD"
           action: "BUTTON_SEVEN" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGYwOWVmZTczMWU3M2M4MGIxYWVlMTAwYmIzMzBhYjQxNDU5NWVlNTRhNGUyZGVjNDM5YmVkM2UzNjQ5YWM5NiJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67106-chat-7
           lore:
             - "&7Нажмите чтобы &6ввести."
         eight:
@@ -370,7 +506,8 @@ Admin:
           name: "&aЦифра: 8"
           item: "PLAYER_HEAD"
           action: "BUTTON_EIGHT" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDcyN2Q0ZTQ4ZjIzMWNlNGQ4NzE5OTI1NjBmNTFiZjZhM2YxNTdjMmZmZDZmOTJiODYwY2JiNTMxMjg0MjZhMiJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67105-chat-8
           lore:
             - "&7Нажмите чтобы &6ввести."
         nine:
@@ -378,7 +515,8 @@ Admin:
           name: "&aЦифра: 9"
           item: "PLAYER_HEAD"
           action: "BUTTON_NINE" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
-          skull_owner: "E1m0" # Можно убрать, если Вы используете не голову.
+          method: "BASE64"
+          base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTQ3M2VhMzUxZjQxZTk5NTdmOTE0ZTNiOTBmNzRlOTg2NzgzOGIzMzM5ZDQyNTEzY2EyNWVkMGY0NWJjNjBjYiJ9fX0=" # https://minecraft-heads.com/custom-heads/head/67104-chat-9
           lore:
             - "&7Нажмите чтобы &6ввести."
         close:
@@ -388,113 +526,3 @@ Admin:
           action: "CLOSE" # ⚠️ Controller | Не советую трогать, можете менять местами, но, это - контрольные контроллеры нажатий, потому что у некоторых цифр есть два значения, у некоторых есть секретные ЗАШИФРОВАННЫЕ коды (1 это 2 или 3 или 4 и т.д)
           lore:
             - "&7Нажмите чтобы &cзакрыть."
-
-# Мои дорогие сообщения, Вы - можете их разветвлять как в примере с несколькими сообщениями например как: teleportToAZ.
-# Так же - Вы можете полностью менять их структуру и выделять сообщения не одним пробелом а больше, здесь - Ваше место фантазии.
-Messages:
-  teleportToAZ:
-    - "&aУспех! &7| &aУспешная операция"
-    - "&7Вы &aуспешно &7были телепортированы в &aадмин-зону&7!"
-    - "&aУспех! &7| &aУспешная операция"
-
-  inviseOn: "&6Вы включили невидимку!"
-  inviseOff: "&7Вы отключили невидимку!"
-
-  secretCodeAccess: "&aВы — успешно авторизовались под своим именем в системе администрации!"
-
-  reportTake: "&aВы успешно взяли репорт игрока&7: %player. Содержимое: %content"
-  reportMessagePlayerFast: "&aАдминистратор &6%admin &a— успешно взял ваш репорт в работу!"
-
-  adminBonusAll: "&7Администратор %staff выдал всем бонус: %bonus $!"
-  adminBonus: "&7Администратор %staff выдал Вам бонус: %bonus $! Сообщение: %message"
-  adminPay: "&7Вы получили админ зарплату в виде: %salary $!"
-
-  successfulSetAdmin: "&aПоздравляем! Вы — были успешно назначены на пост администратора %level уровня, &6администратором %staff"
-  successfulSetStaff: "&6%admin &a— был успешно назначен на пост администратора &6%level &aуровня"
-
-  successfulUpStaff: "&aВы успешно повысили администратора &6%admin"
-  successfulUpAdmin: "&aВы успешно были повышены администратором &6%staff"
-
-  successfulDownStaff: "&aВы успешно понизили администратора &6%admin"
-  successfulDownAdmin: "&aВы были понижены администратором &6%staff.."
-
-  successfulBlocked: "&aВы успешно заблокировали доступ администратору &6%target"
-
-  changeCodeAdmin: "❗ &cВнимание! Вам сменили игровой код администратора! &6Тот кто сменил: %staff. &aНовый код: %code. &b&cНе потеряйте его!"
-  changeCodeStaff: "❗ &cВнимание! Вы сменили игровой код администратора %admin. &6Его новый код: %code!"
-
-  reportSended: "&aРепорт %report был успешно отправлен!"
-  reportAdminResponse: "&aВам ответил администратор &6%admin, &aс ответом: &6%response"
-
-  deleteAdminByStaff: "&cВы были сняты администратором &6%staff!"
-  successfulDeleteAdmin: "&aВы успешно сняли администратора &6%admin!"
-
-  unbannedSystem: "&aАдминистратор &6%staff &aуспешно вернул Вам доступ к системам, старайтесь не попадать под систему сливов."
-  successfulUnbannedSystem: "&aАдминистратору &6%admin &aуспешно разблокированы возможности 😛."
-
-  # CONSOLE ACTIONS
-  successfulAdminSetSecret: "&fЛОГ &7| &aАдминистратору успешно выставлен секретный код!"
-  successfulAdminDelete: "&fЛОГ &7| &aАдминистратор успешно удален!"
-  successfulAdminDown: "&fЛОГ &7| &aАдминистратор успешно понижен!"
-  successfulAdminSet: "&fЛОГ &7| &aАдминистратор успешно поставлен!"
-  successfulAdminUp: "&fЛОГ &7| &aАдминистратор успешно повышен!"
-
-  Errors:
-    notCode: "&cВам еще не установили приватный код!"
-    notAdmin: "&cЭтот игрок - не является администратором..."
-    nullPlayer: "&cТакого игрока не существует..."
-    lengthError: "&cНеправильное использование команды!"
-    consoleError: "Консоли нельзя.."
-    adminNotBanned: "&cАдминистратор &6&admin &cне был забанен системой.."
-
-    permissionError: "&cУ вас нет доступа к данной команде!"
-
-    secretCodeNotInput: "&6Внимание! &7| &cВы еще не получили права администратора своего уровня, просим Вас подтвердите статус администратора: &a/aaccess!"
-    secretCodeIsWrong: "&cВы ввели неправильный код! Попробуйте снова!"
-
-    reportSizeIsMax: "&cИзвините! Все администраторы сейчас перегружены репортами, попробуйте пожалуйста, позже!"
-    reportLengthError: "&cМинимальный набор репорта составляет &6%len &cсимволов!"
-
-    configSkullGuiError: "Внимание консоли! У Вас не обьявлена переменная в конфиге под названием 'skull_owner' но указана 'PLAYER_HEAD' посмотрите новые версии конфига!"
-
-    youAdminAccessIsBlocked: "&cУ вас заблокирован админ-доступ по подозрению в сливе!" # | https://cdn2.botanichka.ru/wp-content/uploads/2011/07/plum-4-01.jpg
-
-    # STAFF
-    staffPermissionError: "&cУ вас нет печати: &6Старшего администратора!"
-
-    setAdminWeightIsNull: "&cВыдаваемый ранг — должен быть больше 0!"
-    setAdminWeightNotFound: "&cВведенный ранг — НЕ найден.."
-
-    downAdminLevelError: "&cАдминистратор уже находится на минимальном уровне!"
-    downAdminWeightError: "&cВы — не можете понизить данного администратора!"
-
-    deleteAdminWeightError: "&cВы — не можете уволить данного администратора!"
-
-    upAdminWeightError: "&cВы — не можете повысить данного администратора!"
-    upAdminLevelError: "&cАдминистратор уже находится на максимальном уровне!"
-    upAdminSelfError: "&cВы не можете повысить себя!"
-
-    secretCodeHasInputted: "&cВы уже вводили секретный пин!"
-    setAdminCodeIsWrong: "&cВы не правильно ввели новый код для администратора, &6пример кода: 7777"
-
-    reoffNullError: "&cВы не за кем не следите и не можете отключится!"
-
-    playerHaveReport: "&cУ вас уже есть репорт!"
-    noReportsInMemory: "&cДоступных репортов сейчас нет!"
-    adminSendReportToAdmins: "&cВы же администратор.. Как можно отправлять репорты &6самому себе?"
-
-    adminBlockInternalError: "&cВнутренняя ошибка при блокировке! Администратор уже находится в блоке!"
-
-    # CONSOLE ACTIONS
-    upAdminNotAdminError: "&fЛОГ &7| &cАдминистратора указанного в команде - не существует в базе."
-
-    setAdminIsAdminError: "&fЛОГ &7| &cЧеловек уже есть в базе данных!"
-    setAdminWeightError: "&fЛОГ &7| &cАдминистратор НЕ поставлен - Ошибка weight!"
-
-  ConsoleLogs:
-    aHelpLog: "&fЛОГ &7| &7Администратор &6%admin пробил команду /ahelp 🗺️."
-    accessLog: "&fЛОГ &7| &7Администратор &6%admin успешно авторизовался в системе ✅."
-    inviseLog: "&fЛОГ &7| &7Администратор &6%admin зашел в невидимку 👻.."
-    reportLog: "&fЛОГ &7| &7Администратор &6%admin успешно взялся за репорты с формой %response 🧑‍💻"
-    ABlockLog: "&fЛОГ &7| &4⚠️ ВАЖНО: АДМИНИСТРАТОР &6%admin ИСПОЛЬЗОВАЛ АДМИНСКИЙ БЛОК НА АДМИНИСТРАТОРА %target! ⚠️."
-    rewatchLog: "&fЛОГ &7| &7Администратор &6%admin зашел в слежку за игроком %player 🎥 - 💺🛏️..." # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfj3K8zuo7Zp77tu-YACPa7PGuxYOasedpEVRPj1WEVpRcKpFKhEzVBVY&s=10

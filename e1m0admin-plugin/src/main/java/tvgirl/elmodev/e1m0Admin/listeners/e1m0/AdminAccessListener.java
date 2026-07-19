@@ -19,17 +19,9 @@ public class AdminAccessListener implements Listener {
         this.cfg = cfg;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onAdminRegistered(AdminAccessEvent e) {
-        Player admin = e.getAdmin();
-
-        /*
-         TODO 2.0:
-           ❗Actions
-           ❗Skins
-           ❗ Смотри логирование TODO.md, я просто не решил че это будет..
-        */
-
+        Player admin = Bukkit.getPlayer(e.getAdminID());
         sender.sendPath(admin, "Messages.secretCodeAccess");
     }
 }

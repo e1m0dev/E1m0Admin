@@ -17,4 +17,8 @@ public interface StaffServiceAPI {
     void setSecretPassword(UUID adminID, UUID staffID, int code); // Сменить администратору код
 
     void adminUnBanSystem(UUID adminID, UUID staffID); // Разморозить доступ к командам и системам администратору
+
+    void adminAddBlackList(UUID adminID, UUID staffID, String reason); // Добавить администратора в черный список администрации.
+
+    void adminDelBlackList(UUID adminID, UUID staffID, String reason); // Удалить администратора из черного списка администрации.
 }

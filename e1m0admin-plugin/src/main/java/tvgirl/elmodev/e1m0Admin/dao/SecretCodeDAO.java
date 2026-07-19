@@ -48,6 +48,16 @@ public interface SecretCodeDAO {
     );
 
     @SqlUpdate("""
+                UPDATE e1admin_code SET code = :code, staffNick = :staffNick WHERE uuid = :uuid
+            """)
+    void systemUpdateSecretCode(
+            @Bind("uuid") String uuid,
+            @Bind("adminNick") String adminNick,
+            @Bind("staffNick") String staffNick,
+            @Bind("code") int code
+    );
+
+    @SqlUpdate("""
                 DELETE FROM e1admin_code WHERE uuid = :adminID
             """)
     void delAdminSecret(

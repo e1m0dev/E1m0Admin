@@ -21,4 +21,6 @@ public interface GameServiceAPI {
 
     // PLAYER LAYER
     void getAdminList(UUID playerID); // Здесь есть возможность получить список активных администраторов для игроков и админов по этому метод находится в adminGameService но под грифом Player Layer
+
+    void addCompliment(UUID playerID, UUID adminID); // Возможность добавлять администратору очки помощи от игрока.
 }

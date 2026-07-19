@@ -4,6 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import tvgirl.elmodev.e1m0Admin.event.AdminDelEvent;
+import tvgirl.elmodev.e1m0Admin.event.AdminLeakEvent;
+import tvgirl.elmodev.e1m0Admin.event.AdminSetEvent;
 import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
 import tvgirl.elmodev.e1m0Admin.state.session.AdminSessionManager;
 import tvgirl.elmodev.e1m0admin.api.service.StaffServiceAPI;
@@ -23,7 +26,6 @@ public class AdminsStaffService implements StaffServiceAPI {
     private final SecretCodeManager secretCodeManager;
     private final FileConfiguration cfg;
     private final E1m0Sender sender;
-
 
     public AdminsStaffService(SecretCodeRepository secretCodeRepository, AdminSessionManager adminSessionManager, AdminStaffRepository staffRepository, AdminSystemRepository systemRepository, SecretCodeManager secretCodeManager, FileConfiguration cfg, E1m0Sender sender) {
         this.secretCodeRepository = secretCodeRepository;
@@ -53,11 +55,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-        // Сделать ли триггер на слив через снятие?
-        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff <= weightBase) {
             sender.sendPath(staff, "Messages.Errors.upAdminWeightError");
-            secretCodeManager.takeAdminAccess(staffID);
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.upAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -139,11 +141,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBase = systemRepository.getAdminWeight(adminID);
         int salaryBase = systemRepository.getAdminSalary(adminID);
 
-        // Сделать ли триггер на слив через снятие?
-        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff <= weightBase) {
-            secretCodeManager.takeAdminAccess(staffID);
             sender.sendPath(staff, "Messages.Errors.downAdminWeightError");
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.downAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -157,12 +159,8 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         int targetWeight = weightBase - 1;
 
-        Bukkit.getLogger().info("Target Weight" + targetWeight);
-        Bukkit.getLogger().info("Base Weight" + weightBase);
-
         for (String key : ranksSection.getKeys(false)) {
             int cfgWeight = cfg.getInt("Admin.AdminRanks." + key + ".weight");
-            Bukkit.getLogger().info("CFG Weight" + cfgWeight);
             if (targetWeight == cfgWeight) {
                 currentKey = key;
                 break;
@@ -193,7 +191,12 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         if (systemRepository.checkAdminInBase(adminID)) {
             sender.sendPath(staff, "Messages.Errors.isAdminContainsData");
-            Bukkit.getLogger().warning("Человек уже есть в базе данных!");
+            return;
+        }
+
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
+        if (inBlackList) {
+            sender.sendPath(staff, "Messages.Errors.adminInBlackList");
             return;
         }
 
@@ -203,6 +206,7 @@ public class AdminsStaffService implements StaffServiceAPI {
                 String prefix = cfg.getString("Admin.AdminRanks." + key + ".prefix");
 
                 adminSessionManager.update(adminID, prefix, weight, salary);
+                Bukkit.getPluginManager().callEvent(new AdminSetEvent(adminID, staffID, weight));
                 staffRepository.setAdminStatus(adminID, admin.getName(), weight, salary, prefix, admin.getAddress().toString());
 
                 sender.sendPath(admin, "Messages.successfulSetAdmin",
@@ -234,8 +238,10 @@ public class AdminsStaffService implements StaffServiceAPI {
         // Сделать ли триггер на слив через снятие?
         // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff < weightBaseAdmin) {
-            secretCodeManager.takeAdminAccess(staffID);
             sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.delAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -245,14 +251,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         sender.sendPath(admin, "Messages.deleteAdminByStaff",
                 "%staff", staff.getName());
 
-
-        // TODO: Лучше - Вывести в Event.
-        adminSessionManager.quit(adminID);
-        staffRepository.deleteAdminStatus(adminID);
-        secretCodeRepository.systemDeleteAdmin(adminID);
-        staffRepository.deleteAdminStatusLog(staffID, adminID, reason);
-
-        Bukkit.getLogger().info("AdminSetCommand | COMMAND-SERVICE: /adel. Команда прошла sendRepo.");
+        adminSessionManager.quit(adminID); // Удаляем сессию
+        staffRepository.deleteAdminStatus(adminID); // Удаляем из базы данных
+        secretCodeRepository.systemDeleteAdmin(adminID); // Удаляем доступ к командам
+        staffRepository.deleteAdminStatusLog(staffID, adminID, reason); // Лог об удалении
+        Bukkit.getPluginManager().callEvent(new AdminDelEvent(adminID, staffID)); // Создаем ивент об увольнении
     }
 
     @Override
@@ -306,11 +309,11 @@ public class AdminsStaffService implements StaffServiceAPI {
         int weightBaseStaff = systemRepository.getAdminWeight(staffID);
         int weightBaseAdmin = systemRepository.getAdminWeight(adminID);
 
-        // Сделать ли триггер на слив через снятие?
-        // TODO: ТРИГГЕР НА СЛИВ КФГ + ИВЕНТ
         if (weightBaseStaff < weightBaseAdmin) {
-            secretCodeManager.takeAdminAccess(staffID);
-            sender.sendPath(staff, "Messages.Errors.delAdminWeightError");
+            sender.sendPath(staff, "Messages.Errors.setSecretAdminWeightError");
+
+            String leakMessage = "Messages.ConsoleLogs.Leak.setSecretAdminWeightError";
+            Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, leakMessage));
             return;
         }
 
@@ -333,13 +336,22 @@ public class AdminsStaffService implements StaffServiceAPI {
 
     @Override
     public void adminUnBanSystem(UUID adminID, UUID staffID) {
+        boolean isBlockedStaff = staffRepository.checkAdminABan(staffID);
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
         Player staff = Bukkit.getPlayer(staffID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (secretCodeManager.isBlocked(adminID)) {
-            secretCodeManager.removeBlockAdmin(adminID);
+        if (isBlockedStaff) {
+            sender.sendPath(staff, "Messages.Errors.youAdminAccessIsBlocked");
+            return;
+        }
+
+        if (isBlockedAdmin) {
+            staffRepository.delAdminABan(adminID);
         } else {
-            sender.sendPath(staff, "Messages.Errors.adminNotBanned");
+            sender.sendPath(staff, "Messages.Errors.adminNotBanned",
+                    "%admin", admin.getName());
+            return;
         }
 
         sender.sendPath(admin, "Messages.unbannedSystem",
@@ -347,5 +359,61 @@ public class AdminsStaffService implements StaffServiceAPI {
 
         sender.sendPath(staff, "Messages.successfulUnbannedSystem",
                 "%admin", admin.getName());
+    }
+
+    @Override
+    public void adminAddBlackList(UUID adminID, UUID staffID, String reason) {
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
+        boolean isAdmin = systemRepository.checkAdminInBase(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (inBlackList) {
+            sender.sendPath(staff, "Messages.Errors.adminInBlackList");
+            return;
+        }
+
+        if (isAdmin) {
+            // Если это администратор, я с начала сравниваю веса:
+            int weightStaff = systemRepository.getAdminWeight(staffID);
+            int weightAdmin = systemRepository.getAdminWeight(adminID);
+
+            // Если у таргета, вес больше чем у того кто снимает - подозрения в сливе.
+            // Снять максимальный уровень админки может только консоль, это - безопасность сервера.
+            if (weightStaff <= weightAdmin) {
+                sender.sendPath(staff, "Messages.Errors.blacklistWeightError");
+
+                String message = cfg.getString("Messages.ConsoleLogs.Leak.blacklistWeightError");
+                Bukkit.getPluginManager().callEvent(new AdminLeakEvent(adminID, staffID, message));
+                return;
+            }
+
+            // Если это админ меньшего ранга - снять, повесить, растерзать, прострелить коленные чашечки.
+            // https://www.tiktok.com/@klyowa23/video/7657110663021694229?_r=1&_t=ZS-9879QZFfKpF
+            deleteAdmin(adminID, staffID, reason);
+        }
+
+        sender.sendPath(staff, "Messages.successfulAddBlockList",
+                "%admin", admin.getName());
+
+        staffRepository.setAdminBlackList(adminID, staffID, reason);
+    }
+
+    @Override
+    public void adminDelBlackList(UUID adminID, UUID staffID, String reason) {
+        boolean inBlackList = staffRepository.checkAdminBlackList(adminID);
+        Player admin = Bukkit.getPlayer(adminID);
+        Player staff = Bukkit.getPlayer(staffID);
+
+        if (!inBlackList) {
+            sender.sendPath(staff, "Messages.Errors.adminNotInBlackList",
+                    "%admin", admin.getName());
+            return;
+        }
+
+        sender.sendPath(staff, "Messages.successfulRemoveBlackList",
+                "%admin", admin.getName());
+
+        staffRepository.delAdminBlackList(adminID);
     }
 }

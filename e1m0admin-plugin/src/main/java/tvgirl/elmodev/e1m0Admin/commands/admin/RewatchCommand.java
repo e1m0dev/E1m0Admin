@@ -31,7 +31,7 @@ public class RewatchCommand implements CommandExecutor {
         /* GLOBAL */
 
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
@@ -42,7 +42,7 @@ public class RewatchCommand implements CommandExecutor {
 
         boolean checkPermission = permissionManager.checkSecretCodeAccess(admin.getUniqueId());
         if (!checkPermission) {
-            sender.sendPath(admin, "Messages.Errors.secretCodeHasInputted");
+            sender.sendPath(admin, "Messages.Errors.secretCodeNotInput");
             return false;
         }
 
@@ -66,6 +66,12 @@ public class RewatchCommand implements CommandExecutor {
         /* REWATCH */
         String user = strings[0];
         Player player = Bukkit.getPlayer(user);
+
+        if (player.getUniqueId().equals(admin.getUniqueId())) {
+            sender.sendPath(admin, "Messages.Errors.selfRewatchError");
+            return false;
+
+        }
 
         if (player == null) {
             sender.sendPath(admin, "Messages.Errors.nullPlayer");

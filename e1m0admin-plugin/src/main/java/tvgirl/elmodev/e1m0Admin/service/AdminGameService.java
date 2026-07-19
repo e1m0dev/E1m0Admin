@@ -14,7 +14,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import tvgirl.elmodev.e1m0Admin.E1m0Admin;
-import tvgirl.elmodev.e1m0Admin.state.secretcode.SecretCodeManager;
+import tvgirl.elmodev.e1m0Admin.event.AdminComplimentEvent;
+import tvgirl.elmodev.e1m0Admin.repository.AdminStaffRepository;
+import tvgirl.elmodev.e1m0Admin.utils.Color.E1m0Color;
 import tvgirl.elmodev.e1m0Admin.utils.permissions.E1m0Permission;
 import tvgirl.elmodev.e1m0admin.api.service.GameServiceAPI;
 import tvgirl.elmodev.e1m0Admin.gui.guis.report.ReportGUI;
@@ -29,10 +31,15 @@ import java.util.List;
 
 public class AdminGameService implements GameServiceAPI {
 
+    private UUID consoleID = UUID.fromString("77777777-7777-7777-7777-777777777777");
+
     private final ReportSystemRepository reportRepository;
+    private final AdminStaffRepository staffRepository;
     private final AdminGameRepository gameRepository;
+    private final HashSet<UUID> thanksPlayers;
     private final SecretCodeGui secretCodeGui;
     private final E1m0Permission permission;
+    private final E1m0Color color;
 
     private final HashSet<UUID> inviseCache; // Администраторы в инвизе;
 
@@ -40,19 +47,19 @@ public class AdminGameService implements GameServiceAPI {
     private final HashMap<UUID, Report> playerReportCache; // Игроки с репортом в памяти;
     private final HashMap<UUID, UUID> reconCache; // Администраторы в рекона;
 
-    private final SecretCodeManager secretCodeManager;
 
     private final FileConfiguration cfg;
     private final ReportGUI reportGUI;
     private final E1m0Sender sender;
     private final E1m0Admin plugin;
 
-    public AdminGameService(ReportSystemRepository reportRepository, AdminGameRepository gameRepository, SecretCodeGui secretCodeGui, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, SecretCodeManager secretCodeManager, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
-        this.secretCodeManager = secretCodeManager;
+    public AdminGameService(ReportSystemRepository reportRepository, AdminStaffRepository staffRepository, AdminGameRepository gameRepository, HashSet<UUID> thanksPlayers, SecretCodeGui secretCodeGui, E1m0Color color, HashSet<UUID> inviseCache, HashMap<UUID, BukkitTask> rewatchTasksCache, HashMap<UUID, Report> playerReportCache, HashMap<UUID, UUID> reconCache, FileConfiguration cfg, E1m0Permission permission, ReportGUI reportGUI, E1m0Sender sender, E1m0Admin plugin) {
         this.playerReportCache = playerReportCache;
         this.rewatchTasksCache = rewatchTasksCache;
         this.reportRepository = reportRepository;
+        this.staffRepository = staffRepository;
         this.gameRepository = gameRepository;
+        this.thanksPlayers = thanksPlayers;
         this.secretCodeGui = secretCodeGui;
         this.inviseCache = inviseCache;
         this.reconCache = reconCache;
@@ -60,28 +67,35 @@ public class AdminGameService implements GameServiceAPI {
         this.reportGUI = reportGUI;
         this.sender = sender;
         this.plugin = plugin;
+        this.color = color;
         this.cfg = cfg;
     }
 
     @Override
     public void handleInvisibility(UUID adminID) {
-        Player p = Bukkit.getPlayer(adminID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
+
+        if (isBlockedAdmin) {
+            sender.sendPath(admin, "Messages.Errors.youAdminAccessIsBlocked");
+            return;
+        }
 
         if (!(inviseCache.contains(adminID))) {
-            p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, true));
-            sender.sendPath(p, "Messages.inviseOn");
+            admin.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false, true));
+            sender.sendPath(admin, "Messages.inviseOn");
             inviseCache.add(adminID);
 
         } else {
-            p.removePotionEffect(PotionEffectType.INVISIBILITY);
-            sender.sendPath(p, "Messages.inviseOff");
+            admin.removePotionEffect(PotionEffectType.INVISIBILITY);
+            sender.sendPath(admin, "Messages.inviseOff");
             inviseCache.remove(adminID);
         }
     }
 
     @Override
     public void handleRewatch(UUID adminID, UUID playerID) {
-
         if (rewatchTasksCache.containsKey(adminID)) {
             BukkitTask old = rewatchTasksCache.remove(adminID);
 
@@ -91,6 +105,13 @@ public class AdminGameService implements GameServiceAPI {
 
         Player admin = Bukkit.getPlayer(adminID);
         Player player = Bukkit.getPlayer(playerID);
+
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
+
+        if (isBlockedAdmin) {
+            sender.sendPath(admin, "Messages.Errors.youAdminAccessIsBlocked");
+            return;
+        }
 
         admin.setGameMode(GameMode.SPECTATOR);
 
@@ -144,6 +165,21 @@ public class AdminGameService implements GameServiceAPI {
             if(adm.hasPermission(cfg.getString("Permissions.admin"))) {
                 // Если в репорте есть контрольные слова – то он выделяется
 
+                // EMERGENCY
+                if (!cfg.getBoolean("Server.emergencyRep")) return;
+                for (String s : emergencySwords) {
+                    String sword = s.toLowerCase();
+                    if (report.getReport().toLowerCase().contains(sword)) {
+                        if (cfg.getBoolean("Server.emergencyRep")) {
+                            // 🚨 | Если это сообщение срочное:
+                            fastReport(adm.getUniqueId(), report);
+                            adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.EmergencyReport.sound")), 1.0f, 1.0f);
+                            return;
+                        }
+                    }
+                }
+
+                // DONATE
                 if (cfg.getBoolean("Server.donateReport") && p.hasPermission(cfg.getString("Admin.Report.DonateReport.permission"))) {
                     // 🤑 | Если это сообщение донатное:
                     adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.DonateReport.sound")), 1.0f, 1.0f);
@@ -151,7 +187,7 @@ public class AdminGameService implements GameServiceAPI {
 
                     String argContent = report.getReport();
                     String argPlayer = report.getPlayerNick();
-                    sender.sendPath(adm, "Admin.Report.DonateReport.donateMessage",
+                    sender.sendPathCfg(adm, "Admin.Report.DonateReport.donateMessage",
                             "%content", argContent,
                             "%player", argPlayer);
 
@@ -163,32 +199,9 @@ public class AdminGameService implements GameServiceAPI {
                         String argContent = report.getReport();
                         String argPlayer = report.getPlayerNick();
 
-                        List<String> messages = cfg.getStringList("Admin.Report.NewReport.reportMessage");
-
-                        for (String message : messages) {
-                            messages.stream().map(
-                                    s -> s
-                                    .replace("%content", argContent)
-                                    .replace("%player", argPlayer)
-                            );
-
-                            sender.sendStringList(adm, messages);
-                        }
-                    }
-                }
-
-                // EMERGENCY
-                if(!cfg.getBoolean("Server.emergencyRep")) return;
-                for(String s : emergencySwords) {
-                    String sword = s.toLowerCase();
-
-                    // TODO: Сделать ли кастом hover для всех?
-                    if (report.getReport().toLowerCase().contains(sword)) {
-                        if (cfg.getBoolean("Server.emergencyRep")) {
-                            // 🚨 | Если это сообщение срочное:
-                            fastReport(adm.getUniqueId(), report);
-                            adm.playSound(adm, Sound.valueOf(cfg.getString("Admin.Report.EmergencyReport.sound")), 1.0f, 1.0f);
-                        }
+                        sender.sendPathCfg(adm, "Admin.Report.NewReport.reportMessage",
+                                "%player", argPlayer,
+                                "%content", argContent);
                     }
                 }
             }
@@ -205,35 +218,35 @@ public class AdminGameService implements GameServiceAPI {
         String hoverText = String.join("\n", hover)
                 .replace("%content", report.getReport())
                 .replace("%status", report.getStatus())
-                .replace("%admin", report.getAdminNick())
                 .replace("%player", report.getPlayerNick())
                 .replace("%date", String.valueOf(report.getCreatedAt()));
 
         // Text
         for (String message : emergencyList) {
-            Component component = MiniMessage.miniMessage().deserialize(
+            Component component = color.parse(
                     message
                             .replace("%content", report.getReport())
                             .replace("%status", report.getStatus())
-                            .replace("%admin", report.getAdminNick())
                             .replace("%player", report.getPlayerNick())
                             .replace("%date", String.valueOf(report.getCreatedAt()))
             ).hoverEvent(
                     HoverEvent.showText(
-                            MiniMessage.miniMessage().deserialize(hoverText)
+                            color.parse(hoverText)
                     )
             ).clickEvent(
-                    ClickEvent.runCommand(
-                            "/arepaccept " + report.getUuid()
-                    )
+                    ClickEvent.runCommand("/arepaccept " + report.getUuid())
             );
 
             adm.sendMessage(component);
         }
 
-        String response = cfg.getString("Admin.Report.EmergencyReport.emergencyMessage");
-        Player player = Bukkit.getPlayer(adminID);
+        Player player = Bukkit.getPlayer(report.getPlayerID());
         Player admin = Bukkit.getPlayer(adminID);
+
+        String response = cfg.getString("Admin.Report.EmergencyReport.emergencyMessage");
+        String responseFinal = response
+                .replace("%player", player.getName()
+                        .replace("%content", report.getReport()));
 
         // Авто-репорт
         Report newReport = new Report(
@@ -243,39 +256,51 @@ public class AdminGameService implements GameServiceAPI {
                 admin.getName(),
                 player.getName(),
                 report.getReport(),
-                response,
+                responseFinal,
                 report.getStatus(),
                 report.getCreatedAt()
         );
 
-        reportRepository.gameReportSend(report);
         playerReportCache.remove(report.getPlayerID());
     }
 
     @Override
-    public void adminBlockAccess(UUID targetID, UUID adminID) {
-        Player target = Bukkit.getPlayer(targetID);
+    public void adminBlockAccess(UUID suspectID, UUID adminID) {
+        Player suspect = Bukkit.getPlayer(suspectID);
         Player admin = Bukkit.getPlayer(adminID);
 
-        if (secretCodeManager.isBlocked(targetID) || secretCodeManager.isBlocked(adminID)) {
-            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.adminBlockInternalError");
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
+        boolean isBlockedTarget = staffRepository.checkAdminABan(suspectID);
+
+        if (isBlockedAdmin) {
+            sender.sendPath(admin, "Messages.Errors.youAdminAccessIsBlocked");
             return;
         }
 
-        Bukkit.getLogger().warning("adminBlockAccess! / 1.2"); // ТЕСТЕР
+        if (isBlockedAdmin || isBlockedTarget) {
+            sender.sendPath(admin, "Messages.Errors.adminBlockInternalError");
+            return;
+        }
 
-        secretCodeManager.addBlockAdmin(targetID);
-        secretCodeManager.addBlockAdmin(adminID);
+        staffRepository.setAdminABan(adminID, suspectID); // Таргету - блокирует доступ админ, потому что он использовал /aban, а вот самому админу, блокирует доступ СИСТЕМА, потому что это ТОЖЕ элемент защиты.
+        staffRepository.setAdminABanConsole(adminID, consoleID);
 
         sender.sendPath(admin, "Messages.successfulBlocked",
-                "%target", target.getName());
-        sender.sendPath(target, "Messages.Errors.youAdminAccessIsBlocked",
-                "%admin", target.getName());
+                "%target", suspect.getName());
+        sender.sendPath(suspect, "Messages.Errors.youAdminAccessIsBlocked",
+                "%admin", admin.getName());
     }
 
     @Override
     public void adminHelp(UUID adminID) {
         Player admin = Bukkit.getPlayer(adminID);
+
+        boolean isBlockedAdmin = staffRepository.checkAdminABan(adminID);
+
+        if (isBlockedAdmin) {
+            sender.sendPath(admin, "Messages.Errors.youAdminAccessIsBlocked");
+            return;
+        }
 
         if (admin.hasPermission(cfg.getString("Permissions.admin"))) {
             sender.sendPath(admin, "Admin.AHelp.admin");
@@ -298,8 +323,6 @@ public class AdminGameService implements GameServiceAPI {
 
         List<String> finalMessage = new ArrayList<>();
         List<String> cfgAdminList = cfg.getStringList("Admin.AdminList");
-
-        Bukkit.getLogger().warning("getAdminList / 1!"); // ТЕСТЕР
 
         for (Player admin : Bukkit.getOnlinePlayers()) {
             if (!admin.hasPermission(cfg.getString("Permissions.admin"))) continue;
@@ -352,5 +375,28 @@ public class AdminGameService implements GameServiceAPI {
 
         adminListJob.clear();
         adminListGame.clear();
+    }
+
+    @Override
+    public void addCompliment(UUID adminID, UUID playerID) {
+        Player player = Bukkit.getPlayer(playerID);
+        Player admin = Bukkit.getPlayer(adminID);
+
+        if (thanksPlayers.contains(playerID)) {
+            sender.sendPath(player, "Messages.Errors.cooldownErrorCompliment");
+            return;
+        }
+
+        thanksPlayers.add(playerID);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            if (thanksPlayers.contains(playerID)) {
+                thanksPlayers.remove(playerID);
+            }
+        }, 20 * 60 * cfg.getLong("Settings.complimentCooldown"));
+
+        gameRepository.addCompliment(adminID);
+
+        int compliments = gameRepository.getCompliments(adminID);
+        Bukkit.getPluginManager().callEvent(new AdminComplimentEvent(compliments, playerID, adminID));
     }
 }

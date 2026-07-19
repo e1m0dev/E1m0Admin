@@ -12,9 +12,9 @@ softdepend:
 # TODO
 commands:
   # | ADMIN
-  rep:
+  arep:
     description: "Команда ответа на репорт"
-    aliases: [ arep, reps ]
+    aliases: [ rep, reps ]
 
   ainv:
     description: "Команда сокрытия администратора"
@@ -35,11 +35,23 @@ commands:
     description: "Войти в систему"
     aliases: [ adminaccess, acc ]
 
-  ablock:
+  ablist:
+    description: "Занести в ЧС администрации."
+    aliases: [ ablocklist, addblist ]
+
+  abdlist:
+    description: "Вынести из ЧС администрации."
+    aliases: [ adeleteblacklist, adellist ]
+
+  aban:
     description: "Заблокировать доступ администратору при сливе"
-    aliases: [ aban ]
+    aliases: [ ablock ]
 
   # | PLAYER
+  thanks:
+    description: "Отправить похвалу"
+    aliases: [ compliment, thx ]
+
   report:
     description: "Отправить жалобу"
 
@@ -80,11 +92,18 @@ commands:
   cdel:
     description: "Снять администратора | Удаленно ❗"
 
+  cban:
+    description: "Заблокировать доступ администратору | Удаленно ❗"
+
+  cunban:
+    description: "Разблокировать доступ администратору | Удаленно ❗"
+
   cdown:
     description: "Понизить администратора | Удаленно ❗"
 
   csetadmin:
     description: "Поставить администратора | Удаленно ❗"
+    aliases: [ cset ]
 
   csetsecret:
     description: "Поменять код администратора | Удаленно ❗"
@@ -94,6 +113,9 @@ commands:
 
   cbonus:
     description: "Выдать администратору бонус | Удаленно ❗"
+
+  cunbun:
+    description: "Разблокировать доступ администратору | Удаленно ❗"
 
   # | CONTROLLERS
   arepaccept:

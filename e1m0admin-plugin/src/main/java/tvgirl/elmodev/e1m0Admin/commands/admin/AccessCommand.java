@@ -1,5 +1,6 @@
 package tvgirl.elmodev.e1m0Admin.commands.admin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -30,7 +31,7 @@ public class AccessCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 

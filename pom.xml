@@ -6,7 +6,7 @@
 
     <groupId>io.github.e1m0dev</groupId>
     <artifactId>e1m0admin-parent</artifactId>
-    <version>v2.0.0-RELEASE</version>
+    <version>v3.0.0-RELEASE</version>
     <packaging>pom</packaging>
 
     <name>E1m0Root</name>

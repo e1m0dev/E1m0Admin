@@ -19,9 +19,9 @@ public class ReportAcceptController implements CommandExecutor {
     private final AdminSystemService service;
 
     public ReportAcceptController(E1m0Sender sender, FileConfiguration cfg, AdminSystemService service) {
+        this.service = service;
         this.sender = sender;
         this.cfg = cfg;
-        this.service = service;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ReportAcceptController implements CommandExecutor {
         }
 
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 

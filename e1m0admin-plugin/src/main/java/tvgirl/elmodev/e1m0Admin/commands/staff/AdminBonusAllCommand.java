@@ -31,7 +31,7 @@ import tvgirl.elmodev.e1m0Admin.service.AdminsStaffService;
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if(!(commandSender instanceof Player staff)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 

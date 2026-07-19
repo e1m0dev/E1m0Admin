@@ -34,6 +34,7 @@ public class DatabaseManager {
                             salary INTEGER NOT NULL,
                             prefix VARCHAR(64),
                             IP VARCHAR(32) NOT NULL,
+                            compliments INTEGER DEFAULT 0,
                             setAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     
                             PRIMARY KEY(uuid)
@@ -57,6 +58,36 @@ public class DatabaseManager {
                         );
                     """;
 
+            /* REPORTS | 🚨 */
+            String SQL_ABAN = """
+                    CREATE TABLE IF NOT EXISTS e1admin_aban (
+                        uuid VARCHAR(36) NOT NULL,
+                        adminID VARCHAR(36),
+                        suspectID VARCHAR(36) NOT NULL,
+                        adminNick VARCHAR(24),
+                        suspectNick VARCHAR(24) NOT NULL,
+                        IP VARCHAR(32) NOT NULL,
+                        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    
+                        PRIMARY KEY(uuid)
+                        );
+                    """;
+
+            /* REPORTS | 🚨 */
+            String SQL_BLOCKLIST = """
+                    CREATE TABLE IF NOT EXISTS e1admin_block (
+                        uuid VARCHAR(36) NOT NULL,
+                        adminID VARCHAR(36),
+                        staffID VARCHAR(36) NOT NULL,
+                        adminNick VARCHAR(24),
+                        staffNick VARCHAR(24) NOT NULL,
+                        reason VARCHAR(128) NOT NULL,
+                        IP VARCHAR(32) NOT NULL,
+                        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    
+                        PRIMARY KEY(uuid)
+                        );
+                    """;
 
             /* BONUS | 🎁 */
             String SQL_BONUS = """
@@ -103,11 +134,13 @@ public class DatabaseManager {
 
             try {
                 jdbi.useHandle(handle -> {
+                    handle.execute(SQL_BLOCKLIST);
                     handle.execute(SQL_DELADMIN);
                     handle.execute(SQL_ADMINS);
                     handle.execute(SQL_REPORT);
                     handle.execute(SQL_BONUS);
                     handle.execute(SQL_CODE);
+                    handle.execute(SQL_ABAN);
                 });
 
                 Bukkit.getLogger().info("E1m0Database | ❗ Менеджер отработал все таблицы.");

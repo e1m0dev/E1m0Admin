@@ -60,10 +60,11 @@ public class ReportGUI implements ReportGuiAPI {
         List<Report> reportList = new ArrayList<>();
         ReportHolder holder = new ReportHolder("report_holder", adm, response);
 
-        ConfigurationSection reportGui = cfg.getConfigurationSection("Admin.Report.GUI.ReportGUI.items");
+        ConfigurationSection reportGui = cfg.getConfigurationSection("Admin.GUI.ReportGUI.items");
 
-        int size = cfg.getInt("Admin.Report.GUI.ReportGUI.SIZE");
-        String nameMenu = cfg.getString("Admin.Report.GUI.ReportGUI.NAME");
+        int size = cfg.getInt("Admin.GUI.ReportGUI.SIZE");
+
+        String nameMenu = cfg.getString("Admin.GUI.ReportGUI.NAME");
         String finalNameMenu = PlainTextComponentSerializer.plainText().serialize(color.parse(nameMenu));
 
         Inventory inv = Bukkit.createInventory(holder, size, finalNameMenu);

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,13 +19,11 @@ import java.util.UUID;
 public class ConsoleSetAdminCommand implements CommandExecutor {
 
     private final E1m0Sender sender;
-    private final FileConfiguration cfg;
     private final ConsoleService consoleService;
 
     private UUID consoleID = UUID.fromString("77777777-7777-7777-7777-777777777777");
 
-    public ConsoleSetAdminCommand(E1m0Sender sender, FileConfiguration cfg, ConsoleService consoleService) {
-        this.cfg = cfg;
+    public ConsoleSetAdminCommand(E1m0Sender sender, ConsoleService consoleService) {
         this.sender = sender;
         this.consoleService = consoleService;
     }
@@ -32,8 +31,14 @@ public class ConsoleSetAdminCommand implements CommandExecutor {
     // $csetadmin E1m0 1
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+
+        if (!(commandSender instanceof ConsoleCommandSender)) {
+            sender.sendConsole(commandSender, "Messages.Errors.playerConsoleError");
+            return false;
+        }
+
         if (strings.length != 2) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.lengthError"));
+            sender.sendConsole(commandSender, "Messages.Errors.lengthError");
             return false;
         }
 
@@ -41,12 +46,12 @@ public class ConsoleSetAdminCommand implements CommandExecutor {
         int weight = Integer.parseInt(strings[1]);
 
         if (weight <= 0) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.setAdminWeightIsNull"));
+            sender.sendConsole(commandSender, "Messages.Errors.setAdminWeightIsNull");
             return false;
         }
 
         if (admin == null) {
-            sender.sendConsole(commandSender, cfg.getString("Messages.Errors.nullPlayer"));
+            sender.sendConsole(commandSender, "Messages.Errors.nullPlayer");
             return false;
         }
 

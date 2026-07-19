@@ -31,7 +31,7 @@ public class ReportCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
@@ -63,6 +63,7 @@ public class ReportCommand implements CommandExecutor {
 
         // /arep Администратор E1m0 спешит к Вам на помощь! | Или другая какая-либо форма.
         if (command.getName().toLowerCase().equalsIgnoreCase("arep")) {
+
             reportGUI.openReportGUI(admin.getUniqueId(), response);
 
             // CLS | Console Log

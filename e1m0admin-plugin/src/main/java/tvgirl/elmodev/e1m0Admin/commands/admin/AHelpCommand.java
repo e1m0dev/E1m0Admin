@@ -26,7 +26,7 @@ public class AHelpCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player admin)) {
-            commandSender.sendMessage(cfg.getString("Messages.Errors.consoleError", "Консоли нельзя выполнять такую команду!"));
+            sender.sendConsole(Bukkit.getConsoleSender(), "Messages.Errors.consoleError");
             return false;
         }
 
@@ -35,8 +35,6 @@ public class AHelpCommand implements CommandExecutor {
             sender.sendPath(admin, "Messages.Errors.permissionError");
             return false;
         }
-
-        Bukkit.getLogger().warning("ahelp / 1!"); // ТЕСТЕР
 
         if (command.getName().toLowerCase().equalsIgnoreCase("ahelp")) {
             service.adminHelp(admin.getUniqueId());
